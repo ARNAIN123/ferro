@@ -43,7 +43,7 @@ npx vercel login        # solo la primera vez
 npx vercel --prod       # build + despliegue a producción
 ```
 
-La URL de producción es la que imprime el comando (del tipo `https://ferro-xxxx.vercel.app`). Si conectas el repositorio a Vercel desde su web, cada `git push` desplegará solo.
+La URL de producción actual es **https://ferro-kappa-rosy.vercel.app** (la imprime el comando). Si conectas el repositorio a Vercel desde su web, cada `git push` desplegará solo.
 
 ## Instalarla en el Xiaomi (HyperOS + Chrome)
 
@@ -58,3 +58,38 @@ La URL de producción es la que imprime el comando (del tipo `https://ferro-xxxx
 5. Recomendado: en **Ajustes → Batería → Chrome**, pon "Sin restricciones" para que HyperOS no cierre la app en mitad del entreno.
 
 Cuando haya una versión nueva, la app muestra un aviso "Hay una versión nueva de Ferro · Actualizar". Nunca se actualiza sola en mitad de un entreno.
+
+## Entrada al gimnasio (check-in)
+
+Ferro registra la llegada por tres vías y **nunca guarda más de una entrada cada N horas** (3 por defecto; se cambia en Ajustes → Gimnasio y check-in):
+
+1. **Enlace de check-in**: abrir `https://ferro-kappa-rosy.vercel.app/checkin` (o cualquier ruta con `?checkin=auto`) registra la entrada y abre directamente el entreno que toca. Si ya hay uno en curso, lo retoma.
+2. **Ubicación al abrir**: en Ajustes pulsa **"Estoy en el gimnasio ahora"** estando en el gimnasio (guarda las coordenadas) y ajusta el radio (200 m por defecto). Cada vez que Ferro pasa a primer plano dentro del radio, sin una entrada reciente, la registra sola y te ofrece "Empezar".
+3. **Manual**: botón **"He llegado al gimnasio"** en Hoy.
+
+Cada entrada guarda la hora y el origen. La salida es cuando pulsas **Terminar entreno**; si no lo haces, la sesión se cierra sola tras 3 h sin actividad, con la hora de la última serie como salida.
+
+**Límites de una PWA** (no hay forma de saltárselos sin una app nativa):
+
+- La ubicación solo se comprueba al abrir o volver a la app; Android no deja a una web vigilarla en segundo plano. Por eso existe el enlace para MacroDroid.
+- Ferro solo usa el GPS si ya le diste permiso al guardar la ubicación del gimnasio; nunca lo pide al abrir.
+- El cierre automático tras 3 h se aplica la próxima vez que abras la app (el resultado es el mismo: la salida queda en la hora de la última serie).
+
+## MacroDroid: check-in automático al entrar
+
+La idea: al cerrar la app donde enseñas el QR del torno, si estás en la WiFi del gimnasio, MacroDroid abre Ferro con el enlace de check-in.
+
+Crea una macro nueva:
+
+1. **Disparador** → Aplicaciones → **Aplicación iniciada/cerrada** → *Cerrada* → elige la app donde tienes el QR del gimnasio.
+2. **Restricciones** (las dos):
+   - Conectividad → **Estado de WiFi** → *Conectado a* → la red WiFi del gimnasio (SSID).
+   - MacroDroid → **Última ejecución de la macro** → *No se ha ejecutado en los últimos* 3 horas.
+     (En inglés: *Macro Last Run Time*.)
+3. **Acción** → Aplicaciones → **Abrir sitio web** → `https://ferro-kappa-rosy.vercel.app/checkin`
+   (copia el enlace exacto desde Ferro → Ajustes → Gimnasio y check-in).
+4. Ponle nombre ("Ferro check-in") y guárdala.
+
+Si la PWA está instalada desde Chrome, Android abre ese enlace directamente en Ferro (sin barra del navegador). Pruébalo una vez a mano con el botón ▶ de la macro.
+
+**Alternativa, si Android abre el enlace en Chrome en vez de en la app instalada:** cambia la acción por Aplicaciones → **Abrir aplicación** → *Ferro*, y deja que la **detección por ubicación** haga el check-in al abrirse (necesitas haber guardado la ubicación del gimnasio y tener el permiso de ubicación concedido para el sitio en Chrome).

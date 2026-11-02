@@ -4,6 +4,7 @@ import { Interruptor, Segmentado, Tarjeta } from '../../components/ui'
 import type { Tema } from '../../domain/tipos'
 import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
 import { Paso } from './Paso'
+import { SeccionGimnasio } from './SeccionGimnasio'
 
 export function AjustesPage() {
   const a = useAjustes()
@@ -49,6 +50,8 @@ export function AjustesPage() {
             onCambio={(v) => guardarAjustes({ vibracion: v })}
           />
         </Tarjeta>
+
+        <SeccionGimnasio a={a} />
 
         <Tarjeta>
           <h2 className="mb-3 font-bold">Apariencia</h2>

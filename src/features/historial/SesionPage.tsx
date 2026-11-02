@@ -25,7 +25,7 @@ export function SesionPage() {
   const { sesion, bloques, resumen } = datos
   return (
     <>
-      <Cabecera titulo={sesion.rutinaNombre} subtitulo={<span className="capitalize">{fmtFechaLarga(sesion.entrada)}</span>} atras />
+      <Cabecera titulo={sesion.rutinaNombre} subtitulo={fmtFechaLarga(sesion.entrada)} atras />
 
       <div className="mt-3 flex flex-wrap gap-2">
         <Etiqueta>

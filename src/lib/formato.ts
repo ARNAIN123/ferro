@@ -29,8 +29,11 @@ export const fmtHora = (t: number): string =>
 export const fmtFechaCorta = (t: number): string =>
   new Date(t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
 
-export const fmtFechaLarga = (t: number): string =>
-  new Date(t).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })
+/** "Lunes, 2 de noviembre" */
+export function fmtFechaLarga(t: number): string {
+  const texto = new Date(t).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
+}
 
 /** "hace 3 días", "hoy", "ayer" */
 export function fmtHace(t: number, ahora = Date.now()): string {

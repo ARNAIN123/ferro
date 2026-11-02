@@ -9,6 +9,8 @@ import {
   propagarCambio,
   serieSiguiente,
 } from '../domain/entreno'
+import { rutinaQueToca } from '../domain/ciclo'
+import { vincularEntrada } from '../domain/checkin'
 import type { OrigenEntrada, Serie, Sesion, SesionEjercicio } from '../domain/tipos'
 import { leerAjustes } from '../hooks/useAjustes'
 import { nuevoId } from '../lib/id'
@@ -61,18 +63,20 @@ export async function iniciarSesion(rutinaId: string | null, origen: OrigenEntra
     if (enCurso) return enCurso.id
 
     const ahora = Date.now()
-    const ventana = ajustes.horasEntreCheckins * 3600_000
-    let entrada = await db.entradas
-      .where('hora')
-      .above(ahora - ventana)
-      .filter((e) => !e.sesionId)
-      .last()
     const sesionId = nuevoId()
-    if (!entrada) {
+    const recientes = await db.entradas
+      .where('hora')
+      .above(ahora - ajustes.horasEntreCheckins * 3600_000)
+      .toArray()
+    const vinculo = vincularEntrada(recientes, ahora, ajustes.horasEntreCheckins)
+    let entrada = vinculo.entrada
+    if (vinculo.crear) {
       entrada = { id: nuevoId(), hora: ahora, origen }
       await db.entradas.add(entrada)
     }
-    await db.entradas.update(entrada.id, { sesionId })
+    if (vinculo.vincular && entrada) await db.entradas.update(entrada.id, { sesionId })
+    const llegada = vinculo.vincular && entrada ? entrada.hora : ahora
+    const origenEntrada = entrada?.origen ?? origen
 
     const rutina = rutinaId ? await db.rutinas.get(rutinaId) : undefined
     const plan = rutina ? await db.rutinaEjercicios.where('rutinaId').equals(rutina.id).sortBy('orden') : []
@@ -95,9 +99,9 @@ export async function iniciarSesion(rutinaId: string | null, origen: OrigenEntra
       id: sesionId,
       rutinaId: rutina?.id ?? null,
       rutinaNombre: rutina?.nombre ?? 'Entreno libre',
-      entrada: entrada.hora,
+      entrada: llegada,
       salida: null,
-      origenEntrada: entrada.origen,
+      origenEntrada,
       estado: 'en_curso',
       ultimaActividad: ahora,
       descansoFin: null,
@@ -108,6 +112,19 @@ export async function iniciarSesion(rutinaId: string | null, origen: OrigenEntra
     for (const se of ejercicios) await crearSeriesPrerrellenadas(se)
     return sesionId
   })
+}
+
+/**
+ * Retoma el entreno en curso o empieza la rutina que toca. Devuelve false si no hay rutinas
+ * (entonces no hay nada que empezar).
+ */
+export async function empezarLoQueToca(origen: OrigenEntrada = 'manual'): Promise<boolean> {
+  if (await sesionEnCurso()) return true
+  const [rutinas, sesiones] = await Promise.all([db.rutinas.toArray(), db.sesiones.toArray()])
+  const toca = rutinaQueToca(rutinas, sesiones)
+  if (!toca) return false
+  await iniciarSesion(toca.id, origen)
+  return true
 }
 
 async function tocar(sesionId: string, cambios: Partial<Sesion> = {}): Promise<void> {
