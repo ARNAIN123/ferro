@@ -27,7 +27,8 @@ import { CampoNumero } from './CampoNumero'
 import { Descanso } from './Descanso'
 import { MenuEjercicio } from './MenuEjercicio'
 import { TarjetaEjercicio } from './TarjetaEjercicio'
-import { useEntreno, useUltimaVez } from './useEntreno'
+import { ChipProgresion } from './ChipProgresion'
+import { useEntreno, useHistorial } from './useEntreno'
 
 export function EntrenoPage() {
   const datos = useEntreno()
@@ -39,8 +40,11 @@ export function EntrenoPage() {
   const [menuAbierto, setMenuAbierto] = useState(false)
   const [selector, setSelector] = useState<'anadir' | 'cambiar' | null>(null)
   const [terminando, setTerminando] = useState(false)
-  const ejercicioIds = useMemo(() => datos?.ejercicios.map((e) => e.se.ejercicioId) ?? [], [datos])
-  const ultimaVez = useUltimaVez(datos?.sesion.id, ejercicioIds)
+  const ejerciciosHist = useMemo(
+    () => datos?.ejercicios.map((e) => ({ id: e.se.ejercicioId, reinicio: e.ejercicio?.reinicioProgresion })) ?? [],
+    [datos],
+  )
+  const historial = useHistorial(datos?.sesion.id, ejerciciosHist)
   const ahora = useAhora(1000)
   const toque = useRef<{ x: number; y: number } | null>(null)
   // Al terminar, la sesión deja de estar en curso antes de navegar al resumen: evita la redirección a Hoy.
@@ -180,7 +184,14 @@ export function EntrenoPage() {
             <TarjetaEjercicio
               key={activo.se.id}
               vista={activo}
-              ultimaVez={ultimaVez?.get(activo.se.ejercicioId)}
+              ultimaVez={historial?.get(activo.se.ejercicioId)?.ultima}
+              sugerencia={
+                <ChipProgresion
+                  vista={activo}
+                  recientes={historial?.get(activo.se.ejercicioId)?.recientes}
+                  onCambiar={() => setSelector('cambiar')}
+                />
+              }
               seleccionId={seleccion?.id ?? null}
               superserieCon={companeros}
               onSeleccionar={setSeleccionManual}

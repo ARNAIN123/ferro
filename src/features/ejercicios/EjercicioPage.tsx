@@ -12,6 +12,7 @@ import { NOMBRE_MATERIAL, NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { fmtKg } from '../../lib/formato'
 import { FormEjercicio } from './FormEjercicio'
 import { HistorialEjercicio } from './HistorialEjercicio'
+import { ProgresoEjercicio } from './ProgresoEjercicio'
 
 export function EjercicioPage() {
   const { id = '' } = useParams()
@@ -67,6 +68,8 @@ export function EjercicioPage() {
             </button>
           )}
         </Tarjeta>
+
+        {historial && <ProgresoEjercicio ejercicio={ejercicio} historial={historial} />}
 
         <section>
           <h2 className="mb-2 font-bold">Historial</h2>

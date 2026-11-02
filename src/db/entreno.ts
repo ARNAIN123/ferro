@@ -11,6 +11,7 @@ import {
 } from '../domain/entreno'
 import { rutinaQueToca } from '../domain/ciclo'
 import { vincularEntrada } from '../domain/checkin'
+import { descarga } from '../domain/progresion'
 import type { OrigenEntrada, Serie, Sesion, SesionEjercicio } from '../domain/tipos'
 import { leerAjustes } from '../hooks/useAjustes'
 import { nuevoId } from '../lib/id'
@@ -30,6 +31,40 @@ export async function ultimasSeriesDe(ejercicioId: string, excluirSesionId?: str
   if (series.length === 0) return []
   const masReciente = series.reduce((a, b) => ((b.hora ?? 0) > (a.hora ?? 0) ? b : a))
   return series.filter((s) => s.sesionId === masReciente.sesionId).sort((a, b) => a.orden - b.orden)
+}
+
+/** Últimas `n` sesiones de un ejercicio (de la más reciente a la más antigua), desde una fecha. */
+export async function historialReciente(ejercicioId: string, excluirSesionId: string, desde = 0, n = 4): Promise<Serie[][]> {
+  const series = await db.series
+    .where('ejercicioId')
+    .equals(ejercicioId)
+    .filter((s) => s.completada && s.sesionId !== excluirSesionId && (s.hora ?? 0) >= desde)
+    .toArray()
+  const grupos = new Map<string, Serie[]>()
+  for (const s of series) grupos.set(s.sesionId, [...(grupos.get(s.sesionId) ?? []), s])
+  const hora = (g: Serie[]) => Math.max(...g.map((s) => s.hora ?? 0))
+  return [...grupos.values()]
+    .sort((a, b) => hora(b) - hora(a))
+    .slice(0, n)
+    .map((g) => g.sort((a, b) => a.orden - b.orden))
+}
+
+/** Bajar un 10 % y reconstruir: aplica la descarga a las series pendientes y reinicia el contador de estancamiento. */
+export async function descargarEjercicio(sesionEjercicioId: string): Promise<void> {
+  await db.transaction('rw', db.series, db.sesiones, db.sesionEjercicios, db.ejercicios, async () => {
+    const se = await db.sesionEjercicios.get(sesionEjercicioId)
+    if (!se) return
+    const ejercicio = await db.ejercicios.get(se.ejercicioId)
+    const salto = ejercicio?.saltoPeso ?? 2.5
+    const pendientes = await db.series
+      .where('sesionEjercicioId')
+      .equals(se.id)
+      .filter((s) => !s.completada && s.tipo === 'normal')
+      .toArray()
+    for (const s of pendientes) await db.series.update(s.id, { peso: descarga(s.peso, salto) })
+    await db.ejercicios.update(se.ejercicioId, { reinicioProgresion: Date.now() })
+    await tocar(se.sesionId)
+  })
 }
 
 async function crearSeriesPrerrellenadas(se: SesionEjercicio, cuantas = se.seriesObjetivo, desdeOrden = 0): Promise<void> {

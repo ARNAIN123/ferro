@@ -25,7 +25,7 @@ export function Cabecera({ titulo, subtitulo, atras, accion }: Props) {
           </button>
         )}
         <div className="min-w-0 flex-1">
-          <h1 className="condensada truncate text-3xl leading-tight font-extrabold tracking-tight">{titulo}</h1>
+          <h1 className="condensada line-clamp-2 text-3xl leading-[1.1] font-extrabold tracking-tight">{titulo}</h1>
           {subtitulo && <p className="truncate text-sm text-muted">{subtitulo}</p>}
         </div>
         {accion}

@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../db/db'
-import { ultimasSeriesDe } from '../../db/entreno'
+import { historialReciente, ultimasSeriesDe } from '../../db/entreno'
 import type { Ejercicio, Molestia, Serie, Sesion, SesionEjercicio } from '../../domain/tipos'
 
 export interface EjercicioVista {
@@ -41,13 +41,29 @@ export function useEntreno(): DatosEntreno | null | undefined {
   }, [])
 }
 
-/** Lo que hice la última vez en cada ejercicio de la sesión (sin contar la sesión actual). */
-export function useUltimaVez(sesionId: string | undefined, ejercicioIds: string[]): Map<string, Serie[]> | undefined {
-  const clave = ejercicioIds.join('|')
+export interface HistorialEjercicioEnCurso {
+  /** Lo que hice la última vez (para mostrarlo y prerrellenar). */
+  ultima: Serie[]
+  /** Últimas sesiones desde el último reinicio de progresión, de la más reciente a la más antigua. */
+  recientes: Serie[][]
+}
+
+/** Historial de cada ejercicio de la sesión (sin contar la sesión actual). */
+export function useHistorial(
+  sesionId: string | undefined,
+  ejercicios: { id: string; reinicio?: number }[],
+): Map<string, HistorialEjercicioEnCurso> | undefined {
+  const clave = ejercicios.map((e) => `${e.id}:${e.reinicio ?? 0}`).join('|')
   return useLiveQuery(async () => {
-    const mapa = new Map<string, Serie[]>()
+    const mapa = new Map<string, HistorialEjercicioEnCurso>()
     if (!sesionId) return mapa
-    for (const id of new Set(ejercicioIds)) mapa.set(id, await ultimasSeriesDe(id, sesionId))
+    for (const e of ejercicios) {
+      if (mapa.has(e.id)) continue
+      mapa.set(e.id, {
+        ultima: await ultimasSeriesDe(e.id, sesionId),
+        recientes: await historialReciente(e.id, sesionId, e.reinicio ?? 0),
+      })
+    }
     return mapa
   }, [sesionId, clave])
 }
