@@ -7,6 +7,7 @@ import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
 import { Paso } from './Paso'
 import { SeccionDatos } from './SeccionDatos'
 import { SeccionGimnasio } from './SeccionGimnasio'
+import { SeccionImagenes } from './SeccionImagenes'
 
 export function AjustesPage() {
   const a = useAjustes()
@@ -69,6 +70,8 @@ export function AjustesPage() {
             ]}
           />
         </Tarjeta>
+
+        <SeccionImagenes />
 
         <SeccionDatos a={a} />
 

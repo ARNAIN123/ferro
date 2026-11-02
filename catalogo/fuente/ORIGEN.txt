@@ -1,0 +1,1 @@
+Free Exercise DB (https://github.com/yuhonas/free-exercise-db), commit f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5 del 2026-09-27 12:26:41 +1000

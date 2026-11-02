@@ -60,7 +60,7 @@ export async function generarCsvSeries(): Promise<{ nombre: string; contenido: s
         hora: s.hora ?? sesionPorId.get(s.sesionId)!.entrada,
         rutina: sesionPorId.get(s.sesionId)!.rutinaNombre,
         ejercicio: e?.nombre ?? s.ejercicioId,
-        musculo: e ? NOMBRE_MUSCULO[e.musculoPrincipal] : '',
+        musculo: e ? e.musculosPrincipales.map((m) => NOMBRE_MUSCULO[m]).join(', ') : '',
         serie: numero.get(clave)!,
         tipo: NOMBRE_TIPO_SERIE[s.tipo].toLowerCase(),
         peso: s.peso,

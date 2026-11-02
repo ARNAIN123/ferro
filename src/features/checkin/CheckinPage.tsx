@@ -45,7 +45,7 @@ export function EmpezarPage() {
   useEffect(() => {
     if (hecho.current) return
     hecho.current = true
-    void empezarLoQueToca('manual').then((ok) => navegar(ok ? '/entreno' : '/rutinas', { replace: true }))
+    void empezarLoQueToca('entreno').then((ok) => navegar(ok ? '/entreno' : '/rutinas', { replace: true }))
   }, [navegar])
   return <div className="h-dvh bg-bg" />
 }

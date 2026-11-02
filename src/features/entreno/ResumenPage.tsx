@@ -4,6 +4,8 @@ import { Icono } from '../../components/Icono'
 import { Tarjeta, Vacio } from '../../components/ui'
 import { datosResumen } from '../../db/consultas'
 import { compararSesiones } from '../../domain/resumen'
+import { ESCALAS, nivelesDeTrabajo, rotulosEscala } from '../../domain/mapaMuscular'
+import { MapaConDetalle } from '../../components/mapa/MapaConDetalle'
 import { agrupar, type TipoRecord } from '../../domain/marcas'
 import { fmtDuracion, fmtEntero, fmtKg } from '../../lib/formato'
 
@@ -27,7 +29,7 @@ export function ResumenPage() {
       </div>
     )
 
-  const { sesion, resumen, records, anterior, nombres } = datos
+  const { sesion, resumen, records, anterior, nombres, trabajo } = datos
   const cmp = anterior ? compararSesiones(resumen, anterior) : null
 
   return (
@@ -63,6 +65,19 @@ export function ResumenPage() {
       )}
 
       <Tarjeta className="mt-4">
+        <h2 className="mb-1 font-bold">Músculos trabajados</h2>
+        <MapaConDetalle
+          trabajo={trabajo}
+          niveles={nivelesDeTrabajo(trabajo, ESCALAS.sesion)}
+          nombres={nombres}
+          rotulos={rotulosEscala(ESCALAS.sesion)}
+          unidad="series"
+          periodo="en esta sesión"
+          alto="h-72"
+        />
+      </Tarjeta>
+
+      <Tarjeta className="mt-4">
         <h2 className="mb-2 flex items-center gap-2 font-bold">
           <Icono nombre="trofeo" tamano={20} className="text-accent" /> Récords
         </h2>
@@ -92,6 +107,12 @@ export function ResumenPage() {
       <div className="mt-6 grid gap-2">
         <Link to="/" replace className="flex min-h-16 items-center justify-center rounded-2xl bg-accent text-lg font-bold text-accent-ink">
           Volver a Hoy
+        </Link>
+        <Link
+          to={`/rutinas/nueva?desde=${sesion.id}`}
+          className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-surface-2 font-semibold active:brightness-110"
+        >
+          <Icono nombre="copiar" tamano={20} /> Guardar como rutina
         </Link>
         <Link
           to={`/progreso/historial/${sesion.id}`}

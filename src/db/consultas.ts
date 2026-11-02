@@ -2,7 +2,8 @@
 import type { SerieHecha } from '../domain/marcas'
 import { recordsDeSesion, type RecordSesion } from '../domain/marcas'
 import { resumirSesion, type ResumenSesion } from '../domain/resumen'
-import type { Ejercicio, Molestia, Serie, Sesion, SesionEjercicio } from '../domain/tipos'
+import { trabajoMuscular, type TrabajoMuscular } from '../domain/mapaMuscular'
+import type { Ejercicio, Molestia, Musculo, Serie, Sesion, SesionEjercicio } from '../domain/tipos'
 import { db } from './db'
 
 export const aSerieHecha = (s: Serie): SerieHecha => ({
@@ -45,6 +46,7 @@ export async function detalleSesion(sesionId: string): Promise<DetalleSesion | n
 }
 
 export interface DatosResumen extends DetalleSesion {
+  trabajo: Map<Musculo, TrabajoMuscular>
   records: RecordSesion[]
   anterior: ResumenSesion | null
   nombres: Map<string, string>
@@ -71,7 +73,9 @@ export async function datosResumen(sesionId: string): Promise<DatosResumen | nul
     : null
 
   const nombres = new Map(detalle.bloques.map((b) => [b.se.ejercicioId, b.ejercicio?.nombre ?? '']))
-  return { ...detalle, records, anterior, nombres }
+  const fichas = new Map(detalle.bloques.flatMap((b) => (b.ejercicio ? [[b.ejercicio.id, b.ejercicio] as const] : [])))
+  const trabajo = trabajoMuscular(seriesSesion, fichas)
+  return { ...detalle, records, anterior, nombres, trabajo }
 }
 
 export interface EntradaHistorial {

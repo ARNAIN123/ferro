@@ -33,7 +33,7 @@ export function TarjetaEjercicio({ vista, ultimaVez, seleccionId, superserieCon,
             <span className="font-sans font-normal">
               {' '}
               · descanso {fmtCrono(se.descansoSeg)}
-              {ejercicio && ` · ${NOMBRE_MUSCULO[ejercicio.musculoPrincipal]}`}
+              {ejercicio && ` · ${ejercicio.musculosPrincipales.map((m) => NOMBRE_MUSCULO[m]).join(', ')}`}
             </span>
           </p>
         </div>

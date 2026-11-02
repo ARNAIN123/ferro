@@ -2,34 +2,63 @@
 
 export const MUSCULOS = [
   'pecho',
-  'espalda',
-  'hombros',
+  'dorsales',
+  'espalda_media',
+  'lumbares',
   'trapecio',
+  'hombros',
   'biceps',
   'triceps',
   'antebrazos',
   'abdomen',
-  'lumbares',
   'gluteos',
+  'abductores',
+  'aductores',
   'cuadriceps',
   'isquiotibiales',
-  'aductores',
   'gemelos',
+  'cuello',
 ] as const
 export type Musculo = (typeof MUSCULOS)[number]
 
-export const MATERIALES = ['barra', 'mancuernas', 'maquina', 'polea', 'peso_corporal', 'otro'] as const
+export const MATERIALES = [
+  'barra',
+  'barra_z',
+  'mancuernas',
+  'kettlebell',
+  'maquina',
+  'polea',
+  'peso_corporal',
+  'bandas',
+  'balon_medicinal',
+  'fitball',
+  'foam_roller',
+  'otro',
+  'ninguno',
+] as const
 export type Material = (typeof MATERIALES)[number]
+
+export const CATEGORIAS = ['fuerza', 'halterofilia', 'strongman', 'pliometria', 'cardio', 'estiramientos'] as const
+export type Categoria = (typeof CATEGORIAS)[number]
+
+export type Nivel = 'principiante' | 'intermedio' | 'avanzado'
+export type Mecanica = 'compuesto' | 'aislamiento'
 
 export interface Ejercicio {
   id: string
   nombre: string
-  musculoPrincipal: Musculo
+  /** Nombre original en inglés y sinónimos, para buscar en los dos idiomas. */
+  alias: string
+  musculosPrincipales: Musculo[]
   musculosSecundarios: Musculo[]
   material: Material
-  /** Salto de peso en kg para los botones +/− y la progresión. */
-  saltoPeso: number
-  /** Ajustes fijos de la máquina: altura del asiento, agarre… */
+  categoria: Categoria
+  nivel: Nivel | null
+  mecanica: Mecanica | null
+  instrucciones: string[]
+  /** Número de imágenes (0, 1 o 2) en /img/ejercicios/<id>/<n>.webp. Sin imágenes se muestra el mapa muscular. */
+  imagenes: number
+  /** Mis notas: ajustes de la máquina, agarre… Es lo único editable de la ficha. */
   notasFijas: string
   personalizado: boolean
   archivado: boolean
@@ -58,7 +87,8 @@ export interface RutinaEjercicio {
   superserieConSiguiente: boolean
 }
 
-export type OrigenEntrada = 'enlace' | 'ubicacion' | 'manual'
+/** 'entreno' = no hubo detección automática y se usó la hora de inicio del entreno. 'manual' solo existe en datos antiguos. */
+export type OrigenEntrada = 'enlace' | 'ubicacion' | 'entreno' | 'manual'
 
 /** Llegada al gimnasio. Puede existir sin entreno (p. ej. check-in por ubicación). */
 export interface Entrada {
@@ -154,6 +184,8 @@ export interface Ajustes {
   wakeLock: boolean
   vibracion: boolean
   ultimaCopia: number | null
+  /** Versión del catálogo de ejercicios sincronizada en la base de datos. */
+  versionCatalogo?: string
 }
 
 export const AJUSTES_POR_DEFECTO: Ajustes = {

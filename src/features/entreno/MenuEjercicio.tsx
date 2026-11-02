@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { Hoja } from '../../components/Hoja'
 import { Icono } from '../../components/Icono'
 import { Boton, claseInput } from '../../components/ui'
-import { actualizarEjercicio } from '../../db/ejercicios'
+import { guardarNotas } from '../../db/ejercicios'
 import { guardarMolestia, quitarMolestia, saltarEjercicio } from '../../db/entreno'
 import type { EjercicioVista } from './useEntreno'
 
@@ -110,7 +110,7 @@ export function MenuEjercicio({ vista, onCerrar, onCambiar }: Props) {
             variante="primario"
             className="w-full"
             onClick={async () => {
-              await actualizarEjercicio(ejercicio.id, { notasFijas: notasFijas.trim() })
+              await guardarNotas(ejercicio.id, notasFijas.trim())
               onCerrar()
             }}
           >

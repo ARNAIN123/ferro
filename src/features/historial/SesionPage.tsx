@@ -68,9 +68,13 @@ export function SesionPage() {
         ))}
       </div>
 
+      <Boton className="mt-6 w-full" onClick={() => navegar(`/rutinas/nueva?desde=${sesion.id}`)}>
+        <Icono nombre="copiar" tamano={20} /> Crear rutina a partir de este entreno
+      </Boton>
+
       <Boton
         variante="peligro"
-        className="mt-6 w-full"
+        className="mt-2 w-full"
         onClick={async () => {
           if (!confirm('¿Borrar este entreno? No se puede deshacer.')) return
           await borrarSesion(sesion.id)

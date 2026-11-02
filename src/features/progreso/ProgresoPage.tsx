@@ -7,22 +7,31 @@ import { Icono } from '../../components/Icono'
 import { Segmentado, Tarjeta, Vacio } from '../../components/ui'
 import { aSerieHecha, sesionesTerminadas } from '../../db/consultas'
 import { db } from '../../db/db'
-import { asistenciaPorSemana, duracionMedia, FRANJA_SERIES, mapaCalor, mediaMovil, seriesPorMusculo } from '../../domain/estadisticas'
+import { asistenciaPorSemana, duracionMedia, FRANJA_SERIES, mapaCalor, mediaMovil } from '../../domain/estadisticas'
+import { ESCALAS, nivelesDeTrabajo, rotulosEscala, trabajoMuscular } from '../../domain/mapaMuscular'
+import { MapaConDetalle } from '../../components/mapa/MapaConDetalle'
 import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { recordsPersonales } from '../../domain/marcas'
 import { inicioSemana, sumarDias } from '../../domain/semanas'
 import { MUSCULOS, type Ejercicio, type Entrada, type PesoCorporal, type Serie, type Sesion } from '../../domain/tipos'
 import { useAjustes } from '../../hooks/useAjustes'
-import { fmtDuracion, fmtFechaCorta, fmtHace, fmtKg } from '../../lib/formato'
+import { fmtDuracion, fmtHace, fmtKg } from '../../lib/formato'
 import { MapaCalor } from './MapaCalor'
 
 type Vista = 'general' | 'ejercicios' | 'peso'
+type Periodo = 'semana' | '7d' | '30d'
+
+const PERIODOS: Record<Periodo, (ahora: number) => { desde: number; semanas: number; texto: string }> = {
+  semana: (ahora) => ({ desde: inicioSemana(ahora), semanas: 1, texto: 'esta semana' }),
+  '7d': (ahora) => ({ desde: sumarDias(ahora, -7), semanas: 1, texto: 'en los últimos 7 días' }),
+  '30d': (ahora) => ({ desde: sumarDias(ahora, -30), semanas: 30 / 7, texto: 'en los últimos 30 días' }),
+}
 
 export function ProgresoPage() {
   const ajustes = useAjustes()
   const [params, setParams] = useSearchParams()
   const vista = (params.get('ver') as Vista | null) ?? 'general'
-  const [semanaAtras, setSemanaAtras] = useState(0)
+  const [periodo, setPeriodo] = useState<Periodo>('semana')
 
   const datos = useLiveQuery(async (): Promise<Datos> => {
     const [sesiones, entradas, series, ejercicios, pesos] = await Promise.all([
@@ -65,7 +74,7 @@ export function ProgresoPage() {
         />
       </div>
 
-      {datos && vista === 'general' && <General datos={datos} ahora={ahora} objetivo={ajustes.objetivoSemanal} semanaAtras={semanaAtras} setSemanaAtras={setSemanaAtras} />}
+      {datos && vista === 'general' && <General datos={datos} ahora={ahora} objetivo={ajustes.objetivoSemanal} periodo={periodo} setPeriodo={setPeriodo} />}
       {datos && vista === 'ejercicios' && <Ejercicios datos={datos} ahora={ahora} />}
       {datos && vista === 'peso' && <Peso pesos={datos.pesos} />}
     </>
@@ -84,14 +93,14 @@ function General({
   datos,
   ahora,
   objetivo,
-  semanaAtras,
-  setSemanaAtras,
+  periodo,
+  setPeriodo,
 }: {
   datos: Datos
   ahora: number
   objetivo: number
-  semanaAtras: number
-  setSemanaAtras: (n: number) => void
+  periodo: Periodo
+  setPeriodo: (p: Periodo) => void
 }) {
   if (datos.sesiones.length === 0 && datos.entradas.length === 0)
     return <Vacio titulo="Todavía no hay datos">Termina tu primer entreno y aquí verás tu asistencia y tus series por músculo.</Vacio>
@@ -102,16 +111,15 @@ function General({
   const mediaDias = completas.length ? completas.reduce((t, s) => t + s.dias, 0) / completas.length : null
   const media = duracionMedia(datos.sesiones.slice(0, 20))
 
-  const inicio = inicioSemana(sumarDias(ahora, -7 * semanaAtras))
-  const fin = sumarDias(inicio, 7)
-  const sesionesSemana = new Set(datos.sesiones.filter((s) => s.entrada >= inicio && s.entrada < fin).map((s) => s.id))
+  const { desde, semanas: enSemanas, texto } = PERIODOS[periodo](ahora)
+  const sesionesPeriodo = new Set(datos.sesiones.filter((s) => s.entrada >= desde).map((s) => s.id))
   const fichas = new Map(datos.ejercicios.map((e) => [e.id, e]))
-  const porMusculo = seriesPorMusculo(
-    datos.series.filter((s) => sesionesSemana.has(s.sesionId)),
+  const trabajo = trabajoMuscular(
+    datos.series.filter((s) => sesionesPeriodo.has(s.sesionId)),
     fichas,
   )
-  const filas = MUSCULOS.filter((m) => (porMusculo.get(m) ?? 0) > 0)
-    .map((musculo) => ({ musculo, series: porMusculo.get(musculo) ?? 0 }))
+  const filas = MUSCULOS.filter((m) => trabajo.has(m))
+    .map((musculo) => ({ musculo, series: Math.round(((trabajo.get(musculo)?.series ?? 0) / enSemanas) * 10) / 10 }))
     .sort((a, b) => b.series - a.series)
 
   return (
@@ -133,38 +141,37 @@ function General({
       </Tarjeta>
 
       <Tarjeta>
-        <h2 className="font-bold">Series por músculo</h2>
-        <div className="-mx-2 flex items-center justify-between">
-          <button
-            type="button"
-            aria-label="Semana anterior"
-            onClick={() => setSemanaAtras(semanaAtras + 1)}
-            className="grid size-11 place-items-center rounded-full active:bg-surface-2"
-          >
-            <Icono nombre="atras" tamano={20} />
-          </button>
-          <span className="text-sm font-medium">{semanaAtras === 0 ? 'Esta semana' : `Semana del ${fmtFechaCorta(inicio)}`}</span>
-          <button
-            type="button"
-            aria-label="Semana siguiente"
-            disabled={semanaAtras === 0}
-            onClick={() => setSemanaAtras(semanaAtras - 1)}
-            className="grid size-11 place-items-center rounded-full active:bg-surface-2 disabled:opacity-30"
-          >
-            <Icono nombre="adelante" tamano={20} />
-          </button>
+        <h2 className="font-bold">Músculos trabajados</h2>
+        <div className="mt-2 mb-3">
+          <Segmentado<Periodo>
+            etiqueta="Periodo"
+            valor={periodo}
+            onCambio={setPeriodo}
+            opciones={[
+              { valor: 'semana', texto: 'Esta semana' },
+              { valor: '7d', texto: '7 días' },
+              { valor: '30d', texto: '30 días' },
+            ]}
+          />
         </div>
-        <p className="mb-2 text-xs text-muted">
-          Principal cuenta 1, secundario 0,5. Franja de referencia: {FRANJA_SERIES.min}–{FRANJA_SERIES.max} series.
-        </p>
-        {filas.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted">Sin series esta semana.</p>
+        {trabajo.size === 0 ? (
+          <p className="py-6 text-center text-sm text-muted">Sin series {texto}.</p>
         ) : (
           <>
-            <GraficaMusculos datos={filas} />
-            <details className="mt-2 text-sm">
-              <summary className="min-h-10 cursor-pointer py-2 text-muted">Ver como tabla</summary>
-              <table className="w-full">
+            <MapaConDetalle
+              trabajo={trabajo}
+              niveles={nivelesDeTrabajo(trabajo, ESCALAS.semana, enSemanas)}
+              nombres={new Map(datos.ejercicios.map((e) => [e.id, e.nombre]))}
+              rotulos={rotulosEscala(ESCALAS.semana)}
+              unidad={enSemanas > 1 ? 'series/semana' : 'series'}
+              periodo={texto}
+            />
+            <details className="mt-3 text-sm">
+              <summary className="min-h-11 cursor-pointer py-2 font-medium text-muted">
+                Series por músculo{enSemanas > 1 ? ' (media semanal)' : ''} · referencia {FRANJA_SERIES.min}–{FRANJA_SERIES.max}
+              </summary>
+              <GraficaMusculos datos={filas} />
+              <table className="mt-2 w-full">
                 <tbody>
                   {filas.map((f) => (
                     <tr key={f.musculo} className="border-t border-line">

@@ -1,28 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { asistenciaPorSemana, duracionMedia, evolucionEjercicio, mapaCalor, mediaMovil, seriesPorMusculo } from './estadisticas'
-import type { Musculo } from './tipos'
+import { asistenciaPorSemana, duracionMedia, evolucionEjercicio, mapaCalor, mediaMovil } from './estadisticas'
 
 const dia = (a: number, m: number, d: number, h = 18) => new Date(a, m - 1, d, h).getTime()
-
-describe('series por grupo muscular', () => {
-  const ejercicios = new Map<string, { musculoPrincipal: Musculo; musculosSecundarios: Musculo[] }>([
-    ['banca', { musculoPrincipal: 'pecho', musculosSecundarios: ['triceps', 'hombros'] }],
-    ['fondos', { musculoPrincipal: 'triceps', musculosSecundarios: ['pecho'] }],
-  ])
-
-  it('principal 1, secundarios 0,5 y sin calentamientos', () => {
-    const series = [
-      { ejercicioId: 'banca', tipo: 'normal' as const },
-      { ejercicioId: 'banca', tipo: 'normal' as const },
-      { ejercicioId: 'banca', tipo: 'calentamiento' as const },
-      { ejercicioId: 'fondos', tipo: 'drop' as const },
-    ]
-    const r = seriesPorMusculo(series, ejercicios)
-    expect(r.get('pecho')).toBe(2.5)
-    expect(r.get('triceps')).toBe(2)
-    expect(r.get('hombros')).toBe(1)
-  })
-})
 
 describe('asistencia', () => {
   const ahora = dia(2026, 11, 4)

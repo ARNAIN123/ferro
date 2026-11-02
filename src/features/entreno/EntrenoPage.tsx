@@ -5,7 +5,7 @@ import { Icono } from '../../components/Icono'
 import { Boton } from '../../components/ui'
 import {
   alternarSerie,
-  anadirEjercicioASesion,
+  anadirEjerciciosASesion,
   cambiarEjercicio,
   cambiarValorSerie,
   eliminarSerie,
@@ -14,7 +14,7 @@ import {
   borrarSesion,
 } from '../../db/entreno'
 import { ajustarPeso, grupoSuperserie } from '../../domain/entreno'
-import { NOMBRE_TIPO_SERIE } from '../../domain/etiquetas'
+import { NOMBRE_TIPO_SERIE, saltoDe } from '../../domain/etiquetas'
 import { nombreCorto } from '../../domain/texto'
 import type { Serie } from '../../domain/tipos'
 import { useAhora } from '../../hooks/useAhora'
@@ -22,7 +22,7 @@ import { useAjustes } from '../../hooks/useAjustes'
 import { useWakeLock } from '../../hooks/useWakeLock'
 import { fmtCrono, fmtKg } from '../../lib/formato'
 import { vibrar, VIBRACION_SERIE } from '../../lib/vibrar'
-import { SelectorEjercicio } from '../ejercicios/SelectorEjercicio'
+import { SelectorEjercicios } from '../ejercicios/SelectorEjercicios'
 import { CampoNumero } from './CampoNumero'
 import { Descanso } from './Descanso'
 import { MenuEjercicio } from './MenuEjercicio'
@@ -240,7 +240,7 @@ export function EntrenoPage() {
                   decimales
                   valor={seleccion.peso}
                   onCambio={(peso) => cambiarValorSerie(seleccion.id, 'peso', () => peso)}
-                  onPaso={(d) => cambiarValorSerie(seleccion.id, 'peso', (p) => ajustarPeso(p, activo.ejercicio?.saltoPeso ?? 2.5, d))}
+                  onPaso={(d) => cambiarValorSerie(seleccion.id, 'peso', (p) => ajustarPeso(p, activo.ejercicio ? saltoDe(activo.ejercicio.material) : 2.5, d))}
                 />
                 <CampoNumero
                   etiqueta="repeticiones"
@@ -287,18 +287,19 @@ export function EntrenoPage() {
         }}
       />
 
-      <SelectorEjercicio
-        abierta={selector !== null}
+      <SelectorEjercicios
+        abierto={selector !== null}
         onCerrar={() => setSelector(null)}
-        titulo={selector === 'cambiar' ? 'Cambiar por…' : 'Añadir ejercicio'}
-        musculo={selector === 'cambiar' ? activo?.ejercicio?.musculoPrincipal : undefined}
-        excluir={selector === 'cambiar' && activo ? [activo.se.ejercicioId] : []}
-        onElegir={async (e) => {
+        titulo={selector === 'cambiar' ? 'Alternativas' : 'Añadir ejercicios'}
+        multiple={selector !== 'cambiar'}
+        musculo={selector === 'cambiar' ? activo?.ejercicio?.musculosPrincipales[0] : undefined}
+        excluir={selector === 'cambiar' && activo ? [activo.se.ejercicioId] : ejercicios.map((e) => e.se.ejercicioId)}
+        onConfirmar={async (ids) => {
           const modo = selector
           setSelector(null)
           setSeleccionManual(null)
-          if (modo === 'cambiar' && activo) await cambiarEjercicio(activo.se.id, e.id)
-          else await anadirEjercicioASesion(sesion.id, e.id)
+          if (modo === 'cambiar' && activo && ids[0]) await cambiarEjercicio(activo.se.id, ids[0])
+          else await anadirEjerciciosASesion(sesion.id, ids)
         }}
       />
 

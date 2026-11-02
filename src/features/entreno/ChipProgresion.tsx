@@ -4,6 +4,7 @@ import { Icono } from '../../components/Icono'
 import { Boton } from '../../components/ui'
 import { aplicarValores, descargarEjercicio } from '../../db/entreno'
 import { asignarObjetivos, descarga, estancado, sugerenciaAplicada, sugerirProgresion } from '../../domain/progresion'
+import { saltoDe } from '../../domain/etiquetas'
 import type { Serie } from '../../domain/tipos'
 import { fmtKg } from '../../lib/formato'
 import type { EjercicioVista } from './useEntreno'
@@ -28,7 +29,7 @@ export function ChipProgresion({ vista, recientes, onCambiar }: Props) {
         seriesObjetivo: se.seriesObjetivo,
         repsMin: se.repsMin,
         repsMax: se.repsMax,
-        salto: ejercicio.saltoPeso,
+        salto: saltoDe(ejercicio.material),
       })
     : null
   const atascado = estancado(recientes)
@@ -85,7 +86,7 @@ export function ChipProgresion({ vista, recientes, onCambiar }: Props) {
               Bajar un 10 % y reconstruir
               {pesoActual > 0 && (
                 <span className="num ml-1 font-normal opacity-80">
-                  ({fmtKg(pesoActual)} → {fmtKg(descarga(pesoActual, ejercicio.saltoPeso))} kg)
+                  ({fmtKg(pesoActual)} → {fmtKg(descarga(pesoActual, saltoDe(ejercicio.material)))} kg)
                 </span>
               )}
             </span>

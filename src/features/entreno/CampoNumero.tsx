@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Icono } from '../../components/Icono'
 import { fmtKg, parseNumero } from '../../lib/formato'
+
+const PULSACION_LARGA_MS = 450
 
 interface Props {
   etiqueta: string
@@ -11,10 +13,16 @@ interface Props {
   decimales?: boolean
 }
 
-/** Valor grande con botones −/+ a los lados. Tocar el número permite escribirlo. */
+/**
+ * Valor grande con botones −/+ a los lados. Mantener pulsado el número abre el teclado numérico
+ * para escribir un valor exacto; un toque corto no hace nada (evita abrir el teclado sin querer).
+ */
 export function CampoNumero({ etiqueta, unidad, valor, onCambio, onPaso, decimales }: Props) {
   const [texto, setTexto] = useState(fmtKg(valor))
   const [editando, setEditando] = useState(false)
+  const [pulsando, setPulsando] = useState(false)
+  const inicio = useRef<number | null>(null)
+  const input = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!editando) setTexto(fmtKg(valor))
@@ -26,6 +34,19 @@ export function CampoNumero({ etiqueta, unidad, valor, onCambio, onPaso, decimal
     if (n === null || n < 0) return setTexto(fmtKg(valor))
     const limpio = decimales ? Math.round(n * 100) / 100 : Math.round(n)
     if (limpio !== valor) onCambio(limpio)
+  }
+
+  const soltar = () => {
+    const largo = inicio.current !== null && Date.now() - inicio.current >= PULSACION_LARGA_MS
+    inicio.current = null
+    setPulsando(false)
+    const el = input.current
+    if (!largo || !el || editando) return
+    // Dentro del propio gesto: así Android sí abre el teclado.
+    el.readOnly = false
+    setEditando(true)
+    el.focus()
+    el.select()
   }
 
   return (
@@ -40,18 +61,29 @@ export function CampoNumero({ etiqueta, unidad, valor, onCambio, onPaso, decimal
           <Icono nombre="menos" />
         </button>
         <input
-          aria-label={etiqueta}
+          ref={input}
+          aria-label={`${etiqueta}. Mantén pulsado para escribir`}
           inputMode={decimales ? 'decimal' : 'numeric'}
           enterKeyHint="done"
+          readOnly={!editando}
           value={texto}
-          onFocus={(e) => {
-            setEditando(true)
-            e.target.select()
+          onPointerDown={() => {
+            if (editando) return
+            inicio.current = Date.now()
+            setPulsando(true)
           }}
+          onPointerUp={soltar}
+          onPointerCancel={() => {
+            inicio.current = null
+            setPulsando(false)
+          }}
+          onContextMenu={(e) => e.preventDefault()}
           onChange={(e) => setTexto(e.target.value)}
-          onBlur={confirmar}
+          onBlur={() => editando && confirmar()}
           onKeyDown={(e) => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
-          className="num h-12 w-full min-w-0 bg-transparent text-center text-[1.9rem] leading-none focus:outline-none"
+          className={`num h-12 w-full min-w-0 rounded-xl bg-transparent text-center text-[1.9rem] leading-none transition-colors focus:outline-none ${
+            editando ? 'bg-surface-2 ring-2 ring-accent' : `select-none [-webkit-touch-callout:none] ${pulsando ? 'bg-surface-2' : ''}`
+          }`}
         />
         <button
           type="button"

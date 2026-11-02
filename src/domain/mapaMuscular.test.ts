@@ -1,0 +1,129 @@
+import { describe, expect, it } from 'vitest'
+import { ESPALDA, FRENTE } from '../components/mapa/trazados'
+import {
+  ESCALAS,
+  gruposSinTrabajar,
+  musculoDeRegion,
+  nivelesDeEjercicio,
+  nivelesDeTrabajo,
+  nivelesPorRegion,
+  nivelIntensidad,
+  REGIONES_DE_MUSCULO,
+  rotulosEscala,
+  trabajoMuscular,
+} from './mapaMuscular'
+import { MUSCULOS, type Musculo } from './tipos'
+
+const ejercicios = new Map<string, { musculosPrincipales: Musculo[]; musculosSecundarios: Musculo[] }>([
+  ['banca', { musculosPrincipales: ['pecho'], musculosSecundarios: ['triceps', 'hombros'] }],
+  ['hipthrust', { musculosPrincipales: ['gluteos'], musculosSecundarios: ['isquiotibiales'] }],
+  ['peso-muerto', { musculosPrincipales: ['lumbares', 'isquiotibiales'], musculosSecundarios: ['gluteos', 'isquiotibiales'] }],
+])
+
+describe('intensidad muscular', () => {
+  it('cada serie cuenta 1 para principales y 0,5 para secundarios', () => {
+    const t = trabajoMuscular(
+      [
+        { ejercicioId: 'banca', tipo: 'normal' },
+        { ejercicioId: 'banca', tipo: 'normal' },
+        { ejercicioId: 'banca', tipo: 'drop' },
+      ],
+      ejercicios,
+    )
+    expect(t.get('pecho')?.series).toBe(3)
+    expect(t.get('triceps')?.series).toBe(1.5)
+    expect(t.get('hombros')?.series).toBe(1.5)
+  })
+
+  it('los calentamientos no cuentan', () => {
+    const t = trabajoMuscular([{ ejercicioId: 'banca', tipo: 'calentamiento' }], ejercicios)
+    expect(t.size).toBe(0)
+  })
+
+  it('suma varios ejercicios y recuerda cuánto aportó cada uno', () => {
+    const t = trabajoMuscular(
+      [
+        { ejercicioId: 'hipthrust', tipo: 'normal' },
+        { ejercicioId: 'peso-muerto', tipo: 'normal' },
+      ],
+      ejercicios,
+    )
+    expect(t.get('gluteos')?.series).toBe(1.5)
+    expect(t.get('gluteos')?.porEjercicio.get('hipthrust')).toBe(1)
+    expect(t.get('gluteos')?.porEjercicio.get('peso-muerto')).toBe(0.5)
+    // Un músculo que es principal y secundario a la vez solo cuenta como principal.
+    expect(t.get('isquiotibiales')?.porEjercicio.get('peso-muerto')).toBe(1)
+  })
+
+  it('una rutina cuenta sus series previstas', () => {
+    const t = trabajoMuscular([{ ejercicioId: 'banca', cantidad: 4 }], ejercicios)
+    expect(t.get('pecho')?.series).toBe(4)
+    expect(t.get('triceps')?.series).toBe(2)
+  })
+})
+
+describe('niveles de intensidad', () => {
+  it('0 sin trabajo, 1 con cualquier cosa y hasta 5', () => {
+    expect([0, 0.5, 2, 4, 6, 9, 30].map((v) => nivelIntensidad(v, ESCALAS.sesion))).toEqual([0, 1, 2, 3, 4, 5, 5])
+    expect([3, 10, 15, 20].map((v) => nivelIntensidad(v, ESCALAS.semana))).toEqual([1, 3, 4, 5])
+  })
+
+  it('en periodos largos usa la media semanal', () => {
+    const t = trabajoMuscular(Array.from({ length: 40 }, () => ({ ejercicioId: 'banca', tipo: 'normal' as const })), ejercicios)
+    expect(nivelesDeTrabajo(t, ESCALAS.semana, 30 / 7).get('pecho')).toBe(3) // 40 series en 30 días ≈ 9,3/semana
+  })
+
+  it('el mapa de un ejercicio marca principales al máximo y secundarios suaves', () => {
+    const n = nivelesDeEjercicio(ejercicios.get('banca')!)
+    expect(n.get('pecho')).toBe(5)
+    expect(n.get('triceps')).toBe(2)
+  })
+
+  it('rótulos de la leyenda', () => {
+    expect(rotulosEscala(ESCALAS.semana)).toEqual(['1–3', '4–7', '8–11', '12–15', '16+'])
+    expect(rotulosEscala(ESCALAS.sesion)).toEqual(['1', '2–3', '4–5', '6–8', '9+'])
+  })
+})
+
+describe('correspondencia músculos ↔ mapa', () => {
+  const regionesDibujadas = new Set([...FRENTE, ...ESPALDA].map((p) => p.region))
+
+  it('todos los músculos de la base de datos tienen al menos una región dibujada', () => {
+    for (const m of MUSCULOS) {
+      expect(REGIONES_DE_MUSCULO[m].length, m).toBeGreaterThan(0)
+      for (const r of REGIONES_DE_MUSCULO[m]) expect(regionesDibujadas.has(r), `${m} → ${r}`).toBe(true)
+    }
+  })
+
+  it('cada región muscular vuelve a su músculo y las que no son músculo no se colorean', () => {
+    expect(musculoDeRegion('deltoides')).toBe('hombros')
+    expect(musculoDeRegion('oblicuos')).toBe('abdomen')
+    expect(musculoDeRegion('abductores')).toBe('abductores')
+    expect(musculoDeRegion('cabeza')).toBeNull()
+    expect(musculoDeRegion('rodillas')).toBeNull()
+  })
+
+  it('el nivel de un músculo se aplica a todas sus regiones', () => {
+    const r = nivelesPorRegion(new Map([['abdomen', 4]]))
+    expect(r.get('abdominales')).toBe(4)
+    expect(r.get('oblicuos')).toBe(4)
+  })
+
+  it('hombros cubre deltoides frontal y posterior (aparece en las dos vistas)', () => {
+    expect(FRENTE.some((p) => p.region === 'deltoides')).toBe(true)
+    expect(ESPALDA.some((p) => p.region === 'deltoides')).toBe(true)
+  })
+})
+
+describe('aviso de grupos sin trabajar', () => {
+  it('detecta grupos grandes ausentes en el ciclo', () => {
+    const t = trabajoMuscular([{ ejercicioId: 'banca', cantidad: 4 }], ejercicios)
+    expect(gruposSinTrabajar(t)).toEqual(['Espalda', 'Cuádriceps', 'Isquiotibiales', 'Glúteos'])
+  })
+
+  it('basta con un trabajo secundario suficiente', () => {
+    const t = trabajoMuscular([{ ejercicioId: 'hipthrust', cantidad: 4 }], ejercicios)
+    expect(gruposSinTrabajar(t)).not.toContain('Isquiotibiales')
+    expect(gruposSinTrabajar(t)).not.toContain('Glúteos')
+  })
+})

@@ -1,22 +1,44 @@
 import { rutinasDelCiclo } from '../domain/ciclo'
-import type { RutinaEjercicio } from '../domain/tipos'
+import type { ItemPlan } from '../domain/rutinas'
 import { nuevoId } from '../lib/id'
 import { db } from './db'
-import { leerAjustes } from '../hooks/useAjustes'
 
 async function siguientePosicion(): Promise<number> {
-  const ultima = await db.rutinas.orderBy('posicionCiclo').last()
+  const ultima = await db.rutinas.orderBy('posicionCiclo').filter((r) => !r.archivada).last()
   return ultima ? ultima.posicionCiclo + 1 : 0
 }
 
-export async function crearRutina(nombre: string): Promise<string> {
-  const id = nuevoId()
-  await db.rutinas.add({ id, nombre, posicionCiclo: await siguientePosicion(), archivada: false, creada: Date.now() })
-  return id
-}
-
-export async function renombrarRutina(id: string, nombre: string): Promise<void> {
-  await db.rutinas.update(id, { nombre })
+/**
+ * Guarda una rutina del editor de una vez: nombre y lista de ejercicios.
+ * Si es nueva se añade al final del ciclo. Devuelve su id.
+ */
+export async function guardarRutina(borrador: { id: string | null; nombre: string; items: readonly ItemPlan[] }): Promise<string> {
+  return db.transaction('rw', db.rutinas, db.rutinaEjercicios, async () => {
+    let id = borrador.id
+    if (id && (await db.rutinas.get(id))) {
+      await db.rutinas.update(id, { nombre: borrador.nombre })
+      await db.rutinaEjercicios.where('rutinaId').equals(id).delete()
+    } else {
+      id = nuevoId()
+      await db.rutinas.add({ id, nombre: borrador.nombre, posicionCiclo: await siguientePosicion(), archivada: false, creada: Date.now() })
+    }
+    const rutinaId = id
+    await db.rutinaEjercicios.bulkAdd(
+      borrador.items.map((it, orden) => ({
+        id: nuevoId(),
+        rutinaId,
+        ejercicioId: it.ejercicioId,
+        orden,
+        series: it.series,
+        repsMin: it.repsMin,
+        repsMax: it.repsMax,
+        descansoSeg: it.descansoSeg,
+        nota: it.nota,
+        superserieConSiguiente: orden < borrador.items.length - 1 && it.superserieConSiguiente,
+      })),
+    )
+    return rutinaId
+  })
 }
 
 export async function archivarRutina(id: string, archivada: boolean): Promise<void> {
@@ -61,35 +83,4 @@ export async function ordenarCiclo(ids: string[]): Promise<void> {
 async function normalizarCiclo(): Promise<void> {
   const ciclo = rutinasDelCiclo(await db.rutinas.toArray())
   await ordenarCiclo(ciclo.map((r) => r.id))
-}
-
-export async function anadirEjercicioARutina(rutinaId: string, ejercicioId: string): Promise<void> {
-  const { descansoDefecto } = await leerAjustes()
-  const existentes = await db.rutinaEjercicios.where('rutinaId').equals(rutinaId).toArray()
-  await db.rutinaEjercicios.add({
-    id: nuevoId(),
-    rutinaId,
-    ejercicioId,
-    orden: existentes.length ? Math.max(...existentes.map((e) => e.orden)) + 1 : 0,
-    series: 3,
-    repsMin: 8,
-    repsMax: 12,
-    descansoSeg: descansoDefecto,
-    nota: '',
-    superserieConSiguiente: false,
-  })
-}
-
-export async function actualizarEjercicioDeRutina(id: string, cambios: Partial<Omit<RutinaEjercicio, 'id'>>): Promise<void> {
-  await db.rutinaEjercicios.update(id, cambios)
-}
-
-export async function quitarEjercicioDeRutina(id: string): Promise<void> {
-  await db.rutinaEjercicios.delete(id)
-}
-
-export async function ordenarEjerciciosDeRutina(ids: string[]): Promise<void> {
-  await db.transaction('rw', db.rutinaEjercicios, async () => {
-    await Promise.all(ids.map((id, orden) => db.rutinaEjercicios.update(id, { orden })))
-  })
 }

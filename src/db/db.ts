@@ -1,4 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie'
+import { VERSION_CATALOGO } from '../catalogo/version'
+import { migrarDatosV1, sincronizarCatalogo, type DatosV1, type EjercicioCatalogo } from '../domain/migracion'
 import {
   AJUSTES_POR_DEFECTO,
   type Ajustes,
@@ -12,7 +14,6 @@ import {
   type Sesion,
   type SesionEjercicio,
 } from '../domain/tipos'
-import { EJERCICIOS_SEMILLA } from './seed-ejercicios'
 
 export class FerroDB extends Dexie {
   ejercicios!: EntityTable<Ejercicio, 'id'>
@@ -40,8 +41,34 @@ export class FerroDB extends Dexie {
       pesosCorporales: 'id, &fecha',
       ajustes: 'id',
     })
+
+    // v2: la biblioteca pasa a Free Exercise DB. Se cambian los id de los ejercicios y todas
+    // sus referencias, conservando historial, rutinas y notas (ver domain/migracion.ts).
+    this.version(2)
+      .stores({ ejercicios: 'id, categoria' })
+      .upgrade(async (tx) => {
+        const t = (n: keyof DatosV1) => tx.table(n)
+        const datos: DatosV1 = {
+          ejercicios: await t('ejercicios').toArray(),
+          rutinaEjercicios: await t('rutinaEjercicios').toArray(),
+          sesionEjercicios: await t('sesionEjercicios').toArray(),
+          series: await t('series').toArray(),
+          molestias: await t('molestias').toArray(),
+        }
+        const migrados = migrarDatosV1(datos)
+        await t('ejercicios').clear()
+        await t('ejercicios').bulkAdd(migrados.ejercicios)
+        await t('rutinaEjercicios').bulkPut(migrados.rutinaEjercicios)
+        await t('sesionEjercicios').bulkPut(migrados.sesionEjercicios)
+        await t('series').bulkPut(migrados.series)
+        await t('molestias').bulkPut(migrados.molestias)
+        // Fuerza a sincronizar el catálogo completo en el siguiente arranque.
+        await tx.table('ajustes').where('id').equals('ajustes').modify((a: Ajustes) => {
+          delete a.versionCatalogo
+        })
+      })
+
     this.on('populate', (tx) => {
-      tx.table('ejercicios').bulkAdd(EJERCICIOS_SEMILLA)
       tx.table('ajustes').add(AJUSTES_POR_DEFECTO)
     })
   }
@@ -49,12 +76,28 @@ export class FerroDB extends Dexie {
 
 export const db = new FerroDB()
 
-/** Añade ejercicios nuevos de la biblioteca en actualizaciones de la app sin tocar los existentes. */
-export async function completarBiblioteca(): Promise<void> {
-  const existentes = new Set(await db.ejercicios.toCollection().primaryKeys())
-  const nuevos = EJERCICIOS_SEMILLA.filter((e) => !existentes.has(e.id))
-  if (nuevos.length) await db.ejercicios.bulkAdd(nuevos)
-  if (!(await db.ajustes.get('ajustes'))) await db.ajustes.add(AJUSTES_POR_DEFECTO)
+let sincronizando: Promise<void> | null = null
+
+/**
+ * Vuelca el catálogo de ejercicios en la base de datos si ha cambiado de versión
+ * (primera vez, tras migrar o al actualizar la app). Conserva notas y personalizados.
+ */
+export function prepararCatalogo(): Promise<void> {
+  sincronizando ??= (async () => {
+    if (!(await db.ajustes.get('ajustes'))) await db.ajustes.put(AJUSTES_POR_DEFECTO)
+    const ajustes = await db.ajustes.get('ajustes')
+    if (ajustes?.versionCatalogo === VERSION_CATALOGO) return
+    const { default: catalogo } = await import('../catalogo/ejercicios.json')
+    const existentes = await db.ejercicios.toArray()
+    const filas = sincronizarCatalogo(catalogo.ejercicios as EjercicioCatalogo[], existentes)
+    await db.transaction('rw', db.ejercicios, db.ajustes, async () => {
+      await db.ejercicios.bulkPut(filas)
+      await db.ajustes.update('ajustes', { versionCatalogo: VERSION_CATALOGO })
+    })
+  })().finally(() => {
+    sincronizando = null
+  })
+  return sincronizando
 }
 
 /** Pide al navegador que no borre IndexedDB por falta de espacio. */

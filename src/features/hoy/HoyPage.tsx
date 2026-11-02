@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router'
 import { Cabecera } from '../../components/Cabecera'
 import { Icono } from '../../components/Icono'
 import { Boton, Tarjeta } from '../../components/ui'
-import { registrarEntrada } from '../../db/checkin'
 import { db } from '../../db/db'
 import { iniciarSesion } from '../../db/entreno'
 import { rutinaQueToca, rutinasDelCiclo } from '../../domain/ciclo'
@@ -15,9 +14,7 @@ import { resumirSesion } from '../../domain/resumen'
 import { claveDia, diasDeSemana, diasEntrenadosEnSemana, inicioDia, rachaSemanas } from '../../domain/semanas'
 import { useAhora } from '../../hooks/useAhora'
 import { useAjustes } from '../../hooks/useAjustes'
-import { avisar } from '../../lib/avisos'
 import { fmtCrono, fmtDuracion, fmtEntero, fmtFechaLarga, fmtHace, fmtHora } from '../../lib/formato'
-import { vibrar, VIBRACION_SERIE } from '../../lib/vibrar'
 import { ElegirRutina } from './ElegirRutina'
 
 const INICIALES = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
@@ -60,13 +57,7 @@ export function HoyPage() {
   const diasConEntreno = new Set(horas.map(claveDia))
   const entrada = entradaReciente(datos.entradas, ahora, ajustes.horasEntreCheckins)
 
-  const llegar = async () => {
-    const r = await registrarEntrada('manual')
-    vibrar(VIBRACION_SERIE, ajustes.vibracion)
-    if (!r.registrada) avisar(`Ya estaba registrada a las ${fmtHora(r.entrada.hora)}`)
-  }
-
-  const empezar = async (rutinaId: string) => {
+  const empezar = async (rutinaId: string | null) => {
     await iniciarSesion(rutinaId)
     navegar('/entreno')
   }
@@ -75,9 +66,9 @@ export function HoyPage() {
     <>
       <Cabecera titulo="Hoy" subtitulo={fmtFechaLarga(ahora)} />
 
-      {/* Llegada al gimnasio */}
+      {/* Llegada al gimnasio: solo se registra sola (enlace o ubicación) o al empezar un entreno. */}
       <div className="mt-2">
-        {entrada ? (
+        {entrada && (
           <p className="flex min-h-12 items-center gap-2 text-sm">
             <span className="relative flex size-2.5">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-ok opacity-60 motion-reduce:hidden" />
@@ -88,14 +79,6 @@ export function HoyPage() {
               <span className="text-muted"> · {NOMBRE_ORIGEN[entrada.origen].toLowerCase()}</span>
             </span>
           </p>
-        ) : (
-          <button
-            type="button"
-            onClick={llegar}
-            className="flex min-h-12 items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold active:bg-surface"
-          >
-            <Icono nombre="ubicacion" tamano={18} className="text-accent" /> He llegado al gimnasio
-          </button>
         )}
       </div>
 
@@ -116,17 +99,25 @@ export function HoyPage() {
           </p>
           <p className="condensada mt-1 text-3xl font-extrabold">{entrenadoHoy.rutinaNombre}</p>
           {datos.toca && <p className="mt-1 text-muted">La próxima vez toca {datos.toca.nombre}.</p>}
-          <Boton variante="fantasma" className="mt-2 w-full text-muted" onClick={() => setEligiendo(true)}>
-            Entrenar otra vez
-          </Boton>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <Boton onClick={() => empezar(null)}>Entreno libre</Boton>
+            <Boton variante="fantasma" className="text-muted" onClick={() => setEligiendo(true)}>
+              Otra rutina
+            </Boton>
+          </div>
         </Tarjeta>
       ) : datos.toca ? (
         <Tarjeta className="mt-3">
           <p className="text-sm font-semibold text-muted">Hoy toca</p>
           <p className="condensada mt-1 text-[2.6rem] leading-[1.05] font-extrabold tracking-tight">{datos.toca.nombre}</p>
-          <Boton variante="primario" grande className="mt-4 w-full" onClick={() => empezar(datos.toca!.id)}>
-            <Icono nombre="play" /> Empezar
-          </Boton>
+          <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
+            <Boton variante="primario" grande onClick={() => empezar(datos.toca!.id)}>
+              <Icono nombre="play" /> Empezar
+            </Boton>
+            <Boton grande className="px-4" onClick={() => empezar(null)}>
+              Entreno libre
+            </Boton>
+          </div>
           <Boton variante="fantasma" className="mt-1 w-full text-muted" onClick={() => setEligiendo(true)}>
             Elegir otra rutina
           </Boton>
@@ -138,7 +129,7 @@ export function HoyPage() {
           <Link to="/rutinas" className="mt-4 flex min-h-14 items-center justify-center rounded-2xl bg-accent font-bold text-accent-ink">
             Crear rutinas
           </Link>
-          <Boton variante="fantasma" className="mt-1 w-full text-muted" onClick={() => setEligiendo(true)}>
+          <Boton className="mt-2 w-full" onClick={() => empezar(null)}>
             Entreno libre
           </Boton>
         </Tarjeta>

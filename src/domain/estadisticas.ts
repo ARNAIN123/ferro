@@ -1,32 +1,10 @@
 // Estadísticas de progreso: asistencia, series por músculo, evolución por ejercicio y peso corporal.
 import { epley } from './marcas'
 import { claveDia, inicioSemana, sumarDias } from './semanas'
-import type { Musculo, TipoSerie } from './tipos'
+import type { TipoSerie } from './tipos'
 
 /** Franja de referencia de series semanales por grupo muscular. */
 export const FRANJA_SERIES = { min: 10, max: 20 } as const
-
-interface SerieMusculo {
-  ejercicioId: string
-  tipo: TipoSerie
-}
-
-/** Series por músculo: el principal cuenta 1 y cada secundario 0,5. Los calentamientos no cuentan. */
-export function seriesPorMusculo(
-  series: readonly SerieMusculo[],
-  ejercicios: ReadonlyMap<string, { musculoPrincipal: Musculo; musculosSecundarios: readonly Musculo[] }>,
-): Map<Musculo, number> {
-  const total = new Map<Musculo, number>()
-  const sumar = (m: Musculo, n: number) => total.set(m, (total.get(m) ?? 0) + n)
-  for (const s of series) {
-    if (s.tipo === 'calentamiento') continue
-    const e = ejercicios.get(s.ejercicioId)
-    if (!e) continue
-    sumar(e.musculoPrincipal, 1)
-    for (const m of e.musculosSecundarios) if (m !== e.musculoPrincipal) sumar(m, 0.5)
-  }
-  return total
-}
 
 export type NivelAsistencia = 0 | 1 | 2
 

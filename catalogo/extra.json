@@ -1,0 +1,229 @@
+{
+  "_nota": "Ejercicios habituales de un gimnasio moderno que no están en Free Exercise DB. Sin imagen libre: la app muestra su mapa muscular.",
+  "ejercicios": [
+    {
+      "id": "hip-thrust-maquina",
+      "nombre": "Hip thrust en máquina",
+      "alias": "Machine Hip Thrust, glute drive",
+      "principales": ["gluteos"],
+      "secundarios": ["isquiotibiales", "cuadriceps"],
+      "material": "maquina",
+      "mecanica": "compuesto",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Siéntate en la máquina con la parte alta de la espalda apoyada en el respaldo y el cinturón o almohadilla sobre la cadera.",
+        "Coloca los pies en la plataforma a la anchura de los hombros, con las rodillas a unos 90° en la posición alta.",
+        "Empuja con los talones y extiende la cadera hasta alinear tronco y muslos, apretando los glúteos arriba un segundo.",
+        "Baja controlando sin apoyar del todo el peso y repite."
+      ]
+    },
+    {
+      "id": "sentadilla-pendulo",
+      "nombre": "Sentadilla péndulo",
+      "alias": "Pendulum Squat",
+      "principales": ["cuadriceps"],
+      "secundarios": ["gluteos", "aductores"],
+      "material": "maquina",
+      "mecanica": "compuesto",
+      "nivel": "intermedio",
+      "instrucciones": [
+        "Colócate en la máquina con la espalda pegada al respaldo y los hombros bajo las almohadillas.",
+        "Apoya los pies en el centro de la plataforma, a la anchura de las caderas, y quita el seguro.",
+        "Baja flexionando rodillas y cadera dejando que el péndulo describa su arco, hasta la máxima profundidad que controles.",
+        "Empuja con todo el pie para volver arriba sin bloquear del todo las rodillas."
+      ]
+    },
+    {
+      "id": "prensa-horizontal",
+      "nombre": "Prensa horizontal",
+      "alias": "Seated Leg Press, horizontal leg press",
+      "principales": ["cuadriceps"],
+      "secundarios": ["gluteos", "isquiotibiales"],
+      "material": "maquina",
+      "mecanica": "compuesto",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Siéntate con la espalda y la cadera bien apoyadas y los pies en la plataforma a la anchura de los hombros.",
+        "Ajusta el asiento para que las rodillas queden a unos 90° al inicio.",
+        "Empuja la plataforma extendiendo las piernas sin bloquear las rodillas.",
+        "Vuelve despacio hasta el punto inicial sin despegar la zona lumbar del respaldo."
+      ]
+    },
+    {
+      "id": "press-pecho-convergente",
+      "nombre": "Press en máquina convergente",
+      "alias": "Converging Chest Press, iso-lateral chest press, Hammer Strength chest press",
+      "principales": ["pecho"],
+      "secundarios": ["triceps", "hombros"],
+      "material": "maquina",
+      "mecanica": "compuesto",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Ajusta el asiento para que las asas queden a la altura de la mitad del pecho.",
+        "Siéntate con la espalda apoyada, los omóplatos juntos y agarra las asas.",
+        "Empuja hacia delante: los brazos convergen hacia el centro. Extiende sin bloquear los codos.",
+        "Vuelve controlando hasta notar el estiramiento del pecho y repite. Se puede hacer a un brazo."
+      ]
+    },
+    {
+      "id": "jalon-maquina",
+      "nombre": "Jalón en máquina",
+      "alias": "Machine Lat Pulldown, iso-lateral pulldown",
+      "principales": ["dorsales"],
+      "secundarios": ["biceps", "espalda_media"],
+      "material": "maquina",
+      "mecanica": "compuesto",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Ajusta el asiento y el rodillo para que los muslos queden bien sujetos.",
+        "Agarra las asas con los brazos extendidos por encima de la cabeza.",
+        "Tira de las asas hacia abajo llevando los codos hacia los costados y el pecho arriba.",
+        "Sube controlando hasta estirar los dorsales y repite."
+      ]
+    },
+    {
+      "id": "elevaciones-laterales-maquina",
+      "nombre": "Elevaciones laterales en máquina",
+      "alias": "Machine Lateral Raise",
+      "principales": ["hombros"],
+      "secundarios": ["trapecio"],
+      "material": "maquina",
+      "mecanica": "aislamiento",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Ajusta el asiento para que el eje de giro quede a la altura de los hombros.",
+        "Apoya la parte externa de los brazos en las almohadillas con los codos ligeramente flexionados.",
+        "Eleva los brazos hacia los lados hasta la altura de los hombros sin encoger el trapecio.",
+        "Baja despacio y repite."
+      ]
+    },
+    {
+      "id": "patada-gluteo-maquina",
+      "nombre": "Patada de glúteo en máquina",
+      "alias": "Glute Kickback Machine",
+      "principales": ["gluteos"],
+      "secundarios": ["isquiotibiales"],
+      "material": "maquina",
+      "mecanica": "aislamiento",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Colócate en la máquina con el pecho o los antebrazos apoyados y una pierna en la plataforma o almohadilla.",
+        "Empuja hacia atrás y arriba extendiendo la cadera, sin arquear la zona lumbar.",
+        "Aprieta el glúteo en el punto más alto un segundo.",
+        "Vuelve controlando y completa las repeticiones antes de cambiar de pierna."
+      ]
+    },
+    {
+      "id": "dominadas-asistidas",
+      "nombre": "Dominadas asistidas en máquina",
+      "alias": "Assisted Pull-Up Machine",
+      "principales": ["dorsales"],
+      "secundarios": ["biceps", "espalda_media"],
+      "material": "maquina",
+      "mecanica": "compuesto",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Elige la asistencia (más peso en la máquina = más ayuda) y arrodíllate o colócate de pie en la plataforma.",
+        "Agarra la barra con las manos algo más separadas que los hombros.",
+        "Sube llevando el pecho hacia la barra y los codos hacia abajo y atrás hasta pasar la barbilla.",
+        "Baja controlando hasta estirar los brazos y repite."
+      ]
+    },
+    {
+      "id": "fondos-asistidos",
+      "nombre": "Fondos asistidos en máquina",
+      "alias": "Assisted Dip Machine",
+      "principales": ["triceps"],
+      "secundarios": ["pecho", "hombros"],
+      "material": "maquina",
+      "mecanica": "compuesto",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Elige la asistencia y colócate en la plataforma agarrando las asas paralelas.",
+        "Con los brazos extendidos, baja flexionando los codos hasta unos 90°, con el tronco ligeramente inclinado.",
+        "Empuja hasta extender los brazos sin bloquear los codos.",
+        "Repite manteniendo los hombros lejos de las orejas."
+      ]
+    },
+    {
+      "id": "abduccion-polea",
+      "nombre": "Abducción de cadera en polea",
+      "alias": "Cable Hip Abduction",
+      "principales": ["abductores"],
+      "secundarios": ["gluteos"],
+      "material": "polea",
+      "mecanica": "aislamiento",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Coloca la tobillera en la polea baja y engánchala al tobillo más alejado de la máquina.",
+        "De pie de lado a la polea, sujétate a la máquina y mantén el tronco recto.",
+        "Separa la pierna hacia fuera todo lo que puedas sin inclinar el tronco.",
+        "Vuelve despacio y repite antes de cambiar de pierna."
+      ]
+    },
+    {
+      "id": "extension-lumbar-maquina",
+      "nombre": "Extensión lumbar en máquina",
+      "alias": "Back Extension Machine, lower back machine",
+      "principales": ["lumbares"],
+      "secundarios": ["gluteos", "isquiotibiales"],
+      "material": "maquina",
+      "mecanica": "aislamiento",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Siéntate con la almohadilla apoyada en la parte alta de la espalda y los pies bien sujetos.",
+        "Cruza los brazos sobre el pecho o agarra las asas.",
+        "Empuja hacia atrás extendiendo la columna de forma controlada hasta quedar ligeramente pasado de la vertical.",
+        "Vuelve despacio y repite."
+      ]
+    },
+    {
+      "id": "rotacion-tronco-maquina",
+      "nombre": "Rotación de tronco en máquina",
+      "alias": "Torso Rotation Machine",
+      "principales": ["abdomen"],
+      "secundarios": [],
+      "material": "maquina",
+      "mecanica": "aislamiento",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Siéntate en la máquina y bloquea las piernas o la cadera según el modelo.",
+        "Agarra las asas o apoya el pecho en la almohadilla.",
+        "Gira el tronco hacia un lado contrayendo el abdomen, sin impulsarte.",
+        "Vuelve al centro despacio. Completa las repeticiones y cambia de lado."
+      ]
+    },
+    {
+      "id": "remo-pecho-apoyado-maquina",
+      "nombre": "Remo con pecho apoyado en máquina",
+      "alias": "Chest Supported Row Machine, seated row machine",
+      "principales": ["espalda_media"],
+      "secundarios": ["dorsales", "biceps", "hombros"],
+      "material": "maquina",
+      "mecanica": "compuesto",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Ajusta el asiento y la almohadilla para que el pecho quede apoyado y las asas a la altura del pecho.",
+        "Agarra las asas con los brazos extendidos.",
+        "Tira llevando los codos atrás y juntando los omóplatos.",
+        "Vuelve controlando hasta estirar los brazos y repite."
+      ]
+    },
+    {
+      "id": "curl-femoral-tumbado-unilateral",
+      "nombre": "Curl femoral de rodillas en máquina",
+      "alias": "Kneeling Leg Curl Machine",
+      "principales": ["isquiotibiales"],
+      "secundarios": ["gemelos"],
+      "material": "maquina",
+      "mecanica": "aislamiento",
+      "nivel": "principiante",
+      "instrucciones": [
+        "Apoya una rodilla y los antebrazos en la máquina y coloca el tobillo de la otra pierna bajo el rodillo.",
+        "Flexiona la rodilla llevando el talón hacia el glúteo sin mover la cadera.",
+        "Aprieta arriba un segundo.",
+        "Baja despacio y completa la serie antes de cambiar de pierna."
+      ]
+    }
+  ]
+}

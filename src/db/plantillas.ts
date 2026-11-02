@@ -1,3 +1,4 @@
+import { idMigrado } from '../domain/migracion'
 import { nuevoId } from '../lib/id'
 import { db } from './db'
 
@@ -163,7 +164,7 @@ export async function aplicarPlantilla(clave: string): Promise<void> {
         r.ejercicios.map(([ejercicioId, series, repsMin, repsMax, descansoSeg, superserie], orden) => ({
           id: nuevoId(),
           rutinaId,
-          ejercicioId,
+          ejercicioId: idMigrado(ejercicioId),
           orden,
           series,
           repsMin,

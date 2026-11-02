@@ -36,6 +36,10 @@
   --ok: #7fd18b;
   --warn: #f5b83d;
   --danger: #ff5a52;
+  --mapa-musculo: #8e8c8a;
+  --mapa-piel: #7c7a78;
+  --mapa-pliegue: #383634;
+  --mapa-pelo: #4a4846;
   color-scheme: dark;
 }
 
@@ -52,6 +56,10 @@
   --ok: #27773a;
   --warn: #8a5d00;
   --danger: #c9302c;
+  --mapa-musculo: #c8c6c3;
+  --mapa-piel: #bab8b5;
+  --mapa-pliegue: #85827e;
+  --mapa-pelo: #6e6b67;
   color-scheme: light;
 }
 

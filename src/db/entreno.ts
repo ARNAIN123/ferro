@@ -12,6 +12,8 @@ import {
 import { rutinaQueToca } from '../domain/ciclo'
 import { vincularEntrada } from '../domain/checkin'
 import { descarga } from '../domain/progresion'
+import { saltoDe } from '../domain/etiquetas'
+import { valoresPorDefecto } from '../domain/biblioteca'
 import type { OrigenEntrada, Serie, Sesion, SesionEjercicio } from '../domain/tipos'
 import { leerAjustes } from '../hooks/useAjustes'
 import { nuevoId } from '../lib/id'
@@ -55,7 +57,7 @@ export async function descargarEjercicio(sesionEjercicioId: string): Promise<voi
     const se = await db.sesionEjercicios.get(sesionEjercicioId)
     if (!se) return
     const ejercicio = await db.ejercicios.get(se.ejercicioId)
-    const salto = ejercicio?.saltoPeso ?? 2.5
+    const salto = ejercicio ? saltoDe(ejercicio.material) : 2.5
     const pendientes = await db.series
       .where('sesionEjercicioId')
       .equals(se.id)
@@ -91,7 +93,7 @@ async function crearSeriesPrerrellenadas(se: SesionEjercicio, cuantas = se.serie
  * Empieza un entreno con la rutina indicada (o libre si es null). Si ya hay uno en curso lo devuelve.
  * Se vincula a la entrada al gimnasio reciente; si no la hay, registra una manual ahora.
  */
-export async function iniciarSesion(rutinaId: string | null, origen: OrigenEntrada = 'manual'): Promise<string> {
+export async function iniciarSesion(rutinaId: string | null, origen: OrigenEntrada = 'entreno'): Promise<string> {
   const ajustes = await leerAjustes()
   return db.transaction('rw', [...TABLAS_SESION, db.rutinas, db.rutinaEjercicios], async () => {
     const enCurso = await sesionEnCurso()
@@ -153,7 +155,7 @@ export async function iniciarSesion(rutinaId: string | null, origen: OrigenEntra
  * Retoma el entreno en curso o empieza la rutina que toca. Devuelve false si no hay rutinas
  * (entonces no hay nada que empezar).
  */
-export async function empezarLoQueToca(origen: OrigenEntrada = 'manual'): Promise<boolean> {
+export async function empezarLoQueToca(origen: OrigenEntrada = 'entreno'): Promise<boolean> {
   if (await sesionEnCurso()) return true
   const [rutinas, sesiones] = await Promise.all([db.rutinas.toArray(), db.sesiones.toArray()])
   const toca = rutinaQueToca(rutinas, sesiones)
@@ -297,33 +299,40 @@ export async function saltarEjercicio(sesionEjercicioId: string, saltar: boolean
   await tocar(se.sesionId)
 }
 
-/** Añade un ejercicio sobre la marcha justo después del que estás haciendo. */
-export async function anadirEjercicioASesion(sesionId: string, ejercicioId: string): Promise<string> {
-  const { descansoDefecto } = await leerAjustes()
-  return db.transaction('rw', db.sesionEjercicios, db.series, db.sesiones, async () => {
+/**
+ * Añade uno o varios ejercicios sobre la marcha justo después del que estás haciendo
+ * (en un entreno libre, al final). Entran con los valores por defecto y prerrellenados con la última vez.
+ */
+export async function anadirEjerciciosASesion(sesionId: string, ejercicioIds: readonly string[]): Promise<void> {
+  if (ejercicioIds.length === 0) return
+  const fichas = await db.ejercicios.bulkGet([...ejercicioIds])
+  await db.transaction('rw', db.sesionEjercicios, db.series, db.sesiones, async () => {
     const sesion = await db.sesiones.get(sesionId)
     const lista = await ejerciciosDe(sesionId)
     const activo = lista.findIndex((e) => e.id === sesion?.ejercicioActivoId)
     const posicion = activo >= 0 ? activo + 1 : lista.length
-    const se: SesionEjercicio = {
-      id: nuevoId(),
-      sesionId,
-      ejercicioId,
-      orden: posicion,
-      seriesObjetivo: 3,
-      repsMin: 8,
-      repsMax: 12,
-      descansoSeg: descansoDefecto,
-      nota: '',
-      superserieConSiguiente: false,
-      estado: 'activo',
-      anadido: true,
-    }
-    await Promise.all(lista.slice(posicion).map((e, k) => db.sesionEjercicios.update(e.id, { orden: posicion + 1 + k })))
-    await db.sesionEjercicios.add(se)
-    await crearSeriesPrerrellenadas(se)
-    await tocar(sesionId, { ejercicioActivoId: se.id })
-    return se.id
+    const nuevos: SesionEjercicio[] = ejercicioIds.map((ejercicioId, k) => {
+      const ficha = fichas[k]
+      const v = ficha ? valoresPorDefecto(ficha) : { series: 3, repsMin: 8, repsMax: 12, descansoSeg: 90 }
+      return {
+        id: nuevoId(),
+        sesionId,
+        ejercicioId,
+        orden: posicion + k,
+        seriesObjetivo: v.series,
+        repsMin: v.repsMin,
+        repsMax: v.repsMax,
+        descansoSeg: v.descansoSeg,
+        nota: '',
+        superserieConSiguiente: false,
+        estado: 'activo',
+        anadido: true,
+      }
+    })
+    await Promise.all(lista.slice(posicion).map((e, k) => db.sesionEjercicios.update(e.id, { orden: posicion + nuevos.length + k })))
+    await db.sesionEjercicios.bulkAdd(nuevos)
+    for (const se of nuevos) await crearSeriesPrerrellenadas(se)
+    await tocar(sesionId, { ejercicioActivoId: nuevos[0]!.id })
   })
 }
 

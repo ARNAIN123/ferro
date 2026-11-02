@@ -9,7 +9,7 @@ import { Boton, Etiqueta, Vacio } from '../../components/ui'
 import { db } from '../../db/db'
 import { iniciarSesion } from '../../db/entreno'
 import { aplicarPlantilla, PLANTILLAS } from '../../db/plantillas'
-import { archivarRutina, crearRutina, duplicarRutina, eliminarRutina, ordenarCiclo } from '../../db/rutinas'
+import { archivarRutina, duplicarRutina, eliminarRutina, ordenarCiclo } from '../../db/rutinas'
 import { rutinaQueToca, rutinasDelCiclo } from '../../domain/ciclo'
 import type { Rutina } from '../../domain/tipos'
 import { PestanasRutinas } from './PestanasRutinas'
@@ -38,7 +38,7 @@ export function RutinasPage() {
   const ciclo = rutinasDelCiclo(datos.rutinas)
   const archivadas = datos.rutinas.filter((r) => r.archivada)
 
-  const nueva = async () => navegar(`/rutinas/${await crearRutina('Nueva rutina')}`)
+  const nueva = () => navegar('/rutinas/nueva')
 
   return (
     <>

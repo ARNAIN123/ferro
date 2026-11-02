@@ -1,11 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { completarBiblioteca, pedirPersistencia } from './db/db'
+import { pedirPersistencia, prepararCatalogo } from './db/db'
 import './index.css'
 
 void pedirPersistencia()
-void completarBiblioteca()
+void prepararCatalogo()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

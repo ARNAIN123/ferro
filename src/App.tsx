@@ -47,6 +47,7 @@ export function App() {
             <Route path="rutinas/ejercicios" element={<EjerciciosPage />} />
             <Route path="rutinas/ejercicios/nuevo" element={<NuevoEjercicioPage />} />
             <Route path="rutinas/ejercicios/:id" element={<EjercicioPage />} />
+            <Route path="rutinas/nueva" element={<RutinaPage />} />
             <Route path="rutinas/:id" element={<RutinaPage />} />
             <Route path="progreso" element={<ProgresoPage />} />
             <Route path="progreso/historial" element={<HistorialPage />} />
