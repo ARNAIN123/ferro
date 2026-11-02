@@ -45,3 +45,19 @@ png('pwa-192.png', normal, 192)
 png('pwa-512.png', normal, 512)
 png('maskable-512.png', completo, 512)
 png('apple-touch-icon.png', svg({ redondeado: false, escala: 0.85 }), 180)
+
+// Iconos de los accesos directos (mantener pulsado el icono de la app).
+const atajo = (contenido) => `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <rect width="96" height="96" rx="48" fill="${FONDO}"/>
+  ${contenido}
+</svg>`
+png('atajo-entreno.png', atajo('<path d="M38 28v40l32-20z" fill="#ff6b1f" stroke="#ff6b1f" stroke-width="6" stroke-linejoin="round"/>'), 96)
+png(
+  'atajo-peso.png',
+  atajo(`<g fill="none" stroke="#ff6b1f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="24" y="24" width="48" height="48" rx="12"/>
+    <path d="M36 44a17 17 0 0 1 24 0L48 54"/>
+  </g>`),
+  96,
+)

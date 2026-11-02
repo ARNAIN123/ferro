@@ -15,7 +15,6 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         id: '/',
         name: 'Ferro',
@@ -35,11 +34,31 @@ export default defineConfig({
           { src: '/pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
           { src: '/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        // Accesos directos al mantener pulsado el icono.
+        shortcuts: [
+          {
+            name: 'Empezar entreno',
+            short_name: 'Entrenar',
+            description: 'Retoma el entreno en curso o empieza la rutina que toca',
+            url: '/empezar',
+            icons: [{ src: '/atajo-entreno.png', sizes: '96x96', type: 'image/png' }],
+          },
+          {
+            name: 'Registrar peso',
+            short_name: 'Peso',
+            description: 'Apunta tu peso corporal de hoy',
+            url: '/peso',
+            icons: [{ src: '/atajo-peso.png', sizes: '96x96', type: 'image/png' }],
+          },
+        ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}'],
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
+        // Controla la página desde la primera visita (para que funcione offline sin recargar).
+        // Las versiones nuevas siguen esperando a que pulses "Actualizar".
+        clientsClaim: true,
       },
     }),
   ],

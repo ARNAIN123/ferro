@@ -46,11 +46,11 @@
   --line: #ddd5ca;
   --text: #1a1714;
   --muted: #6b6359;
-  --accent: #d94e0b;
-  --accent-soft: rgb(217 78 11 / 0.1);
+  --accent: #b83f0a;
+  --accent-soft: rgb(184 63 10 / 0.1);
   --accent-ink: #ffffff;
-  --ok: #2f8a42;
-  --warn: #a8700a;
+  --ok: #27773a;
+  --warn: #8a5d00;
   --danger: #c9302c;
   color-scheme: light;
 }

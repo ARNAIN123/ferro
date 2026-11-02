@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useLocation } from 'react-router'
 import { Cabecera } from '../../components/Cabecera'
 import { Interruptor, Segmentado, Tarjeta } from '../../components/ui'
 import type { Tema } from '../../domain/tipos'
 import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
 import { Paso } from './Paso'
+import { SeccionDatos } from './SeccionDatos'
 import { SeccionGimnasio } from './SeccionGimnasio'
 
 export function AjustesPage() {
   const a = useAjustes()
-  const [persistente, setPersistente] = useState<boolean | null>(null)
+  const { hash } = useLocation()
 
+  // Desde el recordatorio de Hoy se llega a /ajustes#datos.
   useEffect(() => {
-    navigator.storage?.persisted?.().then(setPersistente, () => setPersistente(false))
-  }, [])
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' })
+  }, [hash])
 
   return (
     <>
@@ -67,17 +70,7 @@ export function AjustesPage() {
           />
         </Tarjeta>
 
-        <Tarjeta>
-          <h2 className="mb-1 font-bold">Datos</h2>
-          <p className="text-sm text-muted">
-            Todo se guarda solo en este móvil.{' '}
-            {persistente === null
-              ? ''
-              : persistente
-                ? 'Almacenamiento persistente activado: Android no lo borrará por falta de espacio.'
-                : 'El navegador aún no ha concedido almacenamiento persistente; instala la app para conseguirlo.'}
-          </p>
-        </Tarjeta>
+        <SeccionDatos a={a} />
 
         <p className="pt-2 text-center text-xs text-muted">Ferro v{__APP_VERSION__}</p>
       </div>

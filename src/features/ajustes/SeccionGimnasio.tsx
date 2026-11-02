@@ -44,7 +44,7 @@ export function SeccionGimnasio({ a }: { a: Ajustes }) {
             {a.gimnasioLat!.toFixed(5)}, {a.gimnasioLng!.toFixed(5)}
           </p>
         )}
-        <Boton variante={guardada ? 'secundario' : 'primario'} className="mt-3 w-full bg-surface" onClick={capturar} disabled={buscando}>
+        <Boton variante={guardada ? 'secundario' : 'primario'} className={`mt-3 w-full ${guardada ? 'bg-surface' : ''}`} onClick={capturar} disabled={buscando}>
           {buscando ? 'Buscando señal GPS…' : 'Estoy en el gimnasio ahora'}
         </Boton>
         {error && <p className="mt-2 text-sm text-danger">{error}</p>}

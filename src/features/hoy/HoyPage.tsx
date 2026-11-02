@@ -9,6 +9,7 @@ import { db } from '../../db/db'
 import { iniciarSesion } from '../../db/entreno'
 import { rutinaQueToca, rutinasDelCiclo } from '../../domain/ciclo'
 import { entradaReciente } from '../../domain/checkin'
+import { necesitaCopia } from '../../domain/copias'
 import { NOMBRE_ORIGEN } from '../../domain/etiquetas'
 import { resumirSesion } from '../../domain/resumen'
 import { claveDia, diasDeSemana, diasEntrenadosEnSemana, inicioDia, rachaSemanas } from '../../domain/semanas'
@@ -36,10 +37,12 @@ export function HoyPage() {
     ])
     const terminadas = sesiones.filter((s) => s.estado === 'terminada').sort((a, b) => b.entrada - a.entrada)
     const ultima = terminadas[0]
+    const primera = terminadas.at(-1)
     return {
       hayRutinas: rutinasDelCiclo(rutinas).length > 0,
       toca: rutinaQueToca(rutinas, sesiones),
       enCurso: sesiones.find((s) => s.estado === 'en_curso') ?? null,
+      primeraActividad: primera?.entrada ?? null,
       terminadas,
       entradas,
       ultima: ultima
@@ -196,6 +199,16 @@ export function HoyPage() {
             <Mini etiqueta="Series" valor={String(datos.ultima.resumen.series)} />
             <Mini etiqueta="Volumen" valor={`${fmtEntero(datos.ultima.resumen.volumen)} kg`} />
           </dl>
+        </Link>
+      )}
+
+      {necesitaCopia(ajustes.ultimaCopia, datos.primeraActividad, ahora) && (
+        <Link to="/ajustes#datos" className="mt-4 flex min-h-12 items-center gap-2 px-1 text-sm text-muted">
+          <Icono nombre="descargar" tamano={18} />
+          <span className="flex-1">
+            {ajustes.ultimaCopia ? `Última copia de seguridad ${fmtHace(ajustes.ultimaCopia, ahora)}.` : 'Aún no has hecho ninguna copia de seguridad.'}{' '}
+            <span className="font-semibold text-accent">Hacer copia</span>
+          </span>
         </Link>
       )}
 

@@ -93,3 +93,28 @@ Crea una macro nueva:
 Si la PWA está instalada desde Chrome, Android abre ese enlace directamente en Ferro (sin barra del navegador). Pruébalo una vez a mano con el botón ▶ de la macro.
 
 **Alternativa, si Android abre el enlace en Chrome en vez de en la app instalada:** cambia la acción por Aplicaciones → **Abrir aplicación** → *Ferro*, y deja que la **detección por ubicación** haga el check-in al abrirse (necesitas haber guardado la ubicación del gimnasio y tener el permiso de ubicación concedido para el sitio en Chrome).
+
+## Accesos directos
+
+Mantén pulsado el icono de Ferro en la pantalla de inicio:
+
+- **Empezar entreno**: retoma el entreno en curso o empieza la rutina que toca.
+- **Registrar peso**: abre directamente el registro de peso corporal de hoy.
+
+(Si instalaste la app antes de que existieran, desinstálala y vuelve a instalarla para que Android los lea del manifest.)
+
+## Copias de seguridad
+
+Los datos viven solo en el móvil, así que conviene sacar copias. En **Ajustes → Datos y copias de seguridad**:
+
+- **Exportar copia (JSON)**: todo (ejercicios, rutinas, entrenos, series, entradas, peso y ajustes). Se guarda en *Descargas*. Si el móvil lo permite, también puedes **enviarla** a Drive, Telegram, correo…
+- **Exportar series (CSV)**: una fila por serie (fecha, rutina, ejercicio, músculo, tipo, peso, reps, RIR, molestia), separado por punto y coma y con coma decimal para abrirlo en Excel o Google Sheets.
+- **Importar copia**: valida el archivo y te pide confirmación antes de **sustituir** todos los datos del móvil.
+
+Si llevas más de 2 semanas sin hacer copia, Hoy muestra un recordatorio discreto.
+
+## Calidad
+
+- `npm run build`: comprobación de tipos estricta + build sin avisos.
+- `npm test`: 96 tests de la lógica pura (progresión, ciclo de rutinas, deduplicación y geovalla del check-in, semanas y rachas, estadísticas, récords, prerrellenado, superseries, copias de seguridad).
+- Lighthouse (móvil, CPU ralentizada): accesibilidad 100, buenas prácticas 100 y SEO 100 en todas las pantallas; rendimiento entre 73 y 93 según la pantalla y la pasada (cada pasada empieza con la base de datos vacía y la tiene que sembrar). Recharts y las pantallas secundarias se cargan bajo demanda; Hoy y el modo entreno van en el arranque.
