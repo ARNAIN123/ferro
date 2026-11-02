@@ -113,6 +113,8 @@ function Region({ parte, nivel, seleccionada, volumen, onTocar, describir }: Reg
     >
       {parte.d.map((d, i) => (
         <g key={i}>
+          {/* Borde invisible que amplía la zona táctil y cubre las rendijas entre músculos */}
+          {tocable && <path d={d} fill="none" stroke="transparent" strokeWidth={16} pointerEvents="stroke" />}
           <path d={d} fill={base} />
           {nivel > 0 && <path d={d} fill="var(--accent)" fillOpacity={OPACIDAD[Math.min(nivel, NIVELES)]} />}
           <path d={d} fill={volumen} pointerEvents="none" />

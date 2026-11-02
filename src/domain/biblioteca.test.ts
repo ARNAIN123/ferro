@@ -38,6 +38,23 @@ describe('filtros de la biblioteca', () => {
     expect(filtrarEjercicios(lista, { ...FILTROS_INICIALES, texto: 'bench press' }).map((x) => x.id)).toEqual(['banca'])
   })
 
+  it('al buscar ordena: exacto, empieza igual, contiene la frase y el resto', () => {
+    const sentadillas = [
+      e('una', 'Sentadilla a una pierna con barra'),
+      e('frontal', 'Sentadilla frontal con barra'),
+      e('barra', 'Sentadilla con barra'),
+      e('banco', 'Sentadilla con barra a banco'),
+      e('hack', 'Hack: sentadilla con barra'),
+    ]
+    expect(filtrarEjercicios(sentadillas, { ...FILTROS_INICIALES, texto: 'sentadilla con barra' }).map((x) => x.id)).toEqual([
+      'barra',
+      'banco',
+      'hack',
+      'una',
+      'frontal',
+    ])
+  })
+
   it('al buscar por texto ignora la categoría', () => {
     expect(filtrarEjercicios(lista, { ...FILTROS_INICIALES, texto: 'estiramiento' }).map((x) => x.id)).toEqual(['estir'])
   })

@@ -1,5 +1,5 @@
 // Búsqueda y filtros de la biblioteca, y valores por defecto al añadir un ejercicio a una rutina.
-import { coincide } from './texto'
+import { coincide, normalizar } from './texto'
 import type { Categoria, Ejercicio, Material, Musculo } from './tipos'
 
 export interface Filtros {
@@ -22,7 +22,9 @@ type Filtrable = Pick<
 /**
  * Filtra y ordena: busca en el nombre en español y en el alias (inglés y sinónimos).
  * Con un músculo elegido aparecen primero los que lo tienen como principal.
- * Si se busca por texto se ignora la categoría, para encontrar cualquier ejercicio.
+ * Si se busca por texto se ignora la categoría, para encontrar cualquier ejercicio,
+ * y van primero los nombres que coinciden exactamente, luego los que empiezan por el texto
+ * y luego los que lo contienen tal cual.
  */
 export function filtrarEjercicios<T extends Filtrable>(lista: readonly T[], f: Filtros): T[] {
   const texto = f.texto.trim()
@@ -34,8 +36,14 @@ export function filtrarEjercicios<T extends Filtrable>(lista: readonly T[], f: F
     if (texto && !coincide(`${e.nombre} ${e.alias}`, texto)) return false
     return true
   })
+  const buscado = normalizar(texto)
+  const relevancia = (e: T) => {
+    if (!buscado) return 0
+    const nombre = normalizar(e.nombre)
+    return nombre === buscado ? 0 : nombre.startsWith(buscado) ? 1 : nombre.includes(buscado) ? 2 : 3
+  }
   const peso = (e: T) => (f.musculo && !e.musculosPrincipales.includes(f.musculo) ? 1 : 0)
-  return resultado.sort((a, b) => peso(a) - peso(b) || a.nombre.localeCompare(b.nombre, 'es'))
+  return resultado.sort((a, b) => relevancia(a) - relevancia(b) || peso(a) - peso(b) || a.nombre.localeCompare(b.nombre, 'es'))
 }
 
 const MUSCULOS_GRANDES: readonly Musculo[] = ['pecho', 'dorsales', 'espalda_media', 'hombros', 'cuadriceps', 'isquiotibiales', 'gluteos', 'lumbares']

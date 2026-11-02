@@ -75,7 +75,12 @@ export function AjustesPage() {
 
         <SeccionDatos a={a} />
 
-        <p className="pt-2 text-center text-xs text-muted">Ferro v{__APP_VERSION__}</p>
+        <p className="pt-2 text-center text-xs text-muted">
+          Ferro v{__APP_VERSION__} ·{' '}
+          <a href="/licencias.txt" target="_blank" rel="noreferrer" className="underline underline-offset-2">
+            Créditos y licencias
+          </a>
+        </p>
       </div>
     </>
   )

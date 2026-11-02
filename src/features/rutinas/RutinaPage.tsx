@@ -18,7 +18,7 @@ import { ESCALAS, gruposSinTrabajar, nivelesDeTrabajo, rotulosEscala, trabajoMus
 import { ajustarItem, alternarSuperserie, normalizarPlan, planDesdeSesion, type ItemPlan } from '../../domain/rutinas'
 import type { Ejercicio } from '../../domain/tipos'
 import { avisar } from '../../lib/avisos'
-import { fmtCrono } from '../../lib/formato'
+import { fmtCrono, plural } from '../../lib/formato'
 import { nuevoId } from '../../lib/id'
 import { SelectorEjercicios } from '../ejercicios/SelectorEjercicios'
 
@@ -116,6 +116,7 @@ export function RutinaPage() {
   }
 
   const valido = borrador.nombre.trim().length > 0 && borrador.items.length > 0
+  const totalSeries = borrador.items.reduce((t, p) => t + p.series, 0)
   const guardar = async () => {
     if (!valido) return
     const rutinaId = await guardarRutina({ ...borrador, nombre: borrador.nombre.trim() })
@@ -152,32 +153,9 @@ export function RutinaPage() {
         />
       </label>
 
-      {borrador.items.length > 0 && (
-        <Tarjeta className="mt-4">
-          <h2 className="font-bold">Músculos que cubre</h2>
-          <MapaConDetalle
-            trabajo={trabajo}
-            niveles={nivelesDeTrabajo(trabajo, ESCALAS.sesion)}
-            nombres={nombres}
-            rotulos={rotulosEscala(ESCALAS.sesion)}
-            unidad="series"
-            periodo="en la rutina"
-            alto="h-64"
-          />
-          {sinTrabajar.length > 0 && (
-            <p className="mt-3 flex items-start gap-2 rounded-2xl bg-warn/10 px-3 py-2.5 text-sm text-warn">
-              <Icono nombre="aviso" tamano={18} className="mt-0.5 shrink-0" />
-              <span>
-                Ningún día de tu ciclo trabaja: <span className="font-semibold">{sinTrabajar.join(', ').toLowerCase()}</span>.
-              </span>
-            </p>
-          )}
-        </Tarjeta>
-      )}
-
       <div className="mt-5 mb-2 flex items-baseline justify-between">
         <h2 className="font-bold">Ejercicios</h2>
-        <span className="text-sm text-muted">{borrador.items.reduce((t, p) => t + p.series, 0)} series</span>
+        <span className="text-sm text-muted">{totalSeries} {plural(totalSeries, 'serie')}</span>
       </div>
 
       {borrador.items.length === 0 ? (
@@ -238,6 +216,29 @@ export function RutinaPage() {
       <Boton className="mt-2 w-full" onClick={() => setSelector(true)}>
         <Icono nombre="mas" tamano={20} /> Añadir ejercicios
       </Boton>
+
+      {borrador.items.length > 0 && (
+        <Tarjeta className="mt-5">
+          <h2 className="font-bold">Músculos que cubre</h2>
+          <MapaConDetalle
+            trabajo={trabajo}
+            niveles={nivelesDeTrabajo(trabajo, ESCALAS.sesion)}
+            nombres={nombres}
+            rotulos={rotulosEscala(ESCALAS.sesion)}
+            unidad="series"
+            periodo="en la rutina"
+            alto="h-64"
+          />
+          {sinTrabajar.length > 0 && (
+            <p className="mt-3 flex items-start gap-2 rounded-2xl bg-warn/10 px-3 py-2.5 text-sm text-warn">
+              <Icono nombre="aviso" tamano={18} className="mt-0.5 shrink-0" />
+              <span>
+                Ningún día de tu ciclo trabaja: <span className="font-semibold">{sinTrabajar.join(', ').toLowerCase()}</span>.
+              </span>
+            </p>
+          )}
+        </Tarjeta>
+      )}
 
       {!esNueva && borrador.id && (
         <div className="mt-6 grid gap-2">

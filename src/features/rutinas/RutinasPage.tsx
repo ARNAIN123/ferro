@@ -12,6 +12,7 @@ import { aplicarPlantilla, PLANTILLAS } from '../../db/plantillas'
 import { archivarRutina, duplicarRutina, eliminarRutina, ordenarCiclo } from '../../db/rutinas'
 import { rutinaQueToca, rutinasDelCiclo } from '../../domain/ciclo'
 import type { Rutina } from '../../domain/tipos'
+import { plural } from '../../lib/formato'
 import { PestanasRutinas } from './PestanasRutinas'
 
 export function RutinasPage() {
@@ -83,7 +84,7 @@ export function RutinasPage() {
                       {toca && <Etiqueta className="bg-accent-soft text-accent">Toca</Etiqueta>}
                     </span>
                     <span className="text-sm text-muted">
-                      {info ? `${info.ejercicios} ejercicios · ${info.series} series` : 'Sin ejercicios'}
+                      {info ? `${info.ejercicios} ${plural(info.ejercicios, 'ejercicio')} · ${info.series} ${plural(info.series, 'serie')}` : 'Sin ejercicios'}
                     </span>
                   </Link>
                   <button

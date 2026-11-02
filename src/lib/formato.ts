@@ -4,6 +4,9 @@ const enteroFmt = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 })
 /** 62.5 → "62,5" */
 export const fmtKg = (kg: number): string => kgFmt.format(kg)
 
+/** (1, 'serie') → "serie"; (3, 'serie') → "series". */
+export const plural = (n: number, singular: string, varios = `${singular}s`): string => (n === 1 ? singular : varios)
+
 /** 12345 → "12.345" */
 export const fmtEntero = (n: number): string => enteroFmt.format(Math.round(n))
 

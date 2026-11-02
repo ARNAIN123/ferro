@@ -10,6 +10,9 @@ const { version } = JSON.parse(readFileSync(new URL('./package.json', import.met
 
 export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(version) },
+  // El mayor chunk es el catálogo de 890 ejercicios (JSON, ~95 kB comprimido), que ya se carga
+  // bajo demanda y no se puede trocear más; el resto queda muy por debajo.
+  build: { chunkSizeWarningLimit: 600 },
   plugins: [
     react(),
     tailwindcss(),
@@ -53,7 +56,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest,txt}'],
         // Las ~1.750 imágenes de ejercicios no se precachean: se guardan al verlas (cache-first)
         // o todas de golpe desde Ajustes, en la caché "ferro-imagenes".
         globIgnores: ['img/**'],
@@ -68,6 +71,8 @@ export default defineConfig({
           },
         ],
         navigateFallback: '/index.html',
+        // /licencias.txt se abre como texto, no como la app.
+        navigateFallbackDenylist: [/\.txt$/],
         cleanupOutdatedCaches: true,
         // Controla la página desde la primera visita (para que funcione offline sin recargar).
         // Las versiones nuevas siguen esperando a que pulses "Actualizar".

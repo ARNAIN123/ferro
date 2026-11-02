@@ -6,7 +6,7 @@ import { Vacio } from '../../components/ui'
 import { db } from '../../db/db'
 import { sesionesTerminadas } from '../../db/consultas'
 import { resumirSesion } from '../../domain/resumen'
-import { fmtDuracion, fmtEntero, fmtHora } from '../../lib/formato'
+import { fmtDuracion, fmtEntero, fmtHora, plural } from '../../lib/formato'
 
 export function HistorialPage() {
   const datos = useLiveQuery(async () => {
@@ -55,7 +55,7 @@ export function HistorialPage() {
                         {molestia && <Icono nombre="aviso" tamano={16} className="shrink-0 text-warn" />}
                       </span>
                       <span className="block truncate text-sm text-muted">
-                        {fmtHora(sesion.entrada)} · {fmtDuracion(resumen.duracionMs)} · {resumen.series} series ·{' '}
+                        {fmtHora(sesion.entrada)} · {fmtDuracion(resumen.duracionMs)} · {resumen.series} {plural(resumen.series, 'serie')} ·{' '}
                         {fmtEntero(resumen.volumen)} kg
                       </span>
                     </span>

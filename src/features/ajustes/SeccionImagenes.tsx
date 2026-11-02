@@ -59,8 +59,8 @@ export function SeccionImagenes() {
         </Boton>
       ) : (
         <Boton variante={completo ? 'secundario' : 'primario'} className="mt-3 w-full" disabled={completo} onClick={descargar}>
-          <Icono nombre={completo ? 'check' : 'descargar'} tamano={20} />
-          {completo ? 'Todas descargadas' : 'Descargar todas las imágenes para usar sin conexión'}
+          <Icono nombre={completo ? 'check' : 'descargar'} tamano={20} className="shrink-0" />
+          <span className="text-left leading-tight">{completo ? 'Todas descargadas' : 'Descargar todas las imágenes para usar sin conexión'}</span>
         </Boton>
       )}
     </Tarjeta>

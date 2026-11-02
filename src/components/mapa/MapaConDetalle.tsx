@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import type { TrabajoMuscular } from '../../domain/mapaMuscular'
 import type { Musculo } from '../../domain/tipos'
-import { fmtKg } from '../../lib/formato'
+import { fmtKg, plural } from '../../lib/formato'
 import { LeyendaMapa, MapaMuscular } from './MapaMuscular'
 
 interface Props {
@@ -23,7 +23,7 @@ export function MapaConDetalle({ trabajo, niveles, nombres, rotulos, unidad, per
   const t = sel ? trabajo.get(sel) : undefined
   const describir = (m: Musculo) => {
     const s = trabajo.get(m)?.series ?? 0
-    return `${NOMBRE_MUSCULO[m]}: ${s ? `${fmtKg(s)} series` : 'sin trabajar'}`
+    return `${NOMBRE_MUSCULO[m]}: ${s ? `${fmtKg(s)} ${plural(s, 'serie')}` : 'sin trabajar'}`
   }
 
   return (
@@ -42,7 +42,7 @@ export function MapaConDetalle({ trabajo, niveles, nombres, rotulos, unidad, per
               <span className="text-sm text-muted">
                 {t ? (
                   <>
-                    <span className="num text-lg text-fg">{fmtKg(t.series)}</span> series {periodo}
+                    <span className="num text-lg text-fg">{fmtKg(t.series)}</span> {plural(t.series, 'serie')} {periodo}
                   </>
                 ) : (
                   `Sin trabajar ${periodo}`

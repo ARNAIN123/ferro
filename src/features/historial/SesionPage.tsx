@@ -6,7 +6,7 @@ import { Boton, Etiqueta, Tarjeta, Vacio } from '../../components/ui'
 import { detalleSesion } from '../../db/consultas'
 import { borrarSesion } from '../../db/entreno'
 import { NOMBRE_ORIGEN } from '../../domain/etiquetas'
-import { fmtDuracion, fmtEntero, fmtFechaLarga, fmtHora, fmtKg } from '../../lib/formato'
+import { fmtDuracion, fmtEntero, fmtFechaLarga, fmtHora, fmtKg, plural } from '../../lib/formato'
 
 export function SesionPage() {
   const { id = '' } = useParams()
@@ -32,7 +32,7 @@ export function SesionPage() {
           {fmtHora(sesion.entrada)}–{sesion.salida ? fmtHora(sesion.salida) : '…'}
         </Etiqueta>
         <Etiqueta>{fmtDuracion(resumen.duracionMs)}</Etiqueta>
-        <Etiqueta>{resumen.series} series</Etiqueta>
+        <Etiqueta>{resumen.series} {plural(resumen.series, 'serie')}</Etiqueta>
         <Etiqueta>{fmtEntero(resumen.volumen)} kg</Etiqueta>
         <Etiqueta>Entrada: {NOMBRE_ORIGEN[sesion.origenEntrada].toLowerCase()}</Etiqueta>
         {sesion.cierreAutomatico && <Etiqueta>Cierre automático</Etiqueta>}

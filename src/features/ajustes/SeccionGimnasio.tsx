@@ -31,7 +31,7 @@ export function SeccionGimnasio({ a }: { a: Ajustes }) {
     <Tarjeta>
       <h2 className="font-bold">Gimnasio y check-in</h2>
       <p className="mt-1 text-sm text-muted">
-        La entrada se registra con el enlace de check-in, al abrir la app dentro del radio o con el botón de Hoy.
+        La entrada se registra con el enlace de check-in, al abrir la app dentro del radio o, si no hay ninguna reciente, con la hora de inicio del entreno.
       </p>
 
       <div className="mt-4 rounded-2xl bg-surface-2 p-4">

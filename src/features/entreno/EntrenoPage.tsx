@@ -20,7 +20,7 @@ import type { Serie } from '../../domain/tipos'
 import { useAhora } from '../../hooks/useAhora'
 import { useAjustes } from '../../hooks/useAjustes'
 import { useWakeLock } from '../../hooks/useWakeLock'
-import { fmtCrono, fmtKg } from '../../lib/formato'
+import { fmtCrono, fmtKg, plural } from '../../lib/formato'
 import { vibrar, VIBRACION_SERIE } from '../../lib/vibrar'
 import { SelectorEjercicios } from '../ejercicios/SelectorEjercicios'
 import { CampoNumero } from './CampoNumero'
@@ -310,7 +310,7 @@ export function EntrenoPage() {
           ) : (
             totalSeries > hechas && (
               <p className="text-muted">
-                Quedan {totalSeries - hechas} series sin marcar. No se guardarán; las que has hecho, sí.
+                {plural(totalSeries - hechas, 'Queda', 'Quedan')} {totalSeries - hechas} {plural(totalSeries - hechas, 'serie')} sin marcar. No se guardarán; las que has hecho, sí.
               </p>
             )
           )}
