@@ -1,0 +1,311 @@
+@Seated_Close-Grip_Concentration_Barbell_Curl
+- Siéntate en un banco plano con las piernas abiertas, las rodillas flexionadas y una barra o barra Z entre los pies.
+- Cógela con agarre supino más estrecho que los hombros y apoya la parte trasera de los brazos en la cara interna de los muslos, cerca de las rodillas, con los brazos estirados.
+- Sin mover los brazos, sube la barra contrayendo los bíceps y soltando el aire hasta la altura de los hombros. Aprieta un segundo.
+- Baja despacio.
+
+@Seated_Dumbbell_Curl
+- Siéntate en un banco plano con una mancuerna en cada mano, los brazos estirados, los codos cerca del cuerpo y las palmas hacia el tronco.
+- Sin mover los brazos, sube las mancuernas y, al pasar los muslos, gira las muñecas para que al final las palmas miren hacia delante, contrayendo los bíceps y soltando el aire.
+- Aprieta un segundo y baja despacio deshaciendo el giro.
+
+@Seated_Dumbbell_Inner_Biceps_Curl
+- Siéntate en el extremo de un banco plano con una mancuerna en cada mano, los brazos estirados, los codos cerca del cuerpo y agarre neutro.
+- Sin mover los brazos, sube las mancuernas hacia fuera y arriba girando las palmas hacia fuera, con los antebrazos en línea con los deltoides laterales.
+- Sigue hasta la altura de los hombros, aprieta un segundo y baja despacio.
+
+@Seated_Dumbbell_Palms-Down_Wrist_Curl
+- Coloca dos mancuernas en el suelo delante de un banco y siéntate en el borde con los pies a la anchura de los hombros.
+- Cógelas y apoya los antebrazos sobre los muslos con las palmas hacia abajo y las muñecas por fuera de las rodillas.
+- Sube las muñecas soltando el aire.
+- Bájalas despacio tomando aire.
+
+@Seated_Dumbbell_Palms-Up_Wrist_Curl
+- Coloca dos mancuernas en el suelo delante de un banco y siéntate en el borde con los pies a la anchura de los hombros.
+- Cógelas y apoya los antebrazos sobre los muslos con las palmas hacia arriba y las muñecas por fuera de las rodillas.
+- Sube las muñecas soltando el aire.
+- Bájalas despacio tomando aire.
+
+@Seated_Dumbbell_Press
+- Siéntate en un banco con respaldo con dos mancuernas apoyadas de pie sobre los muslos.
+- Súbelas una a una a la altura de los hombros ayudándote de los muslos y gira las muñecas para que las palmas miren hacia delante.
+- Empuja las mancuernas hacia arriba soltando el aire hasta que se toquen arriba.
+- Tras una pausa, bájalas despacio tomando aire.
+
+@Seated_Flat_Bench_Leg_Pull-In
+- Siéntate en un banco con las piernas estiradas al frente, algo por debajo de la horizontal, y agárrate a los lados del banco, con el tronco inclinado unos 45° hacia atrás.
+- Lleva las rodillas hacia ti mientras acercas el tronco a ellas, soltando el aire.
+- Tras una pausa de un segundo, vuelve a la posición inicial tomando aire.
+
+@Seated_Floor_Hamstring_Stretch
+- Siéntate en una esterilla con la pierna derecha estirada y la izquierda flexionada con el pie contra la cara interna del muslo derecho.
+- Inclínate desde la cadera y estírate hacia el tobillo hasta notar el estiramiento del isquio.
+- Mantén 15 s y cambia de lado.
+
+@Seated_Front_Deltoid
+- Siéntate erguido en el suelo con las piernas flexionadas y un compañero detrás. Estira los brazos a los lados con las palmas hacia abajo y llévalos todo lo posible hacia atrás; tu compañero te sujeta las muñecas.
+- Con los codos rectos, intenta llevar los brazos hacia delante durante 10-20 s mientras él lo impide.
+- Relájate y deja que aumente suavemente el estiramiento de hombros y pecho durante 10-20 s.
+
+@Seated_Glute
+- Sentado con las rodillas flexionadas, cruza un tobillo sobre la rodilla contraria. Inclínate hacia delante con un compañero detrás sujetándote los hombros.
+- Intenta echar el tronco atrás durante 10-20 s mientras él lo impide.
+- Relájate y deja que te empuje suavemente hacia delante durante 10-20 s. Cambia de lado.
+
+@Seated_Good_Mornings
+- Coloca un cajón dentro de un rack con los pasadores a la altura adecuada. Apoya la barra en la parte trasera de los hombros, junta los omóplatos y gira los codos hacia delante.
+- Saca la barra con la zona lumbar firme y siéntate en el cajón, mirando al frente.
+- Con espalda, hombros y abdomen firmes, inclina el tronco hacia delante desde la cadera hasta casi tocar los muslos.
+- Vuelve a la posición erguida extendiendo la cadera.
+
+@Seated_Hamstring
+- Siéntate con las piernas estiradas y un compañero detrás. Inclínate hacia delante mientras te sujeta los hombros.
+- Intenta echar el tronco atrás durante 10-20 s mientras él lo impide.
+- Relájate y deja que te empuje suavemente hacia delante durante 10-20 s.
+
+@Seated_Hamstring_and_Calf_Stretch
+- Pasa un cinturón, cuerda o banda por un pie y siéntate con las dos piernas estiradas.
+- Inclínate ligeramente hacia delante y tira del cinturón para llevar las puntas del pie hacia ti.
+- Mantén 10-20 s y repite con la otra pierna.
+
+@Seated_Head_Harness_Neck_Resistance
+- Coloca un arnés de cuello en el suelo al final de un banco plano con el peso elegido. Siéntate en el extremo con los pies más abiertos que los hombros y las puntas hacia fuera.
+- Inclina el tronco hasta casi quedar paralelo al suelo y colócate el arnés en la cabeza con las dos manos, con el peso todavía en el suelo.
+- Sube el tronco hasta que el peso cuelgue y, con las manos en las rodillas, sube y baja la cabeza despacio extendiendo y flexionando el cuello.
+
+@Seated_Leg_Curl
+- Ajusta la palanca a tu altura y siéntate con la espalda apoyada en el respaldo.
+- Coloca la parte trasera de la pierna sobre el rodillo, unos centímetros por debajo de los gemelos, y ajusta la almohadilla de los muslos justo por encima de las rodillas. Agarra las asas con las piernas estiradas.
+- Flexiona las rodillas llevando el rodillo hacia abajo y atrás todo lo posible, soltando el aire, y aguanta un segundo.
+- Vuelve despacio tomando aire.
+
+@Seated_Leg_Tucks
+- Siéntate en un banco con las piernas estiradas al frente, algo por debajo de la horizontal, agarrado a los lados del banco y con el tronco inclinado unos 45° hacia atrás.
+- Lleva las rodillas hacia ti mientras acercas el tronco a ellas, soltando el aire.
+- Tras una pausa de un segundo, vuelve a la posición inicial tomando aire.
+
+@Seated_One-Arm_Dumbbell_Palms-Down_Wrist_Curl
+- Siéntate en un banco plano con una mancuerna en la mano derecha y los pies algo más abiertos que los hombros.
+- Inclínate y apoya el antebrazo derecho sobre el muslo derecho con la palma hacia abajo y la muñeca sobre la rodilla.
+- Baja la mancuerna todo lo posible sin aflojar el agarre, tomando aire.
+- Súbela lo más alto posible con el antebrazo soltando el aire. Cambia de mano al terminar.
+
+@Seated_One-Arm_Dumbbell_Palms-Up_Wrist_Curl
+- Siéntate en un banco plano con una mancuerna en la mano derecha y los pies algo más abiertos que los hombros.
+- Inclínate y apoya el antebrazo derecho sobre el muslo derecho con la palma hacia arriba y la muñeca sobre la rodilla.
+- Baja la mancuerna todo lo posible sin aflojar el agarre, tomando aire.
+- Súbela lo más alto posible con el antebrazo soltando el aire. Cambia de mano al terminar.
+
+@Seated_One-arm_Cable_Pulley_Rows
+- Siéntate en la máquina de remo en polea baja con los pies en la plataforma y las rodillas algo flexionadas.
+- Inclínate manteniendo la espalda recta y agarra el asa individual con la mano izquierda en agarre prono.
+- Con el brazo estirado, echa el tronco atrás hasta formar 90° con las piernas, con la espalda algo arqueada y el pecho fuera.
+- Sin mover el tronco, tira del asa hacia el costado juntando el omóplato, soltando el aire, y vuelve despacio. Cambia de brazo.
+
+@Seated_Overhead_Stretch
+- Siéntate erguido en una esterilla con las plantas de los pies juntas, a unos 15-20 cm delante de la cadera.
+- Apoya una mano en el suelo a tu lado y la otra detrás de la cabeza.
+- Sube el codo hacia el techo inclinando el tronco hacia el lado contrario. Mantén 10-20 s y cambia de lado.
+
+@Seated_Palm-Up_Barbell_Wrist_Curl
+- Sujeta una barra con las dos manos, palmas hacia arriba y a la anchura de los hombros, sentado con los pies algo más abiertos que los hombros.
+- Inclínate y apoya los antebrazos sobre los muslos con las muñecas sobre las rodillas.
+- Baja la barra todo lo posible sin aflojar el agarre, tomando aire.
+- Súbela lo más alto posible flexionando las muñecas y soltando el aire.
+
+@Seated_Palms-Down_Barbell_Wrist_Curl
+- Sujeta una barra con las dos manos, palmas hacia abajo y a la anchura de los hombros, sentado con los pies algo más abiertos que los hombros.
+- Inclínate y apoya los antebrazos sobre los muslos con el dorso de las muñecas sobre las rodillas.
+- Baja la barra todo lo posible sin aflojar el agarre, tomando aire.
+- Súbela lo más alto posible extendiendo las muñecas y soltando el aire.
+
+@Seated_Side_Lateral_Raise
+- Siéntate en el extremo de un banco plano con los pies firmes y una mancuerna en cada mano, con las palmas hacia dentro y los brazos estirados a los lados.
+- Sin balancear el tronco, eleva las mancuernas hacia los lados con los codos algo flexionados y las manos ligeramente inclinadas hacia delante, como si sirvieras agua, hasta que los brazos queden paralelos al suelo, soltando el aire.
+- Aguanta un segundo y baja despacio.
+
+@Seated_Triceps_Press
+- Siéntate en un banco con respaldo y sujeta una mancuerna con las dos manos por encima de la cabeza con los brazos estirados (mejor si te la pasan). El disco descansa en las palmas con los pulgares alrededor del asa.
+- Con los brazos junto a la cabeza y perpendiculares al suelo, baja la mancuerna en semicírculo por detrás de la cabeza hasta que los antebrazos toquen los bíceps, tomando aire.
+- Extiende los codos para volver arriba soltando el aire.
+
+@Seated_Two-Arm_Palms-Up_Low-Pulley_Wrist_Curl
+- Coloca un banco delante de una polea baja con barra recta o Z, lo bastante lejos para que el cable tenga tensión con la barra sobre los muslos.
+- Agarra la barra con las dos manos, palmas hacia arriba y a la anchura de los hombros, y siéntate con los pies firmes.
+- Inclínate y apoya los antebrazos en los muslos con las muñecas por fuera de las rodillas.
+- Sube las muñecas soltando el aire y bájalas despacio.
+
+@See-Saw_Press_Alternating_Side_Press
+- De pie, con una mancuerna en cada mano, súbelas a la altura de los hombros con las palmas hacia ti, como para un press Arnold.
+- Extiende el brazo izquierdo por encima de la cabeza girando la palma hacia delante y abriendo el codo, mientras inclinas la cadera hacia el lado contrario.
+- Baja ese brazo mientras subes el derecho e inclinas la cadera hacia el otro lado.
+- Sigue alternando como un balancín.
+
+@Shotgun_Row
+- Engancha un asa a una polea baja y elige el peso.
+- Colócate a un par de pasos en tijera amplia, con el brazo estirado y el hombro adelantado.
+- Rema llevando el hombro atrás y flexionando el codo, girando la muñeca para que la palma acabe hacia arriba.
+- Tras una breve pausa, vuelve a la posición inicial. Cambia de brazo al terminar.
+
+@Shoulder_Circles
+- Con los hombros relajados y los brazos sueltos a los lados (o en el regazo si estás sentado), rueda suavemente los hombros hacia delante, arriba, atrás y abajo.
+- Cambia de sentido. Puedes hacerlo con los dos hombros a la vez o alternando.
+
+@Shoulder_Press_-_With_Bands
+- Pisa una banda de modo que tenga tensión con los brazos estirados. Agarra las asas y súbelas a la altura de los hombros a cada lado.
+- Gira las muñecas para que las palmas miren hacia delante, con los codos flexionados.
+- Empuja las asas hacia arriba soltando el aire hasta estirar los brazos.
+- Bájalas despacio a la altura de los hombros.
+
+@Shoulder_Raise
+- Relaja los brazos a los lados.
+- Sube los hombros hacia las orejas y bájalos de nuevo.
+
+@Shoulder_Stretch
+- Cruza el brazo izquierdo por delante del cuerpo y mantenlo estirado, sujetándolo con la otra mano por encima del codo.
+- Mantén 15-20 s y cambia de lado.
+
+@Side-Lying_Floor_Stretch
+- Túmbate sobre el lado izquierdo con la rodilla izquierda flexionada delante para estabilizar el tronco (ayúdate del abdomen).
+- Estira la pierna derecha y apoya el pie derecho en el suelo por detrás del izquierdo.
+- Estira el brazo derecho por encima de la cabeza y tira suavemente de la muñeca derecha para estirar todo el costado. Cambia de lado.
+
+@Side_Bridge
+- Túmbate de lado apoyado en el antebrazo, con el codo justo bajo el hombro y las piernas estiradas, un pie sobre el otro.
+- Eleva la cadera hasta que el cuerpo forme una línea recta de la cabeza a los pies, con el abdomen firme.
+- Mantén la posición el tiempo indicado sin dejar caer la cadera y cambia de lado.
+
+@Side_Hop-Sprint
+- Colócate de lado junto a un cono o una valla.
+- Salta de lado por encima del obstáculo y rebota al aterrizar para volver al punto de partida.
+- Haz los saltos indicados lo más rápido posible y, al aterrizar el último, esprinta un tramo corto.
+
+@Side_Jackknife
+- Túmbate sobre un costado con las piernas estiradas y juntas, apoyado en el antebrazo de abajo, y coloca la mano de arriba detrás de la cabeza.
+- Sube a la vez las piernas y el tronco hacia el lado, acercando el codo de arriba a la cadera y contrayendo el oblicuo, soltando el aire.
+- Baja despacio. Completa la serie y cambia de lado.
+
+@Side_Lateral_Raise
+- De pie, con el tronco recto y una mancuerna en cada mano a los lados, con las palmas hacia ti.
+- Sin balancear el tronco, eleva las mancuernas hacia los lados con los codos algo flexionados y las manos ligeramente inclinadas hacia delante, como si sirvieras agua, hasta que los brazos queden paralelos al suelo, soltando el aire.
+- Aguanta un segundo y baja despacio tomando aire.
+
+@Side_Laterals_to_Front_Raise
+- De pie, con una mancuerna en cada mano a los lados y los codos algo flexionados.
+- Eleva las mancuernas al frente hasta la altura de los hombros, sin balanceos.
+- Arriba, llévalas hacia los lados con los brazos estirados y bájalas controlando.
+- En la siguiente repetición, súbelas por los lados y llévalas al frente antes de bajar. Alterna.
+
+@Side_Leg_Raises
+- De pie junto a una silla, sujétate a ella y apóyate sobre una pierna.
+- Con la pierna estirada, balancéala hacia el lado todo lo posible y bájala cruzándola por delante de la otra.
+- Repite 5-10 veces aumentando el recorrido y cambia de pierna.
+
+@Side_Lying_Groin_Stretch
+- Túmbate sobre el lado derecho con la rodilla derecha flexionada delante para estabilizar el tronco y la cabeza apoyada en la mano o el hombro.
+- Sube la pierna izquierda y sujétala por detrás de la rodilla (más fácil) o por el pie (más difícil).
+- Lleva la rodilla izquierda hacia el hombro izquierdo mientras presionas el pie o la rodilla hacia el suelo. Para intensificar, estira la pierna. Cambia de lado.
+
+@Side_Neck_Stretch
+- Con los hombros relajados, inclina suavemente la cabeza hacia un hombro.
+- Ayúdate tirando con suavidad del lateral de la cabeza. Cambia de lado.
+
+@Side_Standing_Long_Jump
+- Colócate en posición atlética con los pies a la anchura de la cadera, la cabeza y el pecho arriba y las rodillas y la cadera algo flexionadas.
+- Inclinándote hacia la derecha, extiende cadera, rodillas y tobillos para saltar lo más lejos posible hacia ese lado, guiando con los brazos.
+- Aterriza mirando en la misma dirección con los pies a la anchura de la cadera, amortiguando con las piernas.
+
+@Side_To_Side_Chins
+- Agarra la barra de dominadas con las palmas hacia delante y agarre ancho.
+- Inclina el tronco unos 30° hacia atrás con una ligera curva lumbar y el pecho fuera.
+- Sube inclinándote hacia la izquierda hasta que la barra casi toque la parte alta del pecho, soltando el aire.
+- Baja despacio y en la siguiente repetición sube hacia la derecha. Alterna.
+
+@Side_Wrist_Pull
+- De pie, cruza el brazo izquierdo por delante del cuerpo y sujeta la muñeca izquierda con la mano derecha a la altura de la cadera, con el brazo izquierdo flexionado.
+- Estíralo, tira y súbelo despacio hasta la altura del hombro. Debes notar el estiramiento en la espalda, no en el hombro; no tires demasiado.
+- Cambia de lado.
+
+@Side_to_Side_Box_Shuffle
+- Colócate de lado junto a un cajón con el pie izquierdo apoyado en su centro.
+- Salta por encima hacia el otro lado y aterriza con el pie derecho sobre el cajón y el izquierdo en el suelo, ayudándote de los brazos.
+- Sigue desplazándote de un lado a otro sobre el cajón.
+
+@Single-Arm_Cable_Crossover
+- Coloca las poleas en posición alta, elige la resistencia y agarra un asa con cada mano.
+- Da un paso al frente con los pies escalonados, inclinado, con la cabeza y el pecho arriba y las manos juntas delante.
+- Manteniendo el brazo izquierdo quieto, abre el derecho hacia el lado con el codo algo flexionado hasta la altura del hombro.
+- Vuelve a juntarlo con el otro apretando el pecho. Completa la serie y cambia de brazo.
+
+@Single-Arm_Linear_Jammer
+- Coloca una barra en un landmine o fíjala en una esquina y cárgala.
+- Sube el extremo hasta el hombro con una o las dos manos y separa bien los pies.
+- Empuja la barra extendiendo el codo de forma explosiva, extendiendo a la vez cadera y rodillas para generar la máxima fuerza.
+- Vuelve a la posición inicial. Cambia de brazo al terminar.
+
+@Single-Arm_Push-Up
+- Colócate boca abajo apoyado en las puntas de los pies y un brazo, con la mano justo bajo el hombro y el brazo estirado; separa más los pies que en una flexión normal.
+- Con buena postura, coloca la mano libre detrás de la espalda.
+- Baja flexionando el codo hasta tocar el suelo.
+- Empuja hasta estirar el brazo. Cambia de brazo al terminar.
+
+@Single-Cone_Sprint_Drill
+- Enseña a mover los pies rápido. Colócate junto a un cono con un brazo atrás y otro delante.
+- Mueve los pies lo más rápido posible bloqueando con los brazos y rodea el cono con las rodillas altas y pasos muy enérgicos.
+- Descansa tras dar tres vueltas al cono.
+
+@Single-Leg_High_Box_Squat
+- Coloca un cajón dentro de un rack y una banda o cuerda por encima para sujetarte.
+- De frente al cajón, súbete a él con una pierna hasta quedar de pie, sin apoyar la otra; sujétate a la banda para equilibrarte.
+- Baja y sube con la misma pierna las repeticiones indicadas y cambia de lado.
+
+@Single-Leg_Hop_Progression
+- Coloca una fila de conos delante. De pie sobre una pierna, sube la rodilla de la otra.
+- Salta hacia delante por encima del cono y aterriza con la misma pierna.
+- Encadena los saltos de cono en cono usando el contramovimiento.
+- Al final, date la vuelta y vuelve con la otra pierna.
+
+@Single-Leg_Lateral_Hop
+- Colócate de lado junto a un cono o valla, sobre una pierna con la rodilla algo flexionada.
+- Haz un contramovimiento y salta de lado por encima del cono.
+- Aterriza con la misma pierna y rebota de inmediato hacia el punto de partida.
+- Sigue saltando de un lado a otro y cambia de pierna.
+
+@Single-Leg_Leg_Extension
+- Siéntate en la máquina de extensión con el rodillo contra la parte baja de la espinilla, sin tocar el tobillo, y el eje alineado con la rodilla. Elige el peso.
+- Con buena postura, extiende del todo una pierna y haz una pausa arriba.
+- Vuelve sin dejar que el peso se detenga, manteniendo la tensión. Cambia de pierna al terminar.
+
+@Single-Leg_Stride_Jump
+- Colócate de lado junto a un cajón con el pie interior encima, cerca del borde.
+- Balancea los brazos hacia arriba mientras empujas con la pierna de arriba para saltar lo más alto posible, subiendo la rodilla contraria.
+- Aterriza en la misma posición del inicio, frenando con la pierna de dentro.
+
+@Single_Dumbbell_Raise
+- Con las piernas separadas, sujeta una mancuerna con las dos manos por la cabeza del disco, no por el asa, con los brazos estirados colgando a la altura de la cintura.
+- Sube la mancuerna con los brazos estirados hasta algo por encima de los hombros, sin mover el tronco ni la cadera.
+- Vuelve despacio a la posición inicial.
+
+@Single_Leg_Butt_Kick
+- De pie sobre una pierna, con la otra rodilla flexionada y elevada.
+- Con un contramovimiento, salta hacia arriba extendiendo cadera, rodilla y tobillo de la pierna de apoyo.
+- En el aire, flexiona la rodilla de esa pierna intentando tocar el glúteo con el talón.
+- Vuelve a colocarla bajo la cadera y aterriza; la otra pierna se mantiene en la misma posición.
+
+@Single_Leg_Glute_Bridge
+- Túmbate boca arriba con los pies en el suelo y las rodillas flexionadas.
+- Levanta una pierna llevando la rodilla al pecho.
+- Empuja con el talón de la pierna apoyada extendiendo la cadera y despegando los glúteos del suelo.
+- Sube todo lo posible, haz una pausa y baja. Cambia de pierna al terminar.
+
+@Single_Leg_Push-off
+- De pie, apoya un pie sobre un cajón con el talón cerca del borde.
+- Impúlsate con el pie de arriba para ganar toda la altura posible extendiendo cadera y rodilla.
+- Aterriza con el mismo pie sobre el cajón y el otro de vuelta en el suelo.
+- Repite y cambia de pierna al terminar.
+
+@Sit-Up
+- Túmbate boca arriba con las rodillas flexionadas y los pies sujetos bajo algo fijo o por un compañero.
+- Coloca las manos detrás de la cabeza con los dedos entrelazados.
+- Sube el tronco hasta formar una "V" con los muslos, soltando el aire.
+- Aguanta un segundo y baja despacio tomando aire.

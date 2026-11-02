@@ -1,0 +1,327 @@
+@Machine_Bench_Press
+- Siéntate en la máquina de press de pecho y elige el peso.
+- Pisa la palanca de la máquina para adelantar las asas, agárralas con agarre prono y estira los brazos, con los codos levantados y los brazos paralelos al suelo a los lados del tronco.
+- Lleva las asas hacia ti despacio tomando aire hasta notar el estiramiento del pecho.
+- Empuja hasta estirar los brazos soltando el aire. Al terminar, vuelve a pisar la palanca para soltar las asas.
+
+@Machine_Bicep_Curl
+- Ajusta el asiento a la altura adecuada y elige el peso. Apoya los brazos en las almohadillas y agarra las asas.
+- Flexiona los codos acercando los antebrazos a los brazos.
+- Haz una pausa arriba y baja despacio.
+- No dejes caer el peso hasta el tope entre repeticiones para mantener la tensión.
+
+@Machine_Preacher_Curls
+- Siéntate en la máquina de curl predicador y elige el peso.
+- Apoya la parte trasera de los brazos en la almohadilla con los codos cerrados y agarra las asas con agarre supino.
+- Sube las asas contrayendo los bíceps y soltando el aire, y aguanta un segundo. Solo se mueven los antebrazos.
+- Baja despacio hasta estirar los brazos.
+
+@Machine_Shoulder_Military_Press
+- Siéntate en la máquina de press de hombros y elige el peso.
+- Agarra las asas a los lados, con los codos flexionados y en línea con el tronco.
+- Sube las asas soltando el aire hasta estirar del todo los brazos y aguanta un segundo.
+- Bájalas despacio tomando aire.
+
+@Machine_Triceps_Extension
+- Ajusta el asiento a la altura adecuada y elige el peso. Apoya los brazos en las almohadillas y agarra las asas.
+- Extiende los codos alejando los antebrazos de los brazos.
+- Haz una pausa al final y vuelve despacio.
+- No dejes caer el peso hasta el tope entre repeticiones para mantener la tensión.
+
+@Medicine_Ball_Chest_Pass
+- Necesitas un compañero (o una pared).
+- Ponte frente a él con el balón medicinal a la altura del tronco, sujeto con las dos manos.
+- Llévalo al pecho y lánzalo extendiendo los codos; para deportes, puedes dar un paso al lanzar.
+- Recibe el pase de vuelta con las dos manos a la altura del pecho.
+
+@Medicine_Ball_Full_Twist
+- Necesitas un balón medicinal y un compañero. Colocaos espalda con espalda a 60-90 cm.
+- Sujeta el balón delante del tronco y gira cadera y hombros a la vez que tu compañero, los dos en el mismo sentido.
+- Pásale el balón y girad ambos hacia el otro lado para repetir.
+
+@Medicine_Ball_Scoop_Throw
+- Colócate en media sentadilla con un balón medicinal en las manos, colgando cerca de los pies.
+- Empuja la cadera hacia delante extendiendo las piernas y salta.
+- A la vez, lleva los brazos estirados por encima de la cabeza y suelta el balón en el punto más alto para lanzarlo lo más lejos posible hacia atrás.
+
+@Middle_Back_Shrug
+- Túmbate boca abajo en un banco inclinado con una mancuerna en cada mano, los brazos estirados hacia el suelo y las palmas enfrentadas.
+- Soltando el aire, junta los omóplatos sin doblar los brazos (como un abrazo al revés) y aguanta un segundo.
+- Vuelve a la posición inicial tomando aire.
+
+@Middle_Back_Stretch
+- De pie, con los pies a la anchura de los hombros y las manos en la cintura.
+- Gira la cintura hasta notar el estiramiento y mantén 10-15 s.
+- Gira hacia el otro lado.
+
+@Mixed_Grip_Chin
+- Agarra la barra algo más ancho que los hombros con una palma hacia delante y la otra hacia ti.
+- Sube soltando el aire. Con el brazo en supino, mantén el codo cerca del tronco; con el brazo en prono, el codo queda abierto pero en línea con el tronco.
+- Sube hasta pasar la barbilla de la barra, aprieta la espalda y baja despacio. Alterna el agarre en la siguiente serie.
+
+@Monster_Walk
+- Coloca una banda alrededor de los tobillos y otra alrededor de las rodillas, con tensión cuando los pies estén a la anchura de los hombros.
+- Da pasos cortos hacia delante alternando pies, manteniendo la tensión de las bandas.
+- Tras varios pasos, camina hacia atrás hasta el punto de partida.
+
+@Mountain_Climbers
+- Colócate en posición de flexión, apoyado en manos y puntas de los pies. Lleva una rodilla bajo la cadera.
+- Cambia de forma explosiva la posición de las piernas: estira la flexionada y lleva la otra rodilla bajo la cadera.
+- Alterna durante 20-30 segundos.
+
+@Moving_Claw_Series
+- Ejercicio de técnica de carrera para mejorar el sprint.
+- Al correr, flexiona la rodilla intentando llevar el talón al glúteo mientras la cadera se extiende.
+- Recupera la pierna hacia delante y "araña" el suelo en el siguiente apoyo.
+- Bracea con fuerza en un ritmo rápido de uno-dos.
+
+@Muscle_Snatch
+- Sujeta la barra cargada a mitad del muslo con agarre ancho, los pies bajo la cadera y algo abiertos, la cadera baja, el pecho arriba y los hombros justo por delante de la barra.
+- Tira empujando con la parte delantera de los talones y pasa al segundo tirón extendiendo cadera, rodillas y tobillos con la barra pegada al cuerpo.
+- Sin meterte bajo la barra, sigue tirando con los codos altos y gira los brazos para bloquearla por encima de la cabeza.
+- Baja la barra controlando.
+
+@Muscle_Up
+- Agarra las anillas con agarre falso, con la base de las palmas sobre ellas, y haz una dominada llevando los codos hacia los costados.
+- Al llegar arriba, lleva las anillas a las axilas rodando los hombros hacia delante y deja que los codos vayan hacia atrás.
+- Con control, extiende los codos para completar el fondo.
+- Baja con cuidado.
+
+@Narrow_Stance_Hack_Squats
+- Apoya la espalda en el respaldo de la máquina hack con los hombros bajo las almohadillas.
+- Coloca los pies juntos en la plataforma (a menos de 8 cm) con las puntas algo abiertas, la cabeza arriba y la espalda siempre pegada.
+- Quita los seguros y baja flexionando las rodillas hasta que los muslos queden paralelos a la plataforma, tomando aire.
+- Sube empujando con los talones soltando el aire.
+
+@Narrow_Stance_Leg_Press
+- Siéntate en la prensa con los pies juntos en la plataforma (a menos de 8 cm) y las puntas algo abiertas, con la espalda pegada al respaldo.
+- Quita los seguros y empuja hasta estirar las piernas sin bloquear las rodillas.
+- Baja despacio tomando aire hasta que las rodillas formen unos 90°.
+- Empuja con los talones para subir soltando el aire.
+
+@Narrow_Stance_Squats
+- Mejor dentro de un rack. Apoya la barra en la parte alta de la espalda y sácala del soporte.
+- Coloca los pies más juntos que los hombros con las puntas algo abiertas, la cabeza arriba y la espalda recta.
+- Baja flexionando rodillas y cadera hasta que los muslos queden paralelos al suelo, tomando aire.
+- Sube empujando con los talones soltando el aire.
+
+@Natural_Glute_Ham_Raise
+- Usa el rodillo de una máquina de jalón o un banco Scott: tobillos bajo los rodillos, rodillas en el asiento y de espaldas a la máquina, con el cuerpo erguido.
+- Baja controlando hasta que las rodillas queden casi estiradas.
+- Sube de nuevo con control hasta la posición inicial.
+- Si no puedes completar una repetición, ayúdate con una banda, un compañero o empujando desde un cajón.
+
+@Neck-SMR
+- Coloca un rodillo de masaje detrás de la cabeza contra el cuello, ligeramente girado para que presione los músculos a los lados de la columna, no la columna.
+- Empezando por la parte alta del cuello, rueda despacio hacia abajo deteniéndote 10-30 s en los puntos de tensión.
+
+@Neck_Press
+- Túmbate en un banco plano. Con agarre medio, saca la barra y sostenla sobre el cuello con los brazos estirados.
+- Toma aire y baja despacio hasta que la barra quede justo sobre el cuello.
+- Tras una pausa, empuja la barra con el pecho hasta arriba soltando el aire. Usa poco peso y un ayudante.
+
+@Oblique_Crunches
+- Túmbate boca arriba con la zona lumbar pegada al suelo y los pies elevados sobre una superficie plana.
+- Coloca una mano junto a la cabeza y la otra en el suelo, a un lado.
+- Eleva el hombro del lado de la mano en la cabeza hasta llevar ese codo a la rodilla contraria (codo derecho a rodilla izquierda).
+- Baja despacio. Completa la serie y cambia de lado.
+
+@Oblique_Crunches_-_On_The_Floor
+- Túmbate sobre el lado derecho con las piernas una encima de la otra y las rodillas algo flexionadas.
+- Coloca la mano izquierda detrás de la cabeza.
+- Sube el codo izquierdo como en un crunch, centrando el esfuerzo en los oblicuos.
+- Sube todo lo que puedas, aguanta un segundo y baja despacio. Completa la serie y cambia de lado.
+
+@Olympic_Squat
+- Apoya la barra sobre los trapecios con el pecho arriba y la cabeza al frente. Pies a la anchura de la cadera con las puntas algo abiertas.
+- Baja flexionando las rodillas y llevando la cadera atrás lo menos posible: las rodillas avanzan alineadas con los pies para mantener el tronco muy erguido.
+- Baja hasta el fondo con el peso en la parte delantera del talón.
+- Sube empujando con fuerza hasta quedar de pie.
+
+@On-Your-Back_Quad_Stretch
+- Túmbate en un banco plano o step y deja colgar una pierna y un brazo por el lateral.
+- Flexiona la rodilla y sujeta el empeine sin arquear la zona lumbar; lleva el ombligo hacia la columna.
+- Presiona el pie contra la mano. Para estirar también la cadera, eleva hacia el techo la cadera de la pierna que sujetas.
+- Cambia de lado.
+
+@On_Your_Side_Quad_Stretch
+- Túmbate sobre el lado derecho con la rodilla derecha flexionada a 90° apoyada delante (estabiliza el tronco).
+- Flexiona la rodilla izquierda hacia atrás y sujeta el pie izquierdo con la mano izquierda.
+- Para estirar el flexor de la cadera, empuja la cadera izquierda hacia delante mientras presionas el pie contra la mano. Cambia de lado.
+
+@One-Arm_Dumbbell_Row
+- Apoya la rodilla y la mano derechas sobre un banco plano, con el tronco paralelo al suelo.
+- Con la mano izquierda, coge la mancuerna del suelo y sostenla con la espalda recta y la palma hacia el tronco.
+- Sube la mancuerna hacia el costado llevando el codo atrás y pegado al cuerpo, soltando el aire, y aprieta la espalda arriba.
+- Baja despacio. Completa la serie y cambia de lado.
+
+@One-Arm_Flat_Bench_Dumbbell_Flye
+- Túmbate en un banco plano con una mancuerna en una mano sobre el muslo, con agarre neutro.
+- Súbela ayudándote del muslo y sostenla sobre el pecho con el brazo estirado; la otra mano se agarra al banco.
+- Con el codo algo flexionado, baja el brazo hacia el lado en un arco amplio hasta notar el estiramiento del pecho.
+- Vuelve por el mismo arco. Completa la serie y cambia de brazo.
+
+@One-Arm_High-Pulley_Cable_Side_Bends
+- Engancha un asa a la polea alta y colócate de lado a ella.
+- Agarra el asa con agarre supino y bájala hasta tener el codo pegado al costado y el asa junto al hombro.
+- Con los pies a la anchura de la cadera y la mano libre en la cintura, mantén el brazo fijo y contrae el oblicuo inclinándote lateralmente hacia abajo.
+- Vuelve despacio. Completa la serie y cambia de lado.
+
+@One-Arm_Incline_Lateral_Raise
+- Túmbate de lado en un banco inclinado con el hombro apoyado y una mancuerna en la mano de arriba, con el brazo estirado delante de ti, paralelo al suelo.
+- Manteniendo la mancuerna paralela al suelo, eleva el brazo hacia arriba hasta que apunte al techo, soltando el aire.
+- Bájalo despacio. Completa la serie y cambia de brazo.
+
+@One-Arm_Kettlebell_Clean
+- Coloca una kettlebell entre los pies; al agacharte para cogerla, saca el glúteo atrás y mira al frente.
+- Cárgala al hombro extendiendo piernas y cadera, girando la muñeca.
+- Devuélvela a la posición inicial y repite. Cambia de brazo al terminar.
+
+@One-Arm_Kettlebell_Clean_and_Jerk
+- Sujeta una kettlebell por el asa y cárgala al hombro extendiendo piernas y cadera, con la palma hacia delante.
+- Flexiona las rodillas con el tronco erguido.
+- Cambia de dirección de inmediato empujando con los talones, como un salto, y aprovecha el impulso para bloquearla por encima de la cabeza.
+- Bájala al hombro y luego entre las piernas, y repite.
+
+@One-Arm_Kettlebell_Floor_Press
+- Túmbate en el suelo con una kettlebell en una mano, el brazo apoyado en el suelo y la palma hacia dentro.
+- Empuja la kettlebell hacia el techo girando la muñeca.
+- Bájala a la posición inicial y repite. Cambia de brazo al terminar.
+
+@One-Arm_Kettlebell_Jerk
+- Sujeta una kettlebell por el asa y cárgala al hombro extendiendo piernas y cadera, con la palma hacia delante.
+- Flexiona las rodillas con el tronco erguido.
+- Cambia de dirección empujando con los talones, como un salto, y bloquea la kettlebell por encima de la cabeza aprovechando el impulso.
+- Bájala al hombro y repite.
+
+@One-Arm_Kettlebell_Military_Press_To_The_Side
+- Carga una kettlebell al hombro con la palma hacia dentro.
+- Mirando la kettlebell, empújala hacia arriba y ligeramente hacia fuera hasta bloquearla.
+- Bájala al hombro con control. Aprieta con fuerza dorsal, glúteo y abdomen para tener más estabilidad.
+
+@One-Arm_Kettlebell_Para_Press
+- Carga una kettlebell al hombro con la palma hacia delante.
+- Con el codo abierto hacia el lado, empújala hacia arriba y hacia fuera hasta bloquearla.
+- Bájala al hombro con control, apretando dorsal, glúteo y abdomen.
+
+@One-Arm_Kettlebell_Push_Press
+- Sujeta una kettlebell por el asa y cárgala al hombro con la palma hacia delante.
+- Flexiona ligeramente las rodillas con el tronco erguido.
+- Cambia de dirección empujando con los talones y usa el impulso de las piernas para bloquearla por encima de la cabeza.
+- Bájala al hombro y repite.
+
+@One-Arm_Kettlebell_Row
+- Coloca una kettlebell delante de los pies, flexiona un poco las rodillas y saca el glúteo atrás para inclinarte.
+- Agarra la kettlebell y rema hacia el abdomen juntando el omóplato y flexionando el codo, con la espalda recta.
+- Bájala y repite. Cambia de brazo al terminar.
+
+@One-Arm_Kettlebell_Snatch
+- Coloca una kettlebell entre los pies, flexiona las rodillas y lleva el glúteo atrás.
+- Mirando al frente, balancéala hacia atrás entre las piernas.
+- Cambia de dirección empujando con cadera y rodillas para acelerarla hacia arriba; al pasar por el hombro gira la mano y "da un puñetazo" al techo, recibiéndola bloqueada arriba.
+- Bájala en arco hasta entre las piernas y repite.
+
+@One-Arm_Kettlebell_Split_Jerk
+- Sujeta una kettlebell por el asa y cárgala al hombro con la palma hacia delante.
+- Flexiona las rodillas con el tronco erguido.
+- Empuja con fuerza y, mientras bloqueas la kettlebell arriba, abre las piernas en tijera para meterte debajo.
+- Junta los pies con el brazo bloqueado y baja la kettlebell al hombro.
+
+@One-Arm_Kettlebell_Split_Snatch
+- Sujeta una kettlebell por el asa con una mano.
+- Agáchate y cambia de dirección extendiendo cadera, rodillas y tobillos para subirla por encima de la cabeza.
+- Tras la extensión, baja a una tijera (una pierna delante y otra detrás) para recibirla bloqueada arriba, en un solo movimiento.
+- Ponte de pie con la kettlebell arriba, junta los pies y bájala.
+
+@One-Arm_Kettlebell_Swings
+- Coloca una kettlebell delante de los pies, separados algo más que la cadera. Flexiona la cadera con la espalda recta y agárrala con una mano.
+- Balancéala hacia atrás entre las piernas cargando la cadera.
+- Extiende la cadera con fuerza apretando los glúteos para lanzarla al frente hasta la altura del pecho, con el brazo estirado.
+- Déjala caer de nuevo entre las piernas y encadena las repeticiones. Cambia de brazo al terminar.
+
+@One-Arm_Long_Bar_Row
+- Coloca una barra en un landmine o en una esquina para que no se mueva y carga tu extremo.
+- Colócate junto a la barra y agárrala con una mano cerca del collarín; ponte de pie usando cadera y piernas.
+- Con las rodillas flexionadas, la cadera atrás, el pecho arriba y el brazo estirado, rema hacia el costado juntando el omóplato, sin tirones.
+- Tras una breve pausa, baja a la posición inicial.
+
+@One-Arm_Medicine_Ball_Slam
+- De pie, en posición atlética con un pie retrasado, sujeta un balón medicinal con la mano del lado de la pierna de atrás.
+- Sube el brazo con el balón por encima de la cabeza mientras extiendes cadera, rodillas y tobillos.
+- En la máxima extensión, flexiona hombro, columna y cadera para lanzar el balón con fuerza contra el suelo delante de ti.
+- Recógelo al rebotar y repite.
+
+@One-Arm_Open_Palm_Kettlebell_Clean
+- Coloca una kettlebell entre los pies.
+- Agarra el asa con una mano y súbela rápido dejando que gire para que la bola caiga sobre la palma abierta.
+- Lánzala ligeramente hacia delante y vuelve a coger el asa.
+- Bájala al suelo y repite. Trabaja ambos brazos.
+
+@One-Arm_Overhead_Kettlebell_Squats
+- Carga una kettlebell al hombro y empújala por encima de la cabeza hasta bloquear el brazo.
+- Mirando al frente y con la kettlebell siempre bloqueada, baja en sentadilla entre las piernas con la cabeza y el pecho arriba.
+- Haz una pausa de un segundo abajo y sube empujando con los talones.
+
+@One-Arm_Side_Deadlift
+- Colócate de lado junto al centro de una barra, flexiona las rodillas y baja hasta alcanzarla.
+- Agárrala como un maletín, con la palma hacia ti (puedes usar correas si el peso es alto).
+- Sube con la fuerza de las piernas soltando el aire hasta quedar de pie con el brazo estirado.
+- Baja despacio tomando aire. Completa la serie y cambia de lado.
+
+@One-Arm_Side_Laterals
+- Sujeta una mancuerna con una mano y agárrate con la otra a algo firme, como un banco inclinado; inclínate ligeramente hacia el brazo que trabaja para equilibrarte.
+- Con el tronco recto, deja la mancuerna al costado con el brazo estirado y la palma hacia ti.
+- Eleva el brazo hacia el lado con el codo algo flexionado hasta la altura del hombro, soltando el aire.
+- Baja despacio. Completa la serie y cambia de brazo.
+
+@One-Legged_Cable_Kickback
+- Engancha una tobillera a la polea baja y colócala en el tobillo.
+- Colócate frente a la máquina a unos 60 cm, sujetándote al bastidor.
+- Con rodillas y cadera algo flexionadas y el abdomen firme, aprieta el glúteo y lleva la pierna hacia atrás en semicírculo tan alto como te resulte cómodo, soltando el aire. Aprieta un segundo arriba.
+- Vuelve despacio. Completa la serie y cambia de pierna.
+
+@One_Arm_Against_Wall
+- De pie, apoya un brazo flexionado contra una pared o el marco de una puerta.
+- Inclínate despacio hacia el brazo hasta notar el estiramiento en el dorsal. Cambia de lado.
+
+@One_Arm_Chin-Up
+- Pasa una toalla por la barra de dominadas.
+- Agarra la barra con una mano y la palma hacia ti, y la toalla con la otra.
+- Inclina el tronco unos 30° hacia atrás con una ligera curva lumbar y el pecho fuera.
+- Sube hasta tocar la barra con la parte alta del pecho llevando hombros y brazos hacia abajo y atrás, soltando el aire. Baja despacio.
+
+@One_Arm_Dumbbell_Bench_Press
+- Túmbate en un banco plano con una mancuerna en una mano sobre el muslo.
+- Súbela ayudándote del muslo y sostenla a la altura del hombro; usa la otra mano para colocarla bien.
+- Gira la muñeca para que la palma mire hacia delante.
+- Bájala despacio hacia el lado del pecho tomando aire y empújala hasta arriba soltando el aire. Cambia de brazo al terminar.
+
+@One_Arm_Dumbbell_Preacher_Curl
+- Coge una mancuerna con la mano derecha y apoya el brazo en un banco Scott o inclinado, con la mancuerna a la altura del hombro.
+- Tomando aire, bájala despacio hasta estirar el brazo y el bíceps.
+- Soltando el aire, súbela con el bíceps hasta contraerlo del todo, intentando que el meñique quede más alto que el pulgar.
+- Completa la serie y cambia de brazo.
+
+@One_Arm_Floor_Press
+- Túmbate boca arriba en el suelo o una esterilla con las rodillas flexionadas.
+- Pide que te pasen una barra a una mano: el brazo casi estirado, como al inicio de un press de banca, con agarre neutro. La otra mano queda al costado.
+- Baja la barra hasta que el codo toque el suelo.
+- Empuja hasta estirar el brazo y cambia de lado al terminar.
+
+@One_Arm_Lat_Pulldown
+- Elige el peso y ajusta el rodillo de las rodillas para no levantarte. Agarra el asa con agarre prono.
+- Tira del asa hacia abajo flexionando el codo y llevándolo hacia el costado.
+- Haz una pausa abajo y sube despacio, sin dejar caer el peso hasta el tope entre repeticiones.
+- Completa la serie y cambia de brazo.
+
+@One_Arm_Pronated_Dumbbell_Triceps_Extension
+- Túmbate en un banco plano con una mancuerna en una mano, el brazo estirado y perpendicular al cuerpo y la palma hacia los pies (agarre prono).
+- Apoya la otra mano en el bíceps del brazo que trabaja para sujetarlo.
+- Baja la mancuerna flexionando el codo tomando aire.
+- Súbela contrayendo el tríceps y soltando el aire. Cambia de brazo al terminar.
+
+@One_Arm_Supinated_Dumbbell_Triceps_Extension
+- Túmbate en un banco plano con una mancuerna en una mano, el brazo estirado y perpendicular al cuerpo y la palma hacia la cara (agarre supino).
+- Apoya la otra mano en el bíceps del brazo que trabaja para sujetarlo.
+- Baja la mancuerna flexionando el codo tomando aire.
+- Súbela contrayendo el tríceps y soltando el aire. Cambia de brazo al terminar.

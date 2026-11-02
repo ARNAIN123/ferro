@@ -1,0 +1,299 @@
+@Barbell_Rear_Delt_Row
+- De pie, sujeta una barra con agarre prono más ancho que los hombros.
+- Flexiona un poco las rodillas e inclínate manteniendo la curva natural de la espalda hasta que el tronco quede paralelo al suelo, con los codos abiertos (tronco y brazos forman una "T").
+- Sube la barra hacia la parte alta del pecho con los codos abiertos, soltando el aire.
+- Baja despacio hasta estirar los brazos.
+
+@Barbell_Rollout_from_Bench
+- Coloca una barra cargada en el suelo junto al extremo de un banco. Arrodíllate sobre el banco y agárrala con agarre medio o estrecho.
+- Extiende la cadera y rueda la barra hacia delante despacio, llevando los brazos por encima de la cabeza y sin doblarlos.
+- Cuando llegues lo más lejos posible, vuelve a la posición inicial.
+
+@Barbell_Seated_Calf_Raise
+- Coloca un bloque a unos 30 cm delante de un banco plano y siéntate con la parte delantera de los pies sobre él.
+- Pide que te coloquen una barra sobre los muslos, unos centímetros por encima de las rodillas.
+- Sube de puntillas todo lo posible apretando los gemelos y soltando el aire.
+- Tras un segundo, baja despacio estirando bien los gemelos.
+
+@Barbell_Shoulder_Press
+- Siéntate en un banco con respaldo dentro de un rack, con la barra justo por encima de la cabeza. Agárrala con agarre prono.
+- Saca la barra y sostenla por encima de la cabeza con los brazos estirados.
+- Bájala despacio hasta los hombros tomando aire.
+- Súbela de nuevo soltando el aire.
+
+@Barbell_Shrug
+- De pie, con los pies a la anchura de los hombros, sujeta una barra delante con agarre prono algo más ancho que los hombros. Puedes usar correas.
+- Sube los hombros todo lo que puedas soltando el aire y aguanta un segundo, sin flexionar los brazos.
+- Baja despacio tomando aire.
+
+@Barbell_Shrug_Behind_The_Back
+- De pie, sujeta una barra por detrás de la espalda con agarre prono, algo más ancho que los hombros.
+- Con los brazos siempre estirados, sube los hombros todo lo posible soltando el aire y aguanta un segundo.
+- Baja despacio tomando aire.
+
+@Barbell_Side_Bend
+- De pie, con los pies a la anchura de los hombros y una barra sobre la parte alta de la espalda.
+- Con la espalda recta y la cabeza arriba, inclínate solo por la cintura hacia la derecha todo lo posible, tomando aire.
+- Aguanta un segundo, vuelve soltando el aire y repite hacia la izquierda. El resto del cuerpo no se mueve.
+
+@Barbell_Side_Split_Squat
+- De pie, con una barra sobre la espalda y los pies muy separados, con el pie de la pierna que trabaja girado hacia fuera.
+- Baja hacia ese lado flexionando cadera y rodilla de esa pierna, con la otra casi estirada, tomando aire.
+- Vuelve extendiendo cadera y rodilla soltando el aire. Completa las repeticiones y cambia de lado.
+
+@Barbell_Squat
+- Mejor dentro de un rack. Coloca la barra algo por debajo de los hombros, métete debajo y apóyala en la parte alta de la espalda.
+- Sácala del soporte extendiendo piernas y tronco, da un paso atrás y separa los pies a la anchura de los hombros con las puntas algo abiertas.
+- Baja despacio flexionando rodillas y cadera, con la espalda recta y la cabeza arriba, hasta que los muslos queden paralelos al suelo, tomando aire.
+- Sube empujando con el medio del pie y los talones, soltando el aire.
+
+@Barbell_Squat_To_A_Bench
+- Dentro de un rack, coloca un banco o cajón detrás de ti: sirve para llevar la cadera atrás y controlar la profundidad.
+- Apoya la barra en la parte alta de la espalda, sácala y colócate delante del banco con los pies a la anchura de los hombros.
+- Baja llevando la cadera atrás hasta rozar el banco con los glúteos, sin dejarte caer.
+- Sube empujando con los talones hasta quedar de pie.
+
+@Barbell_Step_Ups
+- De pie, con una barra sobre la parte alta de la espalda, colócate detrás de una plataforma elevada.
+- Apoya el pie derecho en la plataforma y sube extendiendo cadera y rodilla de esa pierna, empujando con el talón. Coloca también el pie izquierdo arriba, soltando el aire.
+- Baja primero con el pie izquierdo y luego con el derecho. Alterna o completa las repeticiones con una pierna.
+
+@Barbell_Walking_Lunge
+- De pie, con los pies a la anchura de los hombros y una barra sobre la parte alta de la espalda.
+- Da un paso al frente y baja la cadera hasta que la rodilla trasera casi toque el suelo, con el tronco recto y la rodilla delantera sobre el pie.
+- Empuja con el talón delantero para subir.
+- Avanza el pie trasero y repite la zancada con la otra pierna.
+
+@Battling_Ropes
+- Necesitas una cuerda pesada anclada por el centro a unos 5-6 m. Coge un extremo en cada mano con los brazos a los lados.
+- Sube un brazo rápidamente hasta la altura del hombro.
+- Mientras lo bajas, sube el otro.
+- Alterna los brazos lo más rápido que puedas haciendo ondas con las cuerdas.
+
+@Bear_Crawl_Sled_Drags
+- Con un arnés o un cinturón, engancha la cadena del trineo por detrás, de espaldas a él. Apoya las manos en el suelo con la espalda plana y las rodillas flexionadas.
+- Avanza empujando con las piernas alternas y usa las manos para equilibrarte y ayudarte a tirar, manteniendo la espalda plana durante el recorrido.
+
+@Behind_Head_Chest_Stretch
+- Siéntate erguido en el suelo con un compañero detrás.
+- Lleva las manos detrás de la cabeza y los codos hacia atrás; tu compañero te sujeta los codos.
+- Intenta llevar los codos hacia delante durante 10 s o más mientras él lo impide.
+- Relájate y deja que te lleve los codos hacia atrás hasta donde sea cómodo. Avísale cuando sea suficiente.
+
+@Bench_Dips
+- Coloca un banco detrás de ti, perpendicular al cuerpo, y apoya las manos en su borde a la anchura de los hombros, con los brazos estirados y las piernas extendidas al frente.
+- Baja despacio flexionando los codos hasta algo menos de 90°, tomando aire.
+- Empuja con los tríceps para volver arriba soltando el aire.
+
+@Bench_Jump
+- Colócate con un banco o cajón a 30-60 cm delante y los pies a la anchura de los hombros.
+- Haz una media sentadilla llevando los brazos atrás.
+- Rebota extendiendo cadera, rodillas y tobillos para saltar lo más alto posible, llevando los brazos arriba, y pasa por encima del banco.
+- Aterriza con las rodillas flexionadas amortiguando, date la vuelta y salta de nuevo.
+
+@Bench_Press_-_Powerlifting
+- Túmbate en el banco con la cabeza más allá de la barra si puedes. Mete los pies hacia atrás, arquea la espalda y junta los omóplatos; usa las piernas para clavar los trapecios en el banco y mantén esa tensión.
+- Agarra la barra (al menos cubriendo las marcas), sácala sin separar los omóplatos e intenta "romper" la barra con las manos.
+- Baja la barra controlando hasta tocar la parte baja del pecho, con los codos ligeramente cerrados.
+- Empuja con fuerza hasta bloquear los brazos.
+
+@Bench_Press_-_With_Bands
+- Sujeta una banda bajo la pata del banco más cercana a la cabeza, agárrala por las asas y túmbate.
+- Extiende los brazos sujetando las asas al frente a la anchura de los hombros, con las palmas hacia delante.
+- Baja las asas despacio hasta que los codos formen 90°.
+- Empuja hacia arriba con el pecho soltando el aire.
+
+@Bench_Press_with_Chains
+- Ajusta la cadena guía a la longitud deseada y cuelga las cadenas de los extremos de la barra.
+- Túmbate en el banco como en el press de powerlifting: pies atrás, espalda arqueada, omóplatos juntos y trapecios clavados en el banco.
+- Saca la barra, bájala controlando hasta el pecho y empuja con fuerza hasta bloquear. Las cadenas aumentan la carga al subir.
+
+@Bench_Sprint
+- De pie, apoya un pie sobre un banco o cajón con el talón cerca del borde.
+- Impúlsate con el pie de arriba extendiendo cadera y rodilla.
+- Aterriza con el otro pie arriba y el primero de vuelta abajo.
+- Alterna los pies de forma continua.
+
+@Bent-Arm_Barbell_Pullover
+- Túmbate en un banco plano y sujeta una barra con agarre a la anchura de los hombros, por encima del pecho y con los codos algo flexionados.
+- Sin cambiar la flexión de los brazos, baja la barra en arco por detrás de la cabeza tomando aire hasta notar el estiramiento.
+- Vuelve por el mismo arco hasta la posición inicial soltando el aire.
+
+@Bent-Arm_Dumbbell_Pullover
+- Coloca una mancuerna de pie sobre un banco plano. Túmbate atravesado en el banco, apoyando solo los hombros, con la cadera por debajo y los pies firmes en el suelo.
+- Agarra la mancuerna con las dos manos por uno de sus discos y sostenla sobre el pecho con los codos algo flexionados.
+- Bájala en arco por detrás de la cabeza tomando aire hasta notar el estiramiento.
+- Vuelve por el mismo arco soltando el aire.
+
+@Bent-Knee_Hip_Raise
+- Túmbate boca arriba con los brazos a los lados, las rodillas flexionadas unos 75° y los pies unos centímetros por encima del suelo.
+- Con el abdomen bajo, lleva las rodillas hacia ti hasta despegar la cadera del suelo, enrollando la pelvis y soltando el aire. Al final, las rodillas quedan sobre el pecho.
+- Baja despacio a la posición inicial tomando aire.
+
+@Bent_Over_Barbell_Row
+- Sujeta una barra con agarre prono, flexiona un poco las rodillas e inclina el tronco con la espalda recta hasta que quede casi paralelo al suelo, con la cabeza arriba y los brazos colgando.
+- Sin mover el tronco, sube la barra hacia el abdomen soltando el aire, con los codos pegados al cuerpo y apretando la espalda arriba.
+- Baja despacio tomando aire.
+
+@Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench
+- De pie, con una mancuerna en cada mano y un banco inclinado delante.
+- Con la espalda recta, inclínate hasta apoyar la frente en el banco, con el tronco paralelo al suelo y los brazos colgando con las palmas enfrentadas.
+- Con los codos algo flexionados, abre los brazos hacia los lados hasta la altura de los hombros, soltando el aire.
+- Baja despacio.
+
+@Bent_Over_Low-Pulley_Side_Lateral
+- Elige el peso y agarra el asa de la polea baja con la mano derecha.
+- Inclínate hasta que el tronco quede casi paralelo al suelo, con las rodillas algo flexionadas y la mano izquierda sobre el muslo izquierdo. El brazo derecho cuelga con el codo algo flexionado.
+- Eleva el brazo hacia el lado hasta que quede paralelo al suelo y en línea con la oreja, soltando el aire.
+- Baja despacio y cambia de brazo al terminar.
+
+@Bent_Over_One-Arm_Long_Bar_Row
+- Carga discos en un extremo de una barra olímpica y fija el otro en una esquina o con un objeto pesado (landmine).
+- Inclínate hasta que el tronco quede casi paralelo al suelo con las rodillas algo flexionadas.
+- Agarra la barra con una mano justo detrás de los discos y apoya la otra en la rodilla.
+- Rema llevando el codo hacia atrás y pegado al cuerpo, aprieta la espalda arriba y baja despacio. Cambia de brazo.
+
+@Bent_Over_Two-Arm_Long_Bar_Row
+- Carga discos en un extremo de una barra olímpica y fija el otro en una esquina o con un objeto pesado (landmine).
+- Colócate a horcajadas sobre la barra e inclínate hasta que el tronco quede casi paralelo al suelo, con las rodillas algo flexionadas.
+- Agarra la barra con las dos manos justo detrás de los discos (o con un agarre en V).
+- Rema hacia el pecho apretando la espalda y baja despacio.
+
+@Bent_Over_Two-Dumbbell_Row
+- Con una mancuerna en cada mano, flexiona un poco las rodillas e inclina el tronco con la espalda recta hasta que quede casi paralelo al suelo, con la cabeza arriba y los brazos colgando.
+- Sin mover el tronco, sube las mancuernas hacia los costados soltando el aire, con los codos cerca del cuerpo, y aprieta la espalda arriba.
+- Baja despacio tomando aire.
+
+@Bent_Over_Two-Dumbbell_Row_With_Palms_In
+- Con una mancuerna en cada mano y las palmas enfrentadas, flexiona un poco las rodillas e inclina el tronco con la espalda recta hasta casi quedar paralelo al suelo.
+- Sin mover el tronco, sube las mancuernas hacia los costados juntando los omóplatos y soltando el aire.
+- Aguanta un segundo y baja despacio.
+
+@Bent_Press
+- Lleva una kettlebell al hombro extendiendo piernas y cadera y girando la muñeca.
+- Inclínate hacia el lado contrario hasta tocar el suelo con la mano libre, sin dejar de mirar la kettlebell, mientras extiendes el codo y el brazo queda vertical.
+- Vuelve a erguirte con la kettlebell por encima de la cabeza.
+- Bájala al hombro y repite.
+
+@Bicycling
+- Súbete a la bicicleta, ajusta el sillín a tu altura y pedalea al ritmo y durante el tiempo que quieras.
+
+@Bicycling_Stationary
+- Súbete a la bicicleta estática y ajusta el sillín a tu altura.
+- Elige un programa o el modo manual en el menú (puede que tengas que pedalear para encenderla). Puedes introducir edad y peso para estimar las calorías.
+- Ajusta la resistencia durante el entreno y usa los sensores de las asas para controlar el pulso.
+
+@Board_Press
+- Túmbate en el banco con la cabeza más allá de la barra. Coloca de 1 a 5 tablas sobre el pecho (sujetas por un compañero, con bandas o bajo la camiseta).
+- Mete los pies atrás, arquea la espalda, junta los omóplatos y clava los trapecios en el banco.
+- Saca la barra, bájala hasta tocar las tablas y empuja con fuerza hasta bloquear.
+
+@Body-Up
+- Ponte en plancha sobre los antebrazos (separados a la anchura de los hombros) y las puntas de los pies, con el tronco recto.
+- Presionando las palmas contra el suelo, extiende los codos para elevar el cuerpo sin perder la rigidez del tronco.
+- Baja despacio hasta apoyar de nuevo los antebrazos y repite.
+
+@Body_Tricep_Press
+- Coloca una barra en un rack a la altura del pecho.
+- Agárrala a la anchura de los hombros y aléjate uno o dos pasos con los pies juntos y los brazos estirados, inclinado sobre la barra.
+- Flexiona los codos bajando el cuerpo hacia la barra.
+- Haz una pausa y vuelve extendiendo los codos. Para progresar, añade cadenas sobre los hombros.
+
+@Bodyweight_Flyes
+- Coloca dos barras Z con el mismo peso en el suelo, una junto a otra, de modo que puedan rodar.
+- Ponte en posición de flexión con las manos sobre las barras, brazos estirados y cuerpo recto.
+- Separa las manos despacio haciendo rodar las barras hacia fuera, tomando aire.
+- Cuando estén lo más separadas posible, vuelve juntándolas.
+
+@Bodyweight_Mid_Row
+- Agarra una barra de dominadas con agarre prono medio o ancho. Desde colgado, lleva las rodillas al pecho y pasa las piernas por encima de la barra.
+- Con los brazos estirados, flexiona los codos y junta los omóplatos para subir hasta que las piernas toquen la barra.
+- Tras una breve pausa, baja a la posición inicial.
+
+@Bodyweight_Squat
+- De pie, con los pies a la anchura de los hombros; puedes poner las manos detrás de la cabeza.
+- Flexiona rodillas y cadera llevando la cadera atrás.
+- Baja hasta la máxima profundidad que puedas y sube rápido, con la cabeza y el pecho arriba y las rodillas hacia fuera.
+
+@Bodyweight_Walking_Lunge
+- De pie, con los pies a la anchura de los hombros y las manos en la cintura.
+- Da un paso al frente y baja hasta que la rodilla trasera casi toque el suelo, con el tronco recto y la rodilla delantera sobre el pie.
+- Empuja con el talón delantero para subir, avanza el pie trasero y repite con la otra pierna.
+
+@Bosu_Ball_Cable_Crunch_With_Side_Bends
+- Coloca un asa en cada brazo de una máquina de poleas, en la posición más baja, y pon un bosu delante y en el centro.
+- Túmbate sobre el bosu con la zona lumbar apoyada y el glúteo cerca del suelo sin tocarlo. Agarra un asa con cada mano por detrás.
+- Con los pies separados, extiende los brazos al frente entre las rodillas.
+- Haz un crunch y, arriba, inclínate hacia un lado y luego hacia el otro. Vuelve despacio.
+
+@Bottoms-Up_Clean_From_The_Hang_Position
+- De pie, con una kettlebell en una mano.
+- Balancéala hacia atrás con fuerza y cambia de dirección con energía.
+- Aprieta el asa todo lo que puedas y súbela al hombro boca abajo (con la base hacia arriba).
+
+@Bottoms_Up
+- Túmbate boca arriba con las piernas estiradas y los brazos a los lados.
+- Lleva las rodillas al pecho flexionando cadera y rodillas y después estira las piernas hacia el techo, perpendiculares al suelo.
+- Gira y eleva la pelvis para despegar los glúteos del suelo.
+- Tras una breve pausa, vuelve a la posición inicial.
+
+@Box_Jump_Multiple_Response
+- Colócate relajado frente a un cajón, a la distancia de un brazo, con los brazos abajo y las piernas algo flexionadas.
+- Ayudándote de los brazos, salta hacia arriba y adelante y aterriza con los dos pies a la vez sobre el cajón.
+- Baja o salta enseguida al punto de partida y repite sin pausa.
+
+@Box_Skip
+- Coloca varios cajones en fila a unos 2,5 m entre sí y ponte frente al primero con una pierna algo retrasada.
+- Impúlsate con la pierna trasera para ganar toda la altura de cadera posible y aterriza sobre el cajón.
+- Nada más aterrizar, impulsa la otra pierna hacia delante y arriba y salta del cajón, cayendo con la misma pierna que pisó el cajón.
+- Camina hasta el siguiente cajón y repite.
+
+@Box_Squat
+- Sirve para controlar la profundidad y ganar fuerza explosiva. En un rack, coloca un cajón detrás de ti a la altura de una sentadilla paralela (o más alto o bajo si quieres).
+- Coloca la barra sobre la espalda, junta los omóplatos y gira los codos hacia delante como si quisieras doblarla.
+- Saca la barra, separa los pies y baja llevando la cadera atrás hasta sentarte en el cajón sin relajarte.
+- Sube con fuerza empujando con los talones y la cadera.
+
+@Box_Squat_with_Bands
+- En un rack, coloca un cajón detrás de ti y engancha bandas a los extremos de la barra, fijadas a anclajes, al rack o a mancuernas pesadas bien sujetas.
+- Coloca la barra sobre la espalda y sácala del soporte.
+- Baja llevando la cadera atrás hasta sentarte en el cajón, sin perder la tensión.
+- Sube explosivo; las bandas aumentan la resistencia al subir.
+
+@Box_Squat_with_Chains
+- En un rack, coloca un cajón detrás de ti a la altura de una sentadilla paralela.
+- Cuelga las cadenas de los extremos de la barra con la cadena guía ajustada para que queden unos eslabones en el suelo arriba del todo.
+- Coloca la barra sobre la espalda, sácala y baja llevando la cadera atrás hasta sentarte en el cajón.
+- Sube con fuerza; las cadenas añaden carga al subir.
+
+@Brachialis-SMR
+- Túmbate de lado con la parte externa del brazo apoyada en el foam roller, más o menos alineado con el cuerpo.
+- Eleva la cadera del suelo apoyando el peso en el brazo y en los pies.
+- Mantén 10-30 s en los puntos de tensión y cambia de lado.
+
+@Bradford_Rocky_Presses
+- Siéntate en un banco de press militar con la barra a la altura de los hombros y agárrala con agarre prono más ancho que los hombros.
+- Sube la barra por encima de la cabeza con los brazos estirados.
+- Bájala despacio por detrás de la cabeza tomando aire y vuelve a subirla soltando el aire.
+- En la siguiente repetición bájala por delante; ve alternando delante y detrás sin bloquear arriba.
+
+@Butt-Ups
+- Colócate en posición de flexión pero apoyado en los antebrazos, con los codos a 90°.
+- Arquea ligeramente la espalda hacia arriba en lugar de mantenerla del todo recta.
+- Sube los glúteos hacia el techo apretando el abdomen para acercar costillas y cadera, soltando el aire.
+- Baja despacio a la posición inicial tomando aire.
+
+@Butt_Lift_Bridge
+- Túmbate boca arriba con las manos a los lados, las rodillas flexionadas y los pies a la anchura de los hombros.
+- Empujando sobre todo con los talones, eleva la cadera manteniendo la espalda recta, soltando el aire, y aguanta un segundo arriba.
+- Baja despacio tomando aire.
+
+@Butterfly
+- Siéntate en la máquina con la espalda apoyada en el respaldo y agarra las asas; ajusta la máquina para que los brazos queden paralelos al suelo.
+- Junta las asas despacio apretando el pecho en el centro, soltando el aire, y aguanta un segundo.
+- Vuelve despacio tomando aire hasta estirar del todo el pecho.
+
+@Cable_Chest_Press
+- Ajusta el peso y siéntate agarrando las asas, con los brazos a unos 45° del cuerpo, los codos a 90° y la cabeza y el pecho arriba.
+- Extiende los codos empujando las asas al frente hasta juntarlas, con los omóplatos juntos.
+- Tras una pausa con los brazos estirados, vuelve a la posición inicial sin perder la tensión de los cables.

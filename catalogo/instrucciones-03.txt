@@ -1,0 +1,324 @@
+@Cable_Crossover
+- Coloca las poleas en la posición alta, elige la resistencia y agarra un asa con cada mano.
+- Da un paso al frente de la línea imaginaria entre las poleas, con el tronco ligeramente inclinado y los brazos juntos delante.
+- Con los codos algo flexionados, abre los brazos en un arco amplio hasta notar el estiramiento del pecho, tomando aire.
+- Vuelve por el mismo arco juntando las manos delante y apretando el pecho, soltando el aire.
+
+@Cable_Crunch
+- Arrodíllate bajo una polea alta con cuerda y agárrala, bajándola hasta tener las manos junto a la cara.
+- Flexiona un poco la cadera y deja que el peso estire la zona lumbar.
+- Sin mover la cadera, flexiona la cintura contrayendo el abdomen para llevar los codos hacia la mitad de los muslos, soltando el aire, y aguanta un segundo.
+- Vuelve despacio tomando aire.
+
+@Cable_Deadlifts
+- Coloca las poleas abajo del todo, elige el peso y ponte justo entre las columnas.
+- Baja flexionando cadera y rodillas hasta alcanzar las asas.
+- Empujando con los talones, extiende cadera y rodillas con las manos colgando a los lados y la cabeza y el pecho arriba.
+- Al quedar de pie, vuelve a bajar y repite.
+
+@Cable_Hammer_Curls_-_Rope_Attachment
+- Engancha una cuerda a la polea baja y colócate de pie a unos 30 cm de la máquina.
+- Agarra la cuerda con agarre neutro, con el tronco recto y los codos pegados al cuerpo, sin moverlos.
+- Sube la cuerda con los bíceps soltando el aire. Solo se mueven los antebrazos.
+- Aprieta un segundo y baja despacio.
+
+@Cable_Hip_Adduction
+- Colócate junto a una polea baja con la tobillera en el tobillo de la pierna más cercana a ella.
+- Sepárate de la máquina con las piernas abiertas y sujétate a la barra del aparato. Apóyate en la pierna lejana y deja que la polea tire de la otra hacia fuera.
+- Lleva la pierna de la tobillera hacia dentro, cruzándola por delante de la otra, soltando el aire.
+- Vuelve despacio y cambia de pierna al terminar.
+
+@Cable_Incline_Pushdown
+- Túmbate en un banco inclinado de espaldas a una polea alta con barra recta.
+- Agarra la barra por encima de la cabeza con agarre prono a la anchura de los hombros y lleva los brazos estirados al frente, con la barra a unos centímetros de los muslos.
+- Sin doblar los codos, sube los brazos en semicírculo hasta tener la barra sobre la cabeza, tomando aire.
+- Vuelve tirando con los dorsales hasta los muslos soltando el aire.
+
+@Cable_Incline_Triceps_Extension
+- Túmbate en un banco inclinado de espaldas a una polea alta con barra recta.
+- Agarra la barra por encima de la cabeza con agarre prono estrecho, con los codos cerrados y los brazos a unos 25° del suelo.
+- Sin mover los brazos, extiende los codos contrayendo los tríceps, soltando el aire, y aguanta un segundo.
+- Vuelve despacio a la posición inicial.
+
+@Cable_Internal_Rotation
+- Siéntate de lado junto a una polea baja (o en un banco si puedes subir la polea) y agarra el asa con el brazo más cercano.
+- Apoya el codo en el costado, flexionado a 90°, con el antebrazo apuntando hacia la polea.
+- Gira el hombro hacia dentro llevando el asa hacia el cuerpo hasta cruzar el antebrazo sobre el abdomen.
+- Vuelve despacio y cambia de brazo.
+
+@Cable_Iron_Cross
+- Coloca las poleas en posición alta, elige la resistencia y agarra un asa con cada mano.
+- Ponte entre las dos poleas con los brazos estirados hacia los lados en forma de "T", con la cabeza y el pecho arriba.
+- Sin doblar los codos, baja los brazos hacia los costados.
+- Tras una pausa en la contracción, vuelve a la posición inicial.
+
+@Cable_Judo_Flip
+- Engancha una cuerda a la polea más baja y colócate de lado a ella con las piernas separadas, agarrando la cuerda con las dos manos.
+- Gira el cuerpo alejándote de la polea llevando la cuerda por encima del hombro, como en una proyección de judo.
+- Pasa el peso de un pie al otro mientras giras y flexionas el tronco, tirando del cable hacia abajo.
+- Vuelve y repite; después cambia de lado.
+
+@Cable_Lying_Triceps_Extension
+- Túmbate en un banco plano y agarra la barra recta de una polea baja con agarre prono estrecho (es más fácil si te la pasan).
+- Con los brazos estirados, sitúa la barra sobre el tronco formando 90° con él.
+- Baja la barra flexionando los codos, sin mover los brazos y con los codos cerrados, hasta rozar la frente, tomando aire.
+- Extiende los codos para volver soltando el aire.
+
+@Cable_One_Arm_Tricep_Extension
+- Con la mano derecha, agarra un asa de la polea alta con agarre supino, de pie frente a la máquina.
+- Baja el asa hasta que el brazo quede pegado al costado y el codo flexionado a menos de 90°. Puedes adelantar un pie para equilibrarte.
+- Extiende el codo sin mover el brazo hasta estirarlo, soltando el aire, y aprieta el tríceps.
+- Vuelve despacio y cambia de brazo.
+
+@Cable_Preacher_Curl
+- Coloca un banco Scott a unos 60 cm de una polea baja con barra recta.
+- Siéntate con los codos y los brazos bien apoyados en la almohadilla y pide que te pasen la barra.
+- Con los brazos estirados, sube la barra hacia los hombros apretando los bíceps arriba y soltando el aire; aguanta un segundo.
+- Baja despacio hasta estirar los brazos.
+
+@Cable_Rear_Delt_Fly
+- Ajusta las poleas por encima de la cabeza y elige el peso.
+- Agarra la polea izquierda con la mano derecha y la derecha con la izquierda, cruzando los cables delante de ti.
+- Lleva los brazos hacia atrás y hacia fuera con los brazos rectos.
+- Haz una pausa al final y vuelve a la posición inicial.
+
+@Cable_Reverse_Crunch
+- Engancha una tobillera a la polea baja y coloca una esterilla delante.
+- Siéntate con los pies hacia la polea y engancha el cable a los tobillos.
+- Túmbate, eleva las piernas con las rodillas a 90° y alinea piernas y cable (ajusta la altura de la polea si hace falta).
+- Con las manos tras la cabeza, lleva las rodillas hacia el tronco despegando la cadera del suelo y vuelve despacio.
+
+@Cable_Rope_Overhead_Triceps_Extension
+- Engancha una cuerda a la polea baja.
+- Agarrándola con las dos manos y agarre neutro, extiende los brazos por encima de la cabeza, con los codos cerca de la cabeza y los brazos perpendiculares al suelo.
+- Baja la cuerda despacio por detrás de la cabeza sin mover los brazos, tomando aire, hasta estirar bien los tríceps.
+- Extiende los codos para volver arriba soltando el aire.
+
+@Cable_Rope_Rear-Delt_Rows
+- Siéntate en la estación de remo en polea baja como en un remo normal.
+- Engancha una cuerda y agárrala con agarre prono, con los brazos estirados, paralelos al suelo y los codos abiertos.
+- Con la zona lumbar recta y las rodillas algo flexionadas, tira de la cuerda hacia la parte alta del pecho, justo bajo el cuello, con los codos altos y abiertos.
+- Aprieta un segundo y vuelve despacio.
+
+@Cable_Russian_Twists
+- Engancha un asa y coloca la polea a media altura.
+- Túmbate sobre un fitball perpendicular al cable, a la distancia de un brazo de la polea, y agarra el asa con las dos manos.
+- Extiende los brazos sobre el pecho, en línea con la polea, con la cadera elevada y el abdomen firme.
+- Gira el tronco alejando el asa de la polea y vuelve controlando. Cambia de lado al terminar.
+
+@Cable_Seated_Crunch
+- Siéntate en un banco plano de espaldas a una polea alta.
+- Agarra la cuerda con las dos manos y colócalas sobre los hombros; deja que el peso estire un poco la zona lumbar.
+- Sin mover la cadera, flexiona la cintura llevando los codos hacia la cadera, soltando el aire.
+- Vuelve despacio tomando aire.
+
+@Cable_Seated_Lateral_Raise
+- Colócate entre dos poleas bajas enfrentadas con un banco plano detrás, perpendicular a ti, y elige el peso.
+- Siéntate en el borde del banco, inclínate con la espalda plana hasta apoyar el tronco en los muslos y pide que te pasen las asas (cada mano coge el cable contrario).
+- Eleva los brazos hacia los lados con los codos algo flexionados hasta la altura de los hombros.
+- Baja despacio.
+
+@Cable_Shoulder_Press
+- Coloca las poleas abajo del todo, elige el peso y ponte entre las columnas.
+- Agarra los cables a la altura de los hombros con las palmas hacia delante.
+- Con la cabeza y el pecho arriba, extiende los codos para llevar las asas por encima de la cabeza.
+- Tras una pausa arriba, vuelve a la posición inicial.
+
+@Cable_Shrugs
+- Agarra una barra enganchada a la polea baja con agarre prono a la anchura de los hombros o algo más.
+- De pie, cerca de la polea, con los brazos estirados delante.
+- Sube los hombros lo más alto posible soltando el aire y aguanta un segundo. Los brazos siguen estirados: solo se mueven los hombros.
+- Baja a la posición inicial.
+
+@Cable_Wrist_Curl
+- Coloca un banco plano delante de una polea baja con barra recta.
+- Agarra la barra con agarre supino y apoya los antebrazos sobre los muslos, con las muñecas por fuera de las rodillas.
+- Sube las muñecas soltando el aire y aguanta un segundo.
+- Baja despacio tomando aire.
+
+@Calf-Machine_Shoulder_Shrug
+- Colócate en la máquina de gemelos con las almohadillas sobre los hombros, el tronco recto y los brazos relajados a los lados.
+- Sube los hombros hacia las orejas soltando el aire y aguanta un segundo.
+- Baja despacio tomando aire.
+
+@Calf_Press
+- Ajusta el asiento para que las piernas queden apenas flexionadas al inicio, con la parte delantera de los pies firme en la plataforma.
+- Elige el peso y agarra las asas.
+- Extiende las rodillas levantando apenas el peso, con el tobillo flexionado y las puntas hacia arriba. Empuja con la parte delantera de los pies todo lo posible.
+- Tras una breve pausa, vuelve y repite.
+
+@Calf_Press_On_The_Leg_Press_Machine
+- Siéntate en la prensa con los pies en la plataforma a la anchura de los hombros.
+- Quita los seguros y empuja la plataforma hasta estirar las piernas sin bloquear las rodillas. Baja los pies hasta apoyar solo la parte delantera en el borde inferior.
+- Empuja la plataforma con las puntas extendiendo los tobillos lo más posible, soltando el aire, y aguanta un segundo.
+- Vuelve despacio estirando bien los gemelos.
+
+@Calf_Raise_On_A_Dumbbell
+- Sujétate a un objeto firme y súbete sobre el asa de una mancuerna (mejor de discos redondos: al rodar, trabajas más la estabilidad).
+- Rueda el pie un poco hacia delante para estirar bien el gemelo.
+- Sube de puntillas rodando el pie sobre el asa hasta la extensión completa, soltando el aire, y aprieta un segundo.
+- Baja despacio. Cambia de pierna al terminar.
+
+@Calf_Raises_-_With_Bands
+- Pisa una banda con la parte delantera de los pies, con la misma longitud a cada lado.
+- Sujeta las asas junto a los hombros como para un press, con los codos flexionados, para tensar la banda.
+- Ponte de puntillas soltando el aire y aprieta los gemelos arriba.
+- Baja despacio.
+
+@Calf_Stretch_Elbows_Against_Wall
+- Colócate de cara a una pared a medio metro o más.
+- Apóyate en la pared sobre los antebrazos.
+- Intenta mantener los talones en el suelo y aguanta 10-20 s. Aléjate o acércate para hacerlo más o menos intenso.
+
+@Calf_Stretch_Hands_Against_Wall
+- Colócate de cara a una pared, a un par de pasos, con un pie adelantado.
+- Inclínate y apoya las manos en la pared, con talón, cadera y cabeza en línea recta.
+- Mantén el talón de atrás en el suelo 10-20 s y cambia de lado.
+
+@Calves-SMR
+- Siéntate en el suelo con un foam roller bajo la pierna; la otra puede ir cruzada encima o en el suelo, ayudando a soportar el peso.
+- Apoya las manos a los lados o detrás y eleva la cadera para cargar el peso sobre el gemelo.
+- Rueda desde debajo de la rodilla hasta el tobillo, deteniéndote 10-30 s en los puntos de tensión. Repite con la otra pierna.
+
+@Car_Deadlift
+- Este aparato de strongman suele tener asas neutras (o una barra recta) y se carga con un coche u objetos pesados.
+- Céntrate entre las asas (algo más atrás si eres mejor en peso muerto), con los pies a la anchura de la cadera.
+- Flexiona la cadera, agarra las asas, toma aire y baja la cadera flexionando las rodillas, con el pecho arriba y la espalda recta.
+- Empuja con los talones hasta quedar de pie y baja controlando.
+
+@Car_Drivers
+- De pie, sujeta un disco con las dos manos en posición "3 y 9" y los brazos estirados al frente.
+- Gira el disco todo lo posible hacia un lado, como si giraras un volante.
+- Gíralo después hasta el lado contrario y continúa alternando.
+
+@Carioca_Quick_Step
+- Colócate con los pies algo separados y el brazo izquierdo arriba en posición atlética relajada.
+- Con el pie derecho, da un paso rápido por detrás y sube la rodilla.
+- Lleva los brazos arriba al subir la rodilla, que debe subir y bajar recta. No gires los pies y mira al frente mientras te desplazas lateralmente.
+
+@Cat_Stretch
+- Colócate a cuatro patas.
+- Mete el abdomen y redondea la columna, la zona lumbar, los hombros y el cuello, dejando caer la cabeza.
+- Mantén 15 segundos.
+
+@Catch_and_Overhead_Throw
+- De pie, frente a una pared o un compañero.
+- Con las dos manos, lleva el balón por detrás de la cabeza estirándote todo lo posible y lánzalo hacia delante con fuerza.
+- Acompaña el lanzamiento y prepárate para recibir el rebote. Contra la pared, colócate lo bastante cerca y apunta algo más alto.
+
+@Chain_Handle_Extension
+- Necesitas dos asas de polea, un banco plano y cadenas: engancha el centro de cada cadena a un asa y túmbate en el banco con los codos apuntando al techo.
+- Extiende los codos sin mover los brazos, con las muñecas en pronación.
+- Haz una pausa con los brazos bloqueados y vuelve a la posición inicial.
+
+@Chain_Press
+- Engancha las cadenas a las asas y túmbate en un banco plano como en un press con mancuernas, con las muñecas en pronación y los brazos verticales.
+- Baja las cadenas flexionando los codos; parte de la cadena se apoya en el suelo.
+- Al llegar a 90° de codo, empuja de nuevo hasta bloquear.
+
+@Chair_Leg_Extended_Stretch
+- Siéntate erguido en una silla agarrando el asiento por los lados.
+- Levanta una pierna extendiendo la rodilla y flexionando el tobillo.
+- Llévala despacio hacia fuera todo lo que puedas, vuelve al centro y bájala. Repite con la otra.
+
+@Chair_Lower_Back_Stretch
+- Siéntate erguido en una silla.
+- Inclínate hacia un lado con el brazo por encima de la cabeza; puedes sujetarte a la silla con la otra mano.
+- Mantén 10 s y repite hacia el otro lado.
+
+@Chair_Squat
+- Coloca la barra de la máquina a tu altura, cárgala y apóyala en la parte alta de la espalda.
+- Agárrala con las palmas hacia delante, desbloquéala y levántala extendiendo las piernas.
+- Adelanta los pies unos 45 cm respecto a la barra, a la anchura de los hombros y con las puntas algo abiertas, mirando al frente.
+- Baja como si te sentaras en una silla hasta que los muslos queden paralelos al suelo y sube empujando con los talones.
+
+@Chair_Upper_Body_Stretch
+- Siéntate en el borde de una silla agarrando el respaldo.
+- Estira los brazos con la espalda recta y lleva el tronco hacia delante hasta notar el estiramiento. Mantén 20-30 s.
+
+@Chest_And_Front_Of_Shoulder_Stretch
+- De pie, con las piernas juntas, sujeta una barra ligera o un palo de escoba.
+- Agárrala algo más ancho que los hombros, delante de ti y con las palmas hacia abajo.
+- Súbela con cuidado por encima y por detrás de la cabeza hasta notar el estiramiento.
+
+@Chest_Push_from_3_point_stance
+- Colócate en tres apoyos, agachado con la espalda plana y una mano en el suelo, con el balón medicinal delante.
+- Al dar el primer paso, lleva el balón al pecho y prepara las dos manos para el lanzamiento.
+- En el segundo paso, lanza el balón hacia delante de forma explosiva y lo más fuerte posible.
+
+@Chest_Push_multiple_response
+- Arrodíllate frente a una pared o a un compañero, con el balón pegado al pecho.
+- Lánzalo empujando de forma explosiva hacia delante con la cadera y los brazos.
+- Déjate caer hacia delante frenando con las manos y vuelve enseguida a la posición erguida para repetir.
+
+@Chest_Push_single_response
+- De rodillas, sujeta el balón medicinal pegado al pecho con las dos manos.
+- Lánzalo lo más lejos posible empujando de forma explosiva hacia delante con la cadera y los brazos.
+- Déjate caer hacia delante frenando con las manos.
+
+@Chest_Push_with_Run_Release
+- Colócate en posición atlética, con las rodillas flexionadas, la cadera atrás y la espalda plana, sosteniendo el balón cerca de las piernas.
+- Al dar el primer paso, lleva el balón al pecho.
+- En el segundo paso, lánzalo hacia delante de forma explosiva y esprinta unos 10 metros.
+
+@Chest_Stretch_on_Stability_Ball
+- Colócate a cuatro patas junto a un fitball.
+- Apoya el codo encima del balón con el brazo abierto hacia el lado.
+- Baja el tronco hacia el suelo manteniendo el codo sobre el balón. Mantén 20-30 s y cambia de brazo.
+
+@Childs_Pose
+- Ponte a cuatro patas y adelanta las manos.
+- Siéntate sobre los talones dejando que los brazos se deslicen por el suelo para estirar toda la columna.
+- Lleva las manos junto a los pies, relájate, respira hacia la espalda y apoya la frente en el suelo. Evítalo si tienes problemas de rodilla.
+
+@Chin-Up
+- Agarra la barra con las palmas hacia ti y un agarre más estrecho que los hombros.
+- Colgado, mantén el tronco lo más recto posible, con una ligera curva lumbar y el pecho fuera.
+- Sube soltando el aire hasta que la cabeza llegue a la altura de la barra, apretando los bíceps.
+- Baja despacio hasta estirar del todo los brazos.
+
+@Chin_To_Chest_Stretch
+- Siéntate en el suelo.
+- Coloca las manos entrelazadas detrás de la cabeza, con los pulgares hacia abajo y los codos al frente.
+- Lleva despacio la cabeza hacia el pecho y mantén 20-30 s.
+
+@Circus_Bell
+- La circus bell es una mancuerna gigante de asa gruesa. Colócala entre los pies y agárrala con las dos manos.
+- Cárgala al hombro extendiendo cadera y rodillas y suelta la mano de apoyo.
+- Deja una de las bolas por detrás del hombro para no perder el equilibrio.
+- Para subirla, flexiona las rodillas y empuja hacia arriba extendiendo el brazo, inclinándote ligeramente hacia el lado contrario.
+
+@Clean
+- Con la barra en el suelo junto a las espinillas, agárrala con agarre prono (o de gancho) justo por fuera de las piernas. Baja la cadera con el peso en los talones, espalda recta, cabeza al frente, pecho arriba y hombros justo por delante de la barra.
+- Primer tirón: empuja con los talones extendiendo las rodillas, con el mismo ángulo de espalda y los brazos estirados, hasta pasar las rodillas.
+- Segundo tirón: extiende de forma explosiva cadera, rodillas y tobillos, encoge los hombros y tira con los codos altos.
+- Métete debajo de la barra recibiéndola sobre los hombros en sentadilla frontal y ponte de pie.
+
+@Clean_Deadlift
+- De pie, con la barra junto a las espinillas, los pies bajo la cadera y algo abiertos. Agárrala con agarre prono o de gancho a la anchura de los hombros.
+- Baja a la barra con la columna en extensión, los hombros por delante de la barra y la espalda lo más vertical posible.
+- Empuja el suelo con la parte delantera de los talones manteniendo el ángulo de la espalda mientras sube la barra.
+- Termina extendiendo la cadera hasta quedar de pie y baja controlando.
+
+@Clean_Pull
+- Con la barra junto a las espinillas, agárrala con agarre prono o de gancho justo por fuera de las piernas. Cadera abajo, peso en los talones, espalda recta y pecho arriba, con los hombros por delante de la barra.
+- Primer tirón: extiende las rodillas empujando con los talones, con el mismo ángulo de espalda y los brazos estirados con los codos hacia fuera.
+- Segundo tirón: extiende de forma explosiva cadera, rodillas y tobillos y encoge los hombros, sin meterte debajo de la barra.
+- Baja la barra controlando.
+
+@Clean_Shrug
+- Agarra la barra con agarre prono o de gancho a la anchura de los hombros, colgando a mitad del muslo, con la espalda recta y algo inclinada.
+- Encoge los hombros hacia las orejas de forma explosiva.
+- Puedes usar más peso que en la cargada, pero no tanto que el movimiento se vuelva lento.
+
+@Clean_and_Jerk
+- Con la barra junto a las espinillas, agárrala por fuera de las piernas con la cadera abajo, la espalda recta y el pecho arriba.
+- Haz la cargada: primer tirón hasta pasar las rodillas, segundo tirón explosivo y recepción en sentadilla frontal; ponte de pie.
+- Para el envión, flexiona ligeramente las rodillas y empuja con fuerza con las piernas, metiéndote bajo la barra en tijera con los brazos bloqueados.
+- Junta los pies con la barra bloqueada sobre la cabeza y bájala controlando.
+
+@Clean_and_Press
+- Colócate con los pies a la anchura de los hombros y las rodillas por dentro de los brazos. Con la espalda plana, agarra la barra con agarre prono algo más ancho que los hombros, junto a las espinillas.
+- Tira de la barra extendiendo rodillas y cadera de forma explosiva y recíbela sobre los hombros.
+- Desde ahí, empújala por encima de la cabeza hasta bloquear los brazos.
+- Bájala a los hombros y luego al suelo controlando.
