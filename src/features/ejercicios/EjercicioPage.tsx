@@ -5,15 +5,18 @@ import { Cabecera } from '../../components/Cabecera'
 import { Hoja } from '../../components/Hoja'
 import { Icono } from '../../components/Icono'
 import { Boton, Etiqueta, Tarjeta, Vacio } from '../../components/ui'
+import { historialEjercicio } from '../../db/consultas'
 import { db } from '../../db/db'
 import { actualizarEjercicio, archivarEjercicio } from '../../db/ejercicios'
 import { NOMBRE_MATERIAL, NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { fmtKg } from '../../lib/formato'
 import { FormEjercicio } from './FormEjercicio'
+import { HistorialEjercicio } from './HistorialEjercicio'
 
 export function EjercicioPage() {
   const { id = '' } = useParams()
   const ejercicio = useLiveQuery(() => db.ejercicios.get(id), [id])
+  const historial = useLiveQuery(() => historialEjercicio(id), [id])
   const [editando, setEditando] = useState(false)
 
   if (ejercicio === undefined) return <Cabecera titulo="" atras />
@@ -64,6 +67,11 @@ export function EjercicioPage() {
             </button>
           )}
         </Tarjeta>
+
+        <section>
+          <h2 className="mb-2 font-bold">Historial</h2>
+          {historial && <HistorialEjercicio historial={historial} />}
+        </section>
 
         <Boton
           variante={ejercicio.archivado ? 'secundario' : 'peligro'}

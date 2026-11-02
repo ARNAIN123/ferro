@@ -85,8 +85,8 @@ export interface Sesion {
   /** Hora absoluta en la que termina el descanso en curso. */
   descansoFin: number | null
   descansoDuracion: number | null
-  /** Índice de la tarjeta visible, para retomar exactamente donde estaba. */
-  ejercicioActivo: number
+  /** Tarjeta visible (SesionEjercicio), para retomar exactamente donde estaba. */
+  ejercicioActivoId: string | null
 }
 
 export type EstadoSesionEjercicio = 'activo' | 'saltado'
