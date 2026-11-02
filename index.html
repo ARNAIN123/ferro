@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es" data-theme="oscuro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#11100e" />
+    <meta name="description" content="Ferro: registra tus entrenos de gimnasio en un toque y sigue tu progreso." />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Ferro</title>
+    <script>
+      // Aplica el tema guardado antes de pintar para evitar el destello claro/oscuro.
+      try {
+        var t = localStorage.getItem('ferro-tema');
+        if (t === 'claro' || t === 'oscuro') document.documentElement.dataset.theme = t;
+        else if (t === 'sistema')
+          document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: light)').matches ? 'claro' : 'oscuro';
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
