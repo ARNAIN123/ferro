@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { Cabecera } from '../../components/Cabecera'
 import { Interruptor, Segmentado, Tarjeta } from '../../components/ui'
 import type { Tema } from '../../domain/tipos'
@@ -79,6 +79,11 @@ export function AjustesPage() {
         <SeccionDatos a={a} />
 
         {esNativa() && <SeccionActualizaciones />}
+
+        {/* Provisional: para revisar el avatar nuevo antes de usarlo en toda la app (ronda 2, fase 3). */}
+        <Link to="/vista-previa/avatar" className="flex min-h-12 items-center justify-center rounded-2xl font-semibold text-accent active:bg-surface-2">
+          Vista previa del avatar nuevo
+        </Link>
 
         <p className="pt-2 text-center text-xs text-muted">
           Ferro v{__APP_VERSION__} ·{' '}
