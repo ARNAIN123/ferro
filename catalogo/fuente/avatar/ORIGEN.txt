@@ -1,0 +1,3 @@
+Open Muscle Map (https://github.com/PerspicaciousGuy/Open-Muscle-Map), licencia MIT,
+commit df85e6c6cfecb14f66fd0b39a8d409a417cc6407 (2026-10-17), archivo muscle-map/male-muscle-map.svg.
+Se usa como base geométrica del avatar; scripts/generar-avatar.mjs lo convierte y le añade fibras, sombreado y la división del pectoral.

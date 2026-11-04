@@ -52,7 +52,7 @@ npm run catalogo                                   # regenera src/catalogo/ejerc
 npm run catalogo -- --imagenes <ruta>/exercises    # además convierte las imágenes a WebP en public/img/
 ```
 
-Al arrancar, la app compara la versión del catálogo con la guardada y, si cambió, actualiza los ejercicios de la biblioteca sin tocar tus notas ni tus ejercicios propios. Los trazados del mapa muscular vienen de react-native-body-highlighter (MIT) y se regeneran con `node scripts/generar-mapa.mjs`. Créditos completos en `/licencias.txt` (enlazado al pie de Ajustes).
+Al arrancar, la app compara la versión del catálogo con la guardada y, si cambió, actualiza los ejercicios de la biblioteca sin tocar tus notas ni tus ejercicios propios. Los trazados del mapa muscular vienen de react-native-body-highlighter (MIT) y se regeneran con `node scripts/generar-mapa.mjs`. El **avatar muscular** nuevo parte de la figura de [Open Muscle Map](https://github.com/PerspicaciousGuy/Open-Muscle-Map) (MIT, fijada en `catalogo/fuente/avatar/`); `node scripts/generar-avatar.mjs` la convierte en `src/components/avatar/trazados.ts`, divide el pectoral en porción superior e inferior y calcula las fibras de cada músculo. Vista previa para revisarlo en `/vista-previa/avatar`. Créditos completos en `/licencias.txt` (enlazado al pie de Ajustes).
 
 ## Pasar de la PWA a la app Android (una sola vez)
 

@@ -40,6 +40,11 @@
   --mapa-piel: #7c7a78;
   --mapa-pliegue: #383634;
   --mapa-pelo: #4a4846;
+  --avatar-piel: #4d4a47;
+  --avatar-musculo: #9d9a96;
+  --avatar-tendon: #6a6764;
+  --avatar-surco: #232120;
+  --avatar-fibra: #1d1b1a;
   color-scheme: dark;
 }
 
@@ -60,6 +65,11 @@
   --mapa-piel: #bab8b5;
   --mapa-pliegue: #85827e;
   --mapa-pelo: #6e6b67;
+  --avatar-piel: #9e9a95;
+  --avatar-musculo: #e7e4e0;
+  --avatar-tendon: #c4c0bb;
+  --avatar-surco: #57534f;
+  --avatar-fibra: #3a3633;
   color-scheme: light;
 }
 
