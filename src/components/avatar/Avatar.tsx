@@ -20,9 +20,10 @@ interface Props {
 }
 
 /**
- * Avatar muscular: figura anatómica frontal y trasera con cada músculo contorneado, sus fibras y
- * un sombreado suave. Los músculos trabajados se tiñen del color de acento, más intenso cuanto
- * más se han trabajado, con una transición suave entre niveles.
+ * Avatar muscular en relieve: figura anatómica frontal y trasera en la que cada músculo es un volumen
+ * iluminado desde arriba a la izquierda (luces de SVG sobre un mapa de alturas hecho con su forma
+ * difuminada), con surcos oscuros entre músculos y fibras sutiles. Los músculos trabajados se tiñen del
+ * color de acento, más intenso cuanto más se han trabajado, con una transición suave entre niveles.
  */
 export function Avatar({ niveles, seleccionado, onTocar, describir, className = '', soloFrente }: Props) {
   const uid = useId().replace(/:/g, '')
@@ -33,20 +34,19 @@ export function Avatar({ niveles, seleccionado, onTocar, describir, className = 
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <svg viewBox={cajaDe(vistas.map(([, v]) => v))} className="block h-auto max-h-full w-full" aria-label="Avatar muscular">
+        <defs>
+          <Relieve id={`${uid}-cuerpo`} difuminado={9} altura={7} difusa={1.3} brillo={0.2} />
+          <Relieve id={`${uid}-musculo`} difuminado={4.5} altura={5} difusa={1.3} brillo={0.28} />
+          <filter id={`${uid}-suave`}>
+            <feGaussianBlur stdDeviation={0.9} />
+          </filter>
+        </defs>
         {vistas.map(([nombre, v]) => {
           const id = `${uid}${nombre[0]}`
+          const grupos = agrupar(v.partes)
           return (
             <g key={nombre} role="group" aria-label={`Vista ${nombre} del cuerpo`}>
               <defs>
-                <radialGradient id={`${id}-vol`} cx="38%" cy="28%" r="85%">
-                  <stop offset="0" stopColor="#fff" stopOpacity="0.38" />
-                  <stop offset="0.55" stopColor="#fff" stopOpacity="0" />
-                  <stop offset="1" stopColor="#000" stopOpacity="0.32" />
-                </radialGradient>
-                <linearGradient id={`${id}-luz`} x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stopColor="#fff" stopOpacity="0.08" />
-                  <stop offset="1" stopColor="#000" stopOpacity="0.2" />
-                </linearGradient>
                 {v.partes.map((p, i) => (
                   <clipPath key={i} id={`${id}-c${i}`}>
                     <path d={p.d} />
@@ -60,25 +60,58 @@ export function Avatar({ niveles, seleccionado, onTocar, describir, className = 
                   ) : null,
                 )}
               </defs>
-              <path d={v.silueta} fill="var(--avatar-piel)" stroke="var(--avatar-surco)" strokeWidth={3} strokeLinejoin="round" />
-              <path d={v.silueta} fill={`url(#${id}-luz)`} />
-              {agrupar(v.partes).map(([clave, { musculo, partes }]) => (
-                <Grupo
-                  key={clave}
-                  musculo={musculo}
-                  partes={partes}
-                  id={id}
-                  nivel={porRegion.get(partes[0]!.p.region) ?? 0}
-                  seleccionado={musculo !== null && musculo === seleccionado}
-                  onTocar={onTocar}
-                  describir={describir}
-                />
-              ))}
+              <path d={v.silueta} fill="var(--avatar-piel)" filter={`url(#${uid}-cuerpo)`} />
+              {/* Un solo filtro de relieve para todos los músculos de la vista (más ligero que uno por músculo). */}
+              <g filter={`url(#${uid}-musculo)`}>
+                {grupos.map(([clave, { musculo, partes }]) => (
+                  <Grupo
+                    key={clave}
+                    musculo={musculo}
+                    partes={partes}
+                    id={id}
+                    nivel={porRegion.get(partes[0]!.p.region) ?? 0}
+                    seleccionado={musculo !== null && musculo === seleccionado}
+                    onTocar={onTocar}
+                    describir={describir}
+                  />
+                ))}
+              </g>
+              {/* Surcos entre músculos, algo difuminados como una sombra de contacto. */}
+              <g filter={`url(#${uid}-suave)`} pointerEvents="none">
+                {v.partes.map((p, i) => (
+                  <path key={i} d={p.d} fill="none" stroke="var(--avatar-surco)" strokeOpacity={0.55} strokeWidth={2.2} strokeLinejoin="round" />
+                ))}
+              </g>
+              <path d={v.silueta} fill="none" stroke="var(--avatar-surco)" strokeOpacity={0.7} strokeWidth={2.5} pointerEvents="none" />
+              {seleccionado != null &&
+                v.partes
+                  .filter((p) => musculoDeRegionAvatar(p.region) === seleccionado)
+                  .map((p, i) => (
+                    <path key={`s${i}`} d={p.d} fill="none" stroke="var(--text)" strokeWidth={4} strokeLinejoin="round" pointerEvents="none" />
+                  ))}
             </g>
           )
         })}
       </svg>
     </div>
+  )
+}
+
+/** Luz difusa y especular sobre la forma difuminada: da volumen a lo que se dibuje dentro. */
+function Relieve({ id, difuminado, altura, difusa, brillo }: { id: string; difuminado: number; altura: number; difusa: number; brillo: number }) {
+  return (
+    <filter id={id} x="-5%" y="-5%" width="110%" height="110%" colorInterpolationFilters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation={difuminado} result="alto" />
+      <feDiffuseLighting in="alto" surfaceScale={altura} diffuseConstant={difusa} lightingColor="#fff" result="difusa">
+        <feDistantLight azimuth={225} elevation={42} />
+      </feDiffuseLighting>
+      <feSpecularLighting in="alto" surfaceScale={altura} specularConstant={brillo} specularExponent={20} lightingColor="#fff" result="especular">
+        <feDistantLight azimuth={225} elevation={48} />
+      </feSpecularLighting>
+      <feComposite in="especular" in2="SourceAlpha" operator="in" result="brillo" />
+      <feComposite in="SourceGraphic" in2="difusa" operator="arithmetic" k1={1} result="sombreado" />
+      <feComposite in="sombreado" in2="brillo" operator="arithmetic" k2={1} k3={1} />
+    </filter>
   )
 }
 
@@ -155,14 +188,10 @@ function Grupo({ musculo, partes, id, nivel, seleccionado, onTocar, describir }:
                 pointerEvents="none"
               />
             )}
-            <path d={p.d} fill={`url(#${id}-vol)`} pointerEvents="none" />
             <g clipPath={`url(#${id}-c${i})`} pointerEvents="none">
-              {p.fibras && <path d={p.fibras} fill="none" stroke="var(--avatar-fibra)" strokeOpacity={0.17} strokeWidth={1.1} strokeLinecap="round" />}
-              <path d={p.d} fill="none" stroke="var(--avatar-fibra)" strokeOpacity={0.32} strokeWidth={7} />
-              {p.recorte && <path d={p.recorte} fill="none" stroke="var(--avatar-surco)" strokeOpacity={0.55} strokeWidth={1.3} />}
+              {p.fibras && <path d={p.fibras} fill="none" stroke="var(--avatar-fibra)" strokeOpacity={0.12} strokeWidth={1.1} strokeLinecap="round" />}
+              {p.recorte && <path d={p.recorte} fill="none" stroke="var(--avatar-surco)" strokeOpacity={0.35} strokeWidth={2} />}
             </g>
-            <path d={p.d} fill="none" stroke="var(--avatar-surco)" strokeWidth={1.8} strokeLinejoin="round" pointerEvents="none" />
-            {seleccionado && <path d={p.d} fill="none" stroke="var(--text)" strokeWidth={4} strokeLinejoin="round" pointerEvents="none" />}
           </>
         )
         return p.recorte ? (
