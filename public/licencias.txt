@@ -6,9 +6,13 @@ Ejercicios e imágenes
 Free Exercise DB (https://github.com/yuhonas/free-exercise-db), dominio público (The Unlicense).
 Nombres e instrucciones traducidos al español para Ferro. Imágenes convertidas a WebP.
 
+Visor 3D
+--------
+three.js (https://threejs.org), MIT License, Copyright © 2010-2026 three.js authors.
+
 Avatar muscular
 ---------------
-Figura basada en Open Muscle Map (https://github.com/PerspicaciousGuy/Open-Muscle-Map),
+Figura (2D y volumen 3D generado a partir de ella) basada en Open Muscle Map (https://github.com/PerspicaciousGuy/Open-Muscle-Map),
 con fibras, sombreado y división del pectoral añadidos para Ferro.
 
 MIT License

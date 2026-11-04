@@ -10,9 +10,9 @@ const { version } = JSON.parse(readFileSync(new URL('./package.json', import.met
 
 export default defineConfig({
   define: { __APP_VERSION__: JSON.stringify(version) },
-  // El mayor chunk es el catálogo de 890 ejercicios (JSON, ~95 kB comprimido), que ya se carga
-  // bajo demanda y no se puede trocear más; el resto queda muy por debajo.
-  build: { chunkSizeWarningLimit: 600 },
+  // Los chunks grandes se cargan bajo demanda y no se pueden trocear más: el catálogo de ejercicios
+  // (JSON, ~95 kB comprimido) y three.js con el avatar 3D (~175 kB comprimido).
+  build: { chunkSizeWarningLimit: 700 },
   plugins: [
     react(),
     tailwindcss(),
