@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="true"
@@ -24,6 +25,28 @@
 
         </activity>
 
+        <!-- Aviso de MacroDroid (broadcast explícito). Exportado: lo envía otra app. -->
+        <receiver
+            android:name=".deteccion.AvisoReceiver"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+            <intent-filter>
+                <action android:name="com.ferro.app.AVISO" />
+            </intent-filter>
+        </receiver>
+        <!-- Comprobaciones de salida (alarmas propias) y reprogramación tras reiniciar. -->
+        <receiver
+            android:name=".deteccion.ComprobacionReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".deteccion.ArranqueReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -42,4 +65,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Alarma exacta para el fin del descanso con la pantalla apagada (se concede sola en Android 13+). -->
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <!-- Detección del gimnasio: ubicación activa, también con Ferro cerrada ("Permitir todo el tiempo"). -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 </manifest>

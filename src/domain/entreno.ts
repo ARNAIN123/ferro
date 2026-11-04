@@ -149,7 +149,10 @@ export function restanteMs(fin: number | null, ahora: number): number {
   return fin === null ? 0 : Math.max(0, fin - ahora)
 }
 
-/** La sesión se cierra sola tras `horas` sin actividad, con la hora de la última serie como salida. */
+/** Si no se detecta la salida, la sesión se da por terminada unos minutos después de la última serie. */
+export const MARGEN_SALIDA_TRAS_SERIE_MS = 5 * 60_000
+
+/** La sesión se cierra sola tras `horas` sin actividad, con la hora de la última serie más 5 min como salida. */
 export function cierreAutomatico(
   sesion: { estado: 'en_curso' | 'terminada'; entrada: number; ultimaActividad: number },
   ultimaSerie: number | null,
@@ -159,5 +162,5 @@ export function cierreAutomatico(
   if (sesion.estado !== 'en_curso') return null
   const ultima = Math.max(sesion.ultimaActividad, ultimaSerie ?? 0, sesion.entrada)
   if (ahora - ultima < horas * 3600_000) return null
-  return ultimaSerie ?? ultima
+  return ultimaSerie !== null ? ultimaSerie + MARGEN_SALIDA_TRAS_SERIE_MS : ultima
 }

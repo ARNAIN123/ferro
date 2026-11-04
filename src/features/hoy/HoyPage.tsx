@@ -66,18 +66,25 @@ export function HoyPage() {
     <>
       <Cabecera titulo="Hoy" subtitulo={fmtFechaLarga(ahora)} />
 
-      {/* Llegada al gimnasio: solo se registra sola (enlace o ubicación) o al empezar un entreno. */}
+      {/* Llegada al gimnasio: la registra la detección (S3 FIT ZONE) o el inicio del entreno. */}
       <div className="mt-2">
         {entrada && (
           <p className="flex min-h-12 items-center gap-2 text-sm">
             <span className="relative flex size-2.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-ok opacity-60 motion-reduce:hidden" />
-              <span className="relative inline-flex size-2.5 rounded-full bg-ok" />
+              {!entrada.salida && <span className="absolute inline-flex size-full animate-ping rounded-full bg-ok opacity-60 motion-reduce:hidden" />}
+              <span className={`relative inline-flex size-2.5 rounded-full ${entrada.salida ? 'bg-muted' : 'bg-ok'}`} />
             </span>
-            <span>
-              En el gimnasio desde las <span className="num font-bold">{fmtHora(entrada.hora)}</span>
-              <span className="text-muted"> · {NOMBRE_ORIGEN[entrada.origen].toLowerCase()}</span>
-            </span>
+            {entrada.salida ? (
+              <span>
+                En el gimnasio de <span className="num font-bold">{fmtHora(entrada.hora)}</span> a{' '}
+                <span className="num font-bold">{fmtHora(entrada.salida)}</span>
+              </span>
+            ) : (
+              <span>
+                En el gimnasio desde las <span className="num font-bold">{fmtHora(entrada.hora)}</span>
+                <span className="text-muted"> · {NOMBRE_ORIGEN[entrada.origen]}</span>
+              </span>
+            )}
           </p>
         )}
       </div>

@@ -15,7 +15,7 @@ public/img/        imágenes WebP de los ejercicios (posición inicial y final)
 android/           proyecto Android de Capacitor (Gradle); la web compilada se copia dentro con `npx cap sync`
 .github/workflows/ APK firmado y publicado en GitHub Releases
 src/
-├─ domain/     lógica de negocio pura y sus tests (progresión, ciclo, check-in, mapa muscular, migraciones…)
+├─ domain/     lógica de negocio pura y sus tests (progresión, ciclo, entradas, mapa muscular, migraciones…)
 ├─ db/         esquema Dexie y migraciones, sincronización del catálogo, plantillas y operaciones de datos
 ├─ catalogo/   ejercicios.json generado (890 ejercicios) y su versión
 ├─ features/   pantallas: hoy, rutinas, ejercicios, entreno, progreso, ajustes…
@@ -74,12 +74,12 @@ La web de Vercel (https://ferro-kappa-rosy.vercel.app) se queda en la versión 0
 
 ### Ajustes de HyperOS que necesita Ferro
 
-HyperOS cierra las apps en segundo plano con mucha agresividad. Para que el descanso avise con la pantalla apagada (y, desde la fase 2, para detectar la entrada y la salida del gimnasio):
+HyperOS cierra las apps en segundo plano con mucha agresividad. Para que el descanso avise con la pantalla apagada y para detectar la entrada y la salida del gimnasio:
 
 - **Inicio automático**: Ajustes → Aplicaciones → Gestionar aplicaciones → Ferro → **Inicio automático: activado**.
 - **Ahorro de batería**: en esa misma pantalla → Ahorro de batería → **Sin restricciones**.
 - **Notificaciones**: permitidas, con el canal **"Fin del descanso"** con sonido y vibración.
-- **Ubicación**: **Permitir todo el tiempo** (la usa la detección del gimnasio, fase 2).
+- **Ubicación**: **Permitir todo el tiempo** (la usa la detección del gimnasio con Ferro cerrada).
 - **Health Connect**: permisos de pasos y peso (fase 5).
 - Opcional: en la multitarea, mantén pulsada la tarjeta de Ferro y toca el **candado** para que no se cierre al limpiar.
 
@@ -153,40 +153,57 @@ El repositorio tiene que ser **público**: así la app puede leer las Releases s
 
 Sin Android Studio también vale con el SDK de Android, un JDK 21 en `JAVA_HOME` y `android/local.properties` con `sdk.dir=C:/Users/<tú>/AppData/Local/Android/Sdk`. Los tests nativos se pasan con `./gradlew testDebugUnitTest`.
 
-## Entrada al gimnasio (check-in)
+## Entrada y salida del gimnasio
 
-Ferro registra la llegada **solo de forma automática** y **nunca guarda más de una entrada cada N horas** (3 por defecto; se cambia en Ajustes → Gimnasio y check-in):
+**La entrada se registra cuando abres S3 FIT ZONE en el móvil estando en el gimnasio.** MacroDroid solo avisa a Ferro; Ferro decide con código nativo (Kotlin) y sin abrirse, porque en ese momento estás enseñando el QR en la puerta.
 
-1. **Enlace de check-in**: abrir `https://ferro-kappa-rosy.vercel.app/checkin` (o cualquier ruta con `?checkin=auto`) registra la entrada y abre directamente el entreno que toca. Si ya hay uno en curso, lo retoma.
-2. **Ubicación al abrir**: en Ajustes pulsa **"Estoy en el gimnasio ahora"** estando en el gimnasio (guarda las coordenadas) y ajusta el radio (200 m por defecto). Cada vez que Ferro pasa a primer plano dentro del radio, sin una entrada reciente, la registra sola y te ofrece "Empezar".
-3. **Respaldo al empezar a entrenar**: si empiezas un entreno y no hay ninguna entrada reciente (porque la detección falló), se usa la hora de inicio del entreno como entrada, con origen *inicio del entreno*. No hay botón manual.
+1. MacroDroid ve que se abre S3 FIT ZONE y manda un *broadcast* explícito a Ferro (`evento=s3_abierta`).
+2. Ferro pide la ubicación **en ese momento** (alta precisión, hasta 20 s, y un reintento de 15 s si no llega o es mala). Nada de geovallas pasivas, que en HyperOS fallan.
+3. Si estás a menos del **radio** (150 m por defecto; se perdona parte del error del GPS, como mucho 50 m), registra la entrada **con la hora en que abriste S3 FIT ZONE**. Nunca más de una cada 3 h.
+4. Opcional: notificación discreta "Entrada registrada · 18:04" (Ajustes → Gimnasio y detección).
 
-Cada entrada guarda la hora y el origen. La salida es cuando pulsas **Terminar entreno**; si no lo haces, la sesión se cierra sola tras 3 h sin actividad, con la hora de la última serie como salida.
+Abrir S3 FIT ZONE en casa no registra nada (queda en el registro como "fuera del radio").
 
-**Límites de una PWA** (no hay forma de saltárselos sin una app nativa):
+**Salida.** Mientras hay una entrada abierta, Ferro comprueba la ubicación cada 12 minutos (4 minutos después de una primera lectura fuera). La salida se confirma con **dos comprobaciones seguidas a más de radio + margen** (150 + 150 = 300 m por defecto) y su hora es la **primera señal**: la desconexión de la WiFi del gimnasio (si tienes la segunda macro) o la primera comprobación fuera. Si había un entreno a medias, se cierra con esa hora. Si no se detecta la salida, el entreno se cierra tras 3 h sin actividad con la hora de la última serie más 5 minutos.
 
-- La ubicación solo se comprueba al abrir o volver a la app; Android no deja a una web vigilarla en segundo plano. Por eso existe el enlace para MacroDroid.
-- Ferro solo usa el GPS si ya le diste permiso al guardar la ubicación del gimnasio; nunca lo pide al abrir.
-- El cierre automático tras 3 h se aplica la próxima vez que abras la app (el resultado es el mismo: la salida queda en la hora de la última serie).
+Por qué alarmas exactas y no WorkManager ni un servicio en primer plano: WorkManager no baja de 15 min y HyperOS lo retrasa; un servicio en primer plano lleva una notificación fija y Android no deja arrancarlo desde segundo plano (justo cuando llega el aviso de MacroDroid). Las alarmas exactas se programan desde segundo plano, suenan a su hora incluso en reposo y cada una solo enciende el GPS unos segundos.
 
-## MacroDroid: check-in automático al entrar
+**Si empiezas a entrenar sin entrada** (la detección falló), la hora de inicio del entreno cuenta como entrada. Si el aviso llega tarde, la entrada se corrige con la hora real de S3 FIT ZONE.
 
-La idea: al cerrar la app donde enseñas el QR del torno, si estás en la WiFi del gimnasio, MacroDroid abre Ferro con el enlace de check-in.
+### Ponerlo en marcha
 
-Crea una macro nueva:
+1. En el gimnasio: **Ajustes → Gimnasio y detección → Estoy en el gimnasio ahora**.
+2. En esa misma sección, toca **Activar** en cada permiso que falte: ubicación **"Permitir todo el tiempo"**, notificaciones, alarmas exactas y batería sin restricciones (más los ajustes de HyperOS del apartado de instalación).
+3. Crea las macros de MacroDroid (abajo). En Ajustes → Gimnasio y detección → **Datos para MacroDroid** puedes copiar el paquete, la clase y la acción.
+4. Prueba con **"Probar: como si abriera S3 FIT ZONE"** y mira el resultado en **Registro de detección**: hora, evento, distancia, precisión y decisión (registrada, fuera del radio, imprecisa, duplicada, salida confirmada…). Sirve para ajustar el radio.
 
-1. **Disparador** → Aplicaciones → **Aplicación iniciada/cerrada** → *Cerrada* → elige la app donde tienes el QR del gimnasio.
-2. **Restricciones** (las dos):
-   - Conectividad → **Estado de WiFi** → *Conectado a* → la red WiFi del gimnasio (SSID).
-   - MacroDroid → **Última ejecución de la macro** → *No se ha ejecutado en los últimos* 3 horas.
-     (En inglés: *Macro Last Run Time*.)
-3. **Acción** → Aplicaciones → **Abrir sitio web** → `https://ferro-kappa-rosy.vercel.app/checkin`
-   (copia el enlace exacto desde Ferro → Ajustes → Gimnasio y check-in).
-4. Ponle nombre ("Ferro check-in") y guárdala.
+## MacroDroid
 
-Si la PWA está instalada desde Chrome, Android abre ese enlace directamente en Ferro (sin barra del navegador). Pruébalo una vez a mano con el botón ▶ de la macro.
+En las dos macros la acción es **Aplicaciones → Enviar intent** (*Send Intent*) con estos datos:
 
-**Alternativa, si Android abre el enlace en Chrome en vez de en la app instalada:** cambia la acción por Aplicaciones → **Abrir aplicación** → *Ferro*, y deja que la **detección por ubicación** haga el check-in al abrirse (necesitas haber guardado la ubicación del gimnasio y tener el permiso de ubicación concedido para el sitio en Chrome).
+| Campo | Valor |
+|---|---|
+| Destino (*Target*) | **Broadcast** |
+| Acción (*Action*) | `com.ferro.app.AVISO` |
+| Paquete (*Package*) | `com.ferro.app` |
+| Clase (*Class*) | `com.ferro.app.deteccion.AvisoReceiver` |
+| Extra 1 | `evento` = el de cada macro |
+| Extra 2 (opcional) | `hora` = `{system_time}` (milisegundos o segundos; si falta, vale la hora a la que llega) |
+
+El paquete y la clase son obligatorios: Android 8+ no entrega *broadcasts* implícitos a apps cerradas, así que el intent tiene que ser **explícito**.
+
+**Macro 1 · "Ferro: entrada"**
+
+- **Disparador** → Aplicaciones → **Aplicación iniciada/cerrada** → *Iniciada* → **S3 FIT ZONE**.
+- **Acción** → Enviar intent (tabla de arriba) con `evento` = `s3_abierta`.
+- Sin restricciones: Ferro ya descarta duplicados y aperturas fuera del gimnasio.
+
+**Macro 2 · "Ferro: salida por WiFi"** (opcional, si tu móvil usa la WiFi del gimnasio)
+
+- **Disparador** → Conectividad → **Cambio de estado WiFi** → *Desconectado de la red* → la red del gimnasio (SSID).
+- **Acción** → Enviar intent con `evento` = `wifi_desconectada`.
+
+Pruébalas con el botón ▶ de cada macro estando en el gimnasio (o fuera, para ver el "fuera del radio") y revisa el Registro de detección.
 
 ## Rutinas, entreno libre y mapa muscular
 
@@ -210,5 +227,5 @@ Si llevas más de 2 semanas sin hacer copia, Hoy muestra un recordatorio discret
 ## Calidad
 
 - `npm run build`: comprobación de tipos estricta + build sin avisos.
-- `npm test`: 129 tests de la lógica pura (progresión, ciclo de rutinas, deduplicación y geovalla del check-in, semanas y rachas, estadísticas, récords, prerrellenado, superseries, copias de seguridad, intensidad y mapa muscular, búsqueda en la biblioteca, valores por defecto de las rutinas y migración de datos de la versión 1 a la 2).
-- Lighthouse (móvil, CPU ralentizada): accesibilidad 100, buenas prácticas 100 y SEO 100 en todas las pantallas; rendimiento entre 73 y 93 según la pantalla y la pasada (cada pasada empieza con la base de datos vacía y la tiene que sembrar). Recharts y las pantallas secundarias se cargan bajo demanda; Hoy y el modo entreno van en el arranque.
+- `npm test`: tests de la lógica pura de la web (progresión, ciclo de rutinas, entradas y eventos de la detección, cierre automático, semanas, estadísticas, récords, prerrellenado, superseries, copias de seguridad e importación con migración, actualizaciones, intensidad y mapa muscular, biblioteca y migraciones de la base de datos).
+- `cd android && ./gradlew testDebugUnitTest`: tests nativos de la decisión de entrada y salida (distancia, precisión, deduplicación, confirmación de la salida y hora del aviso). GitHub Actions los pasa antes de publicar cada APK.

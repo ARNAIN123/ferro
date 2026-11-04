@@ -79,6 +79,7 @@ export const SALTO_POR_MATERIAL: Record<Material, number> = {
 export const saltoDe = (material: Material): number => SALTO_POR_MATERIAL[material] ?? 2.5
 
 export const NOMBRE_ORIGEN: Record<OrigenEntrada, string> = {
+  deteccion: 'S3 FIT ZONE',
   enlace: 'Enlace',
   ubicacion: 'Ubicación',
   entreno: 'Inicio del entreno',

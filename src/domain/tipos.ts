@@ -87,15 +87,20 @@ export interface RutinaEjercicio {
   superserieConSiguiente: boolean
 }
 
-/** 'entreno' = no hubo detección automática y se usó la hora de inicio del entreno. 'manual' solo existe en datos antiguos. */
-export type OrigenEntrada = 'enlace' | 'ubicacion' | 'entreno' | 'manual'
+/**
+ * 'deteccion' = la detección nativa (abrir S3 FIT ZONE en el gimnasio). 'entreno' = no hubo detección y se usó
+ * la hora de inicio del entreno. 'enlace', 'ubicacion' y 'manual' solo existen en datos antiguos.
+ */
+export type OrigenEntrada = 'deteccion' | 'entreno' | 'enlace' | 'ubicacion' | 'manual'
 
-/** Llegada al gimnasio. Puede existir sin entreno (p. ej. check-in por ubicación). */
+/** Llegada al gimnasio (y salida, si se detectó). Puede existir sin entreno. */
 export interface Entrada {
   id: string
   hora: number
   origen: OrigenEntrada
   sesionId?: string
+  /** Salida del gimnasio detectada (primera señal de salida). */
+  salida?: number
 }
 
 export type EstadoSesion = 'en_curso' | 'terminada'
@@ -180,6 +185,10 @@ export interface Ajustes {
   gimnasioLat: number | null
   gimnasioLng: number | null
   radioM: number
+  /** La salida exige estar a más de radio + margen. */
+  margenSalidaM: number
+  /** Notificación discreta "Entrada registrada · 18:04". */
+  notificarEntrada: boolean
   tema: Tema
   wakeLock: boolean
   vibracion: boolean
@@ -195,7 +204,9 @@ export const AJUSTES_POR_DEFECTO: Ajustes = {
   horasEntreCheckins: 3,
   gimnasioLat: null,
   gimnasioLng: null,
-  radioM: 200,
+  radioM: 150,
+  margenSalidaM: 150,
+  notificarEntrada: true,
   tema: 'oscuro',
   wakeLock: true,
   vibracion: true,

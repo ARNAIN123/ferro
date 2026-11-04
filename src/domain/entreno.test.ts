@@ -146,8 +146,8 @@ describe('temporizador y cierre automático', () => {
     expect(cierreAutomatico(enCurso, 1 * h, 3.5 * h)).toBeNull()
   })
 
-  it('cierra con la hora de la última serie tras 3 h sin actividad', () => {
-    expect(cierreAutomatico(enCurso, 0.9 * h, 4.1 * h)).toBe(0.9 * h)
+  it('cierra con la hora de la última serie más 5 min tras 3 h sin actividad', () => {
+    expect(cierreAutomatico(enCurso, 0.9 * h, 4.1 * h)).toBe(0.9 * h + 5 * 60_000)
   })
 
   it('no toca sesiones terminadas', () => {

@@ -1,43 +1,62 @@
+import { App } from '@capacitor/app'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect } from 'react'
-import { hayEntradaReciente, registrarEntrada } from '../db/checkin'
+import { db } from '../db/db'
+import { importarEventosDeteccion } from '../db/deteccion'
 import { cerrarSesionCaducada } from '../db/entreno'
-import { dentroDelGimnasio } from '../domain/checkin'
-import { avisar } from '../lib/avisos'
-import { obtenerPosicion, permisoUbicacion } from '../lib/ubicacion'
-import { leerAjustes } from './useAjustes'
+import { AJUSTES_POR_DEFECTO } from '../domain/tipos'
+import { Deteccion, hayDeteccion } from '../lib/deteccion'
 
 /**
- * Cada vez que la app pasa a primer plano:
- * 1. cierra el entreno si lleva 3 h sin actividad;
- * 2. si tengo guardada la ubicación del gimnasio, estoy dentro del radio y no hay
- *    una entrada reciente, registra la entrada sola.
- * Una PWA no puede vigilar la ubicación en segundo plano: esto es lo máximo posible.
+ * Cada vez que la app pasa a primer plano (y cuando la detección nativa avisa de un cambio):
+ * 1. pasa a la base de datos las entradas y salidas que se detectaron con Ferro cerrada;
+ * 2. cierra el entreno si lleva 3 h sin actividad.
+ * Además mantiene la configuración del gimnasio sincronizada con la parte nativa.
  */
 export function useVigilancia() {
   useEffect(() => {
     let ocupado = false
+    let activo = true
     const revisar = async () => {
       if (ocupado || document.visibilityState !== 'visible') return
       ocupado = true
       try {
+        await importarEventosDeteccion()
         await cerrarSesionCaducada()
-        const a = await leerAjustes()
-        if (a.gimnasioLat === null || a.gimnasioLng === null) return
-        if (await hayEntradaReciente()) return
-        // Sin permiso concedido no lo pedimos al abrir: el aviso del navegador sería molesto.
-        if ((await permisoUbicacion()) !== 'granted') return
-        const pos = await obtenerPosicion(12000, 60000)
-        if (!dentroDelGimnasio(pos, { lat: a.gimnasioLat, lng: a.gimnasioLng }, a.radioM)) return
-        const r = await registrarEntrada('ubicacion')
-        if (r.registrada) avisar('Estás en el gimnasio: entrada registrada', { texto: 'Empezar', ruta: '/empezar' }, 8000)
       } catch {
-        // Sin GPS o sin señal: no pasa nada, quedan el enlace y el botón manual.
+        // Si falla, se reintenta la próxima vez que la app vuelva a primer plano.
       } finally {
         ocupado = false
       }
     }
     void revisar()
     document.addEventListener('visibilitychange', revisar)
-    return () => document.removeEventListener('visibilitychange', revisar)
+    const quitar: (() => Promise<void>)[] = []
+    if (hayDeteccion()) {
+      const guardar = (h: { remove: () => Promise<void> }) => (activo ? quitar.push(() => h.remove()) : void h.remove())
+      void Deteccion.addListener('cambio', () => void importarEventosDeteccion()).then(guardar)
+      void App.addListener('appStateChange', ({ isActive }) => isActive && void revisar()).then(guardar)
+    }
+    return () => {
+      activo = false
+      document.removeEventListener('visibilitychange', revisar)
+      for (const q of quitar) void q()
+    }
   }, [])
+
+  // null = no hay ajustes guardados todavía; undefined = aún cargando (no se manda nada a medias).
+  const guardados = useLiveQuery(async () => (await db.ajustes.get('ajustes')) ?? null, [])
+  const { gimnasioLat, gimnasioLng, radioM, margenSalidaM, horasEntreCheckins, notificarEntrada } = { ...AJUSTES_POR_DEFECTO, ...guardados }
+  const cargados = guardados !== undefined
+  useEffect(() => {
+    if (!hayDeteccion() || !cargados) return
+    Deteccion.configurar({
+      lat: gimnasioLat,
+      lng: gimnasioLng,
+      radio: radioM,
+      margen: margenSalidaM,
+      horas: horasEntreCheckins,
+      notificar: notificarEntrada,
+    }).catch(() => {})
+  }, [cargados, gimnasioLat, gimnasioLng, radioM, margenSalidaM, horasEntreCheckins, notificarEntrada])
 }

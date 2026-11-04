@@ -424,6 +424,9 @@ async function cerrar(sesionId: string, salida: number, automatico: boolean): Pr
 
 export const terminarSesion = (sesionId: string) => cerrar(sesionId, Date.now(), false)
 
+/** La detección vio que salí del gimnasio con el entreno sin terminar: se cierra con esa hora. */
+export const cerrarSesionAlSalir = (sesionId: string, salida: number) => cerrar(sesionId, salida, true)
+
 /** Borra una sesión y todo lo suyo; la entrada al gimnasio queda como asistencia. */
 export async function borrarSesion(sesionId: string): Promise<void> {
   await db.transaction('rw', TABLAS_SESION, async () => {
@@ -436,7 +439,7 @@ export async function borrarSesion(sesionId: string): Promise<void> {
   })
 }
 
-/** Cierra el entreno en curso si lleva 3 h sin actividad, con la hora de la última serie como salida. */
+/** Cierra el entreno en curso si lleva 3 h sin actividad, con la hora de la última serie (+5 min) como salida. */
 export async function cerrarSesionCaducada(ahora = Date.now()): Promise<void> {
   const sesion = await sesionEnCurso()
   if (!sesion) return
