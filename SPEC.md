@@ -1,75 +1,84 @@
 # Ferro — mi app personal de gimnasio
 
-Quiero que construyas **Ferro**, mi app personal de gimnasio. Es solo para mí (un único usuario, sin cuentas ni login) y la usaré en mi móvil Android (Xiaomi 15 con HyperOS, navegador Chrome). Tiene que sentirse como cualquier otra app del teléfono: se instala desde Chrome, tiene su icono en la pantalla de inicio, se abre a pantalla completa sin barra del navegador y funciona sin conexión.
+**Ferro** es mi app personal de gimnasio. Es solo para mí (un único usuario, sin cuentas ni login) y la uso en mi móvil Android (Xiaomi 15 con HyperOS). Es una **app Android nativa hecha con Capacitor** sobre la web React de siempre: se instala con un APK, tiene su icono, funciona sin conexión y hace en segundo plano lo que una web no puede (detectar la entrada y la salida del gimnasio, avisar del descanso con la pantalla apagada, leer los pasos de Health Connect).
 
-Su trabajo es este ciclo: **detectar cuándo entro al gimnasio → saber qué rutina me toca → dejarme registrar el entreno lo más rápido posible → decirme qué peso usar la próxima vez → enseñarme mi progreso.**
+Su trabajo es este ciclo: **detectar cuándo entro y salgo del gimnasio → saber qué rutina me toca → dejarme registrar el entreno lo más rápido posible → decirme qué peso usar la próxima vez → enseñarme mi progreso, mis músculos de la semana, mis pasos y mi objetivo del mes.**
 
-> Este documento ya incluye los cambios de la **ronda 1 de mejoras** (`MEJORAS-1.md`). Lo que está en "Cosas que no deben volver" se quitó a propósito: no lo reintroduzcas en fases futuras.
+> Este documento ya incluye las **rondas 1 y 2 de mejoras** (`MEJORAS-1.md`, `MEJORAS-2.md`). Donde se contradicen, manda la más reciente. Lo que está en "Cosas que no deben volver" se quitó a propósito: no lo reintroduzcas.
 
 ---
 
 ## Cómo quiero que trabajes
 
-- Antes de escribir código, lee este documento entero, propón la estructura del proyecto y hazme solo las preguntas imprescindibles (por ejemplo, dónde desplegar).
+- Antes de escribir código, lee este documento entero y hazme solo las preguntas imprescindibles.
 - Construye por fases (ver "Fases" al final). Al acabar cada fase: compila, pasa los tests, haz commit y dime exactamente cómo probarla en el móvil.
-- No añadas dependencias innecesarias. TypeScript estricto, componentes pequeños y la lógica de negocio (progresión, ciclo de rutinas, check-in, intensidad muscular, migraciones) separada de la interfaz en funciones puras con tests.
+- Si una fase pide algo para revisar (vista previa, listado, galería), genera eso y espera mi visto bueno antes de integrarlo en la app.
+- No añadas dependencias innecesarias. TypeScript estricto, componentes pequeños y la lógica de negocio (progresión, ciclo, detección, intensidad muscular, objetivo mensual, calorías, migraciones) separada de la interfaz en funciones puras con tests. La lógica nativa (Kotlin) también tiene tests unitarios.
 - Toda la interfaz en español.
-- Si algo de este documento no es técnicamente viable en una PWA, dímelo y propón la mejor alternativa en lugar de saltártelo.
+- Si algo no es técnicamente viable en Android/Capacitor, dímelo y propón la mejor alternativa en lugar de saltártelo.
 - **No rehagas lo que ya funciona.** En cada ronda de mejoras aplica solo lo que se pide y actualiza este documento.
 
 ---
 
 ## Mis datos son sagrados
 
-Ya tengo datos reales en el móvil (rutinas, entrenos, notas). **Cualquier cambio en la base de datos se hace con una nueva versión de Dexie y una migración (`upgrade`) que conserve todo.** Nunca se borra ni se recrea la base de datos. Cada migración es una función pura con tests (`src/domain/migracion.ts`) y se prueba con una copia de datos de la versión anterior antes de publicar.
+Tengo datos reales (rutinas, entrenos, notas, peso). **Cualquier cambio en la base de datos se hace con una nueva versión de Dexie y una migración (`upgrade`) que conserve todo.** Nunca se borra ni se recrea la base de datos. Cada migración es una función pura con tests (`src/domain/migracion.ts`) y se prueba con datos de la versión anterior antes de publicar.
+
+- **De la PWA a la app nativa:** el almacenamiento es distinto y los datos no pasan solos. Se exportan a JSON desde la PWA (versión 0.2.0, que se queda congelada en Vercel para eso) y se importan en la app. La importación no pierde nada (rutinas, entrenos, series, notas, molestias, peso, entradas, ajustes) y **migra las copias antiguas** con las mismas migraciones que la base de datos (la copia guarda su versión de esquema; las que no la traen se reconocen por sus datos).
+- Las actualizaciones del APK se instalan **encima** (misma firma) y conservan los datos. El origen de la WebView (`https://localhost`) no cambia nunca, porque IndexedDB va ligada a él.
 
 ---
 
 ## Stack
 
-- **Vite + React + TypeScript**
-- **Tailwind CSS**
-- **vite-plugin-pwa** (manifest + service worker con Workbox)
-- **Dexie.js** (IndexedDB) con `dexie-react-hooks`. Todos los datos se guardan en el móvil (local-first, sin backend). Llama a `navigator.storage.persist()` al arrancar para que Android no borre los datos.
-- **React Router**
-- **Recharts** para las gráficas
-- **@dnd-kit** para reordenar
-- **Vitest** para los tests
-- Solo en desarrollo: **sharp** (convierte las imágenes de ejercicios a WebP al generar el catálogo).
-- Despliegue gratuito con HTTPS en **Vercel**, necesario para poder instalar la PWA.
+- **Vite + React + TypeScript**, **Tailwind CSS**, **React Router**, **Recharts**, **@dnd-kit**, **Vitest**.
+- **Capacitor 8** (Android, `appId` `com.ferro.app`, nombre "Ferro", con el icono de siempre). Plugins oficiales: App, Filesystem, Share, Local Notifications. Código nativo propio en **Kotlin** para la detección del gimnasio, con tests JUnit.
+- **Dexie.js** (IndexedDB) con `dexie-react-hooks`. Todos los datos en el móvil (local-first, sin backend).
+- **Health Connect** con un plugin de Capacitor gratuito y mantenido (licencia comprobada) para pasos y peso.
+- **GitHub Actions** compila el APK de release firmado y lo publica en **GitHub Releases** (repositorio público; solo código).
+- Solo en desarrollo: **sharp** y **resvg** (iconos e imágenes).
+- La web sigue compilando con vite-plugin-pwa para desarrollar en el navegador; la PWA publicada se queda en 0.2.0.
 
 ---
 
-## Que sea una app de verdad (PWA instalable)
+## App Android nativa
 
-- **Manifest**: `name` "Ferro", `short_name` "Ferro", `display: "standalone"`, `orientation: "portrait"`, `start_url` "/", `theme_color` y `background_color` oscuros, iconos de 192 y 512 px más una versión `maskable`. Icono propio y original (SVG exportado a PNG).
-- **Accesos directos del manifest** (aparecen al mantener pulsado el icono): "Empezar entreno" y "Registrar peso".
-- **Offline total**: el service worker precachea toda la app (código, catálogo de ejercicios, mapa muscular). La app tiene que abrir y funcionar al 100 % en modo avión.
-- **Imágenes de ejercicios**: no se precachean (son ~24 MB). Se sirven desde la propia app con caché *cache-first*: una imagen ya vista funciona sin conexión. En Ajustes hay un botón para descargarlas todas de una vez (ver "Ajustes y datos").
-- Respeta las safe areas (`env(safe-area-inset-*)`), sin scroll horizontal y sin zoom accidental al tocar campos.
-- **Pantalla encendida** durante el entreno con la Wake Lock API (activable en ajustes).
-- Al publicar una versión nueva, la app avisa ("Hay una versión nueva · Actualizar") en lugar de recargarse sola a mitad de un entreno.
-- En el README, instrucciones para instalarla en mi Xiaomi. Incluye este aviso: en HyperOS, Chrome necesita tener activado el permiso "Accesos directos en pantalla de inicio"; si no, la instalación puede fallar sin avisar.
+- **Offline total**: todo va dentro del APK. En la app nativa no se registra el service worker de la PWA (y se quita si quedara alguno), para que una actualización nunca sirva código viejo.
+- **Compilación:** workflow de GitHub Actions que, cuando cambia la versión de `package.json`, pasa los tests, compila el APK de release **firmado siempre con la misma clave** (guardada como secretos del repositorio) y lo publica en Releases. `versionName` = versión de `package.json`; `versionCode` = mayor·10000 + menor·100 + parche. El README explica cómo crear la clave y guardarla como secretos, y cómo compilar en local con Android Studio.
+- **"Buscar actualizaciones"** en Ajustes: consulta la última release de GitHub, la compara con la versión instalada y abre la descarga del APK en Chrome.
+- **Temporizador de descanso**: además del contador en pantalla, una **notificación con sonido y vibración** programada con alarma exacta a la hora de fin, que llega aunque la app esté en segundo plano o con la pantalla apagada. Se reprograma con cada cambio (serie nueva, ±15 s, saltar, terminar).
+- **Exportar** guarda en `Documentos/Ferro` y **compartir** usa la hoja de compartir de Android; **importar** usa el selector de archivos.
+- **Pantalla encendida** durante el entreno (Wake Lock, activable en ajustes).
+- Respeta las safe areas, sin scroll horizontal y sin zoom accidental al tocar campos.
+- En el README: cómo instalar el APK en HyperOS (instalar apps desconocidas y avisos de seguridad de Xiaomi) y los ajustes que necesita Ferro: inicio automático, ahorro de batería "Sin restricciones", ubicación "Permitir todo el tiempo", permisos de Health Connect y notificaciones.
 
 ---
 
-## Detección de entrada al gimnasio
+## Detección de entrada y salida del gimnasio
 
-No hay backend. La entrada se registra **solo de forma automática**, con **deduplicación** (máximo una entrada cada N horas; por defecto 3):
+El método es exactamente este: **la entrada se registra cuando abro la app S3 FIT ZONE en el móvil y estoy en la ubicación del gimnasio.** No hay enlace `?checkin=auto`, ni detección por ubicación al abrir Ferro, ni botón manual.
 
-1. **Enlace de check-in**: si la app se abre con `?checkin=auto` (o en la ruta `/checkin`), registra la entrada con la hora actual y abre directamente el entreno del día. Lo uso desde MacroDroid.
-2. **Ubicación al abrir**: en ajustes guardo la ubicación del gimnasio con un botón "Estoy en el gimnasio ahora" que captura las coordenadas, y un radio (por defecto 200 m). Cada vez que la app pasa a primer plano, si estoy dentro del radio y no hay una entrada reciente, la registra sola.
-3. **Respaldo al empezar un entreno**: si empiezo un entreno (de rutina o libre) y no hay ninguna entrada en las últimas N horas porque la detección automática falló, se usa la hora de inicio del entreno como hora de entrada, sin preguntar. Su origen se guarda como `entreno`.
+### Entrada
 
-**No hay botón manual de check-in** en ninguna pantalla.
+- **MacroDroid solo avisa:** disparador "Aplicación abierta → S3 FIT ZONE" y acción "Enviar intent" de tipo **Broadcast explícito** (paquete `com.ferro.app` y la clase del receptor; Android no entrega broadcasts implícitos a receptores del manifest). Extras: `evento=s3_abierta` y la hora.
+- **Ferro decide en Kotlin:** un `BroadcastReceiver` recibe el aviso y pide la ubicación **de forma activa en ese momento** (`getCurrentLocation` de alta precisión, con tiempo máximo y un reintento). Nada de geofencing pasivo.
+- Si está dentro del radio (por defecto **150 m**, configurable, teniendo en cuenta la precisión de la lectura), registra la entrada **con la hora en que se abrió S3 FIT ZONE**. Deduplicación: como máximo una entrada cada 3 h.
+- Todo en segundo plano: **Ferro no se abre encima** (estoy enseñando el QR). Opcional en Ajustes: notificación discreta "Entrada registrada · 18:04".
+- Ajustes: botón "Estoy en el gimnasio ahora" para guardar la ubicación y el radio.
+- **Respaldo:** si empiezo un entreno sin entrada reciente, la hora de inicio del entreno cuenta como entrada (origen `entreno`).
 
-Cada entrada guarda la hora y el origen (`enlace`, `ubicacion` o `entreno`; `manual` solo existe en datos antiguos). La **hora de salida** es cuando pulso "Terminar entreno". Si no lo pulso, la sesión se cierra sola tras 3 h sin actividad, usando la hora de la última serie registrada.
+### Salida
 
-En el README, explica cómo configurar **MacroDroid**:
-- Disparador: "Aplicación cerrada" → la app donde tengo el QR del gimnasio.
-- Restricción: conectado a la WiFi del gimnasio, y que la macro no se haya ejecutado en las últimas 3 h.
-- Acción: abrir Ferro con el enlace de check-in.
-- Alternativa, por si Android abre el enlace en Chrome en vez de en la app instalada: acción "Abrir aplicación" → Ferro, y que la detección por ubicación haga el check-in.
+- Mientras estoy en el gimnasio (entrada sin salida), Ferro comprueba la ubicación de forma activa cada 10–15 minutos, con el mecanismo más fiable en HyperOS (justificado en el código y el README).
+- Si el móvil usa la WiFi del gimnasio, una segunda macro "WiFi desconectado → [red del gimnasio]" envía `evento=wifi_desconectada` y Ferro comprueba al momento.
+- La salida se confirma con **dos comprobaciones seguidas fuera del radio más un margen** (por defecto 150 m: 300 m con el radio por defecto). **La hora de salida es la primera señal de salida** (la desconexión de la WiFi o la primera comprobación fuera).
+- Si había un entreno en curso, se cierra con la hora de salida.
+- **Respaldo:** si no se detecta la salida y pasan 3 h sin actividad, la sesión se cierra con la hora de la última serie **más 5 minutos**.
+
+### Diagnóstico
+
+- Ajustes → **"Registro de detección"**: últimos eventos con hora, tipo, distancia, precisión y decisión (entrada registrada, descartada por distancia, imprecisa, duplicada, salida confirmada…).
+- En el README, la configuración exacta de las dos macros de MacroDroid.
 
 ---
 
@@ -77,174 +86,223 @@ En el README, explica cómo configurar **MacroDroid**:
 
 - Creo rutinas (por ejemplo "A — Torso", "B — Pierna") y las ordeno en un **ciclo**. La app sabe cuál toca según la última que hice, no según el día de la semana. Siempre puedo elegir otra.
 - Cada ejercicio de una rutina tiene: número de series, rango de repeticiones (ej. 8–12), descanso, nota y si va en superserie con el siguiente.
-- Reordenar el ciclo arrastrando, duplicar rutinas y archivarlas.
-- Plantillas iniciales opcionales para empezar rápido: Full Body 3 días, Torso/Pierna y Push/Pull/Legs.
+- Reordenar el ciclo arrastrando, duplicar rutinas y archivarlas. Plantillas iniciales opcionales: Full Body 3 días, Torso/Pierna y Push/Pull/Legs.
 
 ### Crear y editar una rutina (una sola pantalla)
 
-- **Flujo:** nombre → añadir ejercicios → ajustar → guardar. Sin formularios ni pantallas intermedias.
-- **Selector de ejercicios** a pantalla completa: buscador (español o inglés), filtros por categoría, músculo (chips o tocando el mapa) y material, miniatura de la imagen en cada fila y **selección múltiple** para añadir varios de golpe. Es el mismo selector que se usa en el entreno.
-- Cada ejercicio entra con valores por defecto: **3 series, 8–12 repeticiones y 90 s de descanso**; **150 s** en los compuestos grandes (compuesto, con barra/mancuernas/máquina/kettlebell y un músculo principal grande). Todo editable en línea con botones +/−.
-- Reordenar arrastrando y agrupar en **superserie** con un botón entre dos ejercicios.
-- Debajo de la lista, **mapa muscular en vivo** de la rutina y un **aviso suave** si algún grupo muscular grande (pecho, espalda, hombros, cuádriceps, isquiotibiales, glúteos) no se trabaja en ningún día del ciclo.
-- **Crear una rutina a partir de un entreno hecho** (incluido un entreno libre): desde el resumen ("Guardar como rutina") o desde el detalle del historial ("Crear rutina a partir de este entreno"), se abre el editor ya relleno con sus ejercicios.
-- **Duplicar** una rutina desde la lista.
+- **Flujo:** nombre → añadir ejercicios → ajustar → guardar.
+- **Selector de ejercicios por mapa** (ver "Buscar ejercicios") a pantalla completa, con **selección múltiple**.
+- Valores por defecto: **3 series, 8–12 repeticiones y 90 s**; **150 s** en los compuestos grandes. Editables en línea con +/−.
+- Reordenar arrastrando y **superserie** con un botón entre dos ejercicios.
+- Debajo de la lista, el **avatar muscular en vivo** de la rutina y un **aviso suave** si algún grupo grande no se trabaja en ningún día del ciclo.
+- Si una rutina contiene un ejercicio que ya no está en la biblioteca, se marca con un aviso y se propone el equivalente más parecido.
+- Crear una rutina a partir de un entreno hecho (incluido un entreno libre) y duplicar rutinas.
 
 ---
 
 ## Biblioteca de ejercicios
 
-- **Fuente:** [Free Exercise DB](https://github.com/yuhonas/free-exercise-db) (dominio público, Unlicense), fijada a un commit concreto en `catalogo/fuente/`. ~876 ejercicios más unos 14 añadidos a mano (máquinas habituales que faltan: hip thrust en máquina, sentadilla péndulo, press en máquina convergente, remo en máquina T…). Total: 890.
-- **Traducción hecha una sola vez**, no en tiempo de ejecución: nombres con los que se conocen en los gimnasios de España (`catalogo/nombres-*.tsv`), instrucciones (`catalogo/instrucciones-*.txt`), músculos, material y categoría. El nombre original en inglés se guarda como **alias**, para que la búsqueda funcione en los dos idiomas.
-- `npm run catalogo` genera `src/catalogo/ejercicios.json` y su versión. Con `-- --imagenes <ruta>` además convierte las imágenes a WebP (`public/img/ejercicios/<id>/<n>.webp`, posición inicial y final).
-- **Imágenes servidas por la propia app**, nunca enlazadas a GitHub. Si un ejercicio no tiene imagen libre, se muestra su mapa muscular en su lugar.
-- Al arrancar, el catálogo se sincroniza con la base de datos si su versión ha cambiado, sin tocar mis notas ni mis ejercicios propios.
-- **Filtros:** texto (nombre en español o alias en inglés, sin tildes; primero las coincidencias exactas), categoría (fuerza, halterofilia, strongman, pliometría, cardio, estiramientos; **por defecto, fuerza**), músculo (chips o mapa) y material.
-- **Ejercicios propios**, solo para lo que no exista: al crearlo elijo nombre, material y músculos tocando el mapa (un toque principal, dos secundario, tres quitar). Después sus músculos y material quedan fijos como los demás. Se pueden archivar.
-- Cada ejercicio guarda mis **notas fijas** (ajustes de la máquina: altura del asiento, agarre…), que se muestran durante el entreno.
+- **Solo** ejercicios con: barra (olímpica, EZ, hexagonal, landmine), mancuernas, discos, poleas y multipower. El banco se permite como accesorio.
+- **Fuera:** máquinas guiadas, peso corporal, kettlebell, bandas, balones, cardio y estiramientos.
+- **Que estén todos** los ejercicios conocidos que cumplan el criterio (Free Exercise DB filtrada + conocimiento propio). Cada variante relevante (inclinación del banco, agarre, unilateral, posición) es un ejercicio propio. Nombres como se dicen en los gimnasios de España, sin duplicados.
+- Cada ejercicio con músculos principales y secundarios en las mismas regiones del avatar, material e instrucciones en español. **Todo de solo lectura** salvo mis notas.
+- Antes de integrarla, se genera un listado completo agrupado por músculo principal para revisarlo.
+- **Migración:** los ejercicios de mi historial que quedan fuera (máquinas, etc.) **no se borran**: siguen en el historial y las estadísticas, pero no aparecen en la biblioteca ni en el selector.
+- Ejercicios personalizados: solo para lo que no exista; músculos elegidos en el mapa y material, después fijos.
+- Mis **notas fijas** por ejercicio (ajustes de máquina, agarre…) se muestran durante el entreno.
+
+### Imágenes: animaciones en un solo estilo
+
+- **Ninguna foto ni persona real.** No queda ninguna imagen de Free Exercise DB.
+- Todos los ejercicios se muestran con **la misma representación: una ilustración animada**, en el estilo del avatar. Primero se busca un conjunto con licencia válida que lo cubra todo en un único estilo; si no existe, **sistema propio**: figura vectorial con esqueleto articulado y sin rostro realista, material dibujado (barra con discos, mancuernas, polea con cable y anclaje, multipower con guías, banco con su inclinación), poses clave de inicio y fin animadas en bucle de 2–3 s, construidas con patrones de movimiento reutilizables y parametrizados (press, remo, curl, extensión, aperturas, elevaciones, sentadilla, bisagra, zancada, jalón, encogimientos…), vista lateral o frontal según convenga y biomecánicamente correcta.
+- Los músculos principales se resaltan con el color de acento sobre la figura animada. Ligero y sin conexión.
+- Antes de darlo por terminado, se genera una galería con todas las animaciones para revisarla.
 
 ### Ficha del ejercicio
 
-- Imagen grande que **alterna posición inicial y final**.
-- Músculos principales y secundarios **listados en español y marcados en el mapa** (principales a intensidad máxima, secundarios suave).
-- Material, nivel, mecánica e instrucciones paso a paso en español.
-- Mi historial, mi récord (1RM estimado, mejor serie, peso máximo) y su gráfica.
-- **Mis notas son lo único editable.** Músculos y material son de solo lectura.
+- Animación grande del ejercicio.
+- Músculos principales y secundarios **listados en español y marcados en el avatar** (principales a intensidad máxima, secundarios suave).
+- Material, nivel e instrucciones paso a paso en español. Mi historial, mi récord y su gráfica.
+- **Mis notas son lo único editable.**
 
 ---
 
-## Mapa muscular
+## Buscar ejercicios: solo con el mapa
 
-- Figura anatómica **detallada en gris neutro** (no un muñeco plano), vista frontal y trasera una al lado de la otra, en tema oscuro y claro. Trazados de `react-native-body-highlighter` (MIT) extraídos como datos a `src/components/mapa/trazados.ts` con `scripts/generar-mapa.mjs`; el sombreado es propio.
-- Músculos sin trabajar en gris; trabajados con el **color de acento en 5 niveles** de intensidad, con leyenda pequeña.
-- **Intensidad** (función pura con tests, `src/domain/mapaMuscular.ts`): cada serie completada cuenta **1** para los músculos principales del ejercicio y **0,5** para los secundarios. Los niveles se calculan con una escala por contexto: sesión o rutina (1 · 2–3 · 4–5 · 6–8 · 9+ series) o semana (1–3 · 4–7 · 8–11 · 12–15 · 16+ series; en periodos de más de una semana, media semanal).
-- **Tabla de correspondencia** músculo de la base de datos → regiones del mapa (por ejemplo `hombros` → deltoides, `abdomen` → abdominales y oblicuos), también con tests.
-- **Al tocar un músculo**: su nombre en español, las series que lleva en el periodo y qué ejercicios lo han trabajado.
-- **Dónde aparece:** resumen al terminar un entreno (esa sesión), Progreso (esta semana / últimos 7 días / últimos 30 días), ficha del ejercicio, editor de rutinas (vista previa en vivo), filtro de la biblioteca y selector, y creación de ejercicios propios.
+- El **único** método para encontrar ejercicios es el avatar muscular, en toda la app (biblioteca, creación de rutinas, entreno libre y cambio de ejercicio). Sin buscador de texto, chips, categorías ni filtros.
+- Flujo: figura frontal o trasera → toco un músculo → lista con dos apartados: **"Principal"** (su músculo principal es ese) y **"También lo trabajan"** (lo tienen como secundario).
+- Cada fila: miniatura de la animación, nombre y una etiqueta pequeña con el material. Orden: primero los que más uso, después alfabético.
+- Selección múltiple al crear rutinas. Al cambiar un ejercicio durante el entreno, el mapa se abre directamente en el músculo principal del ejercicio actual.
+
+---
+
+## Avatar muscular
+
+- Ilustración anatómica **de calidad profesional**, como la imagen de referencia: silueta limpia y proporcionada, contorno continuo y grosores de línea coherentes; cada músculo con su contorno y sus líneas internas; detalle suficiente (pectoral superior e inferior; deltoides anterior, lateral y posterior; bíceps, braquial, tríceps, antebrazo; trapecio, dorsal ancho, zona media de la espalda, lumbares; recto abdominal, oblicuos; glúteo mayor y medio; cuádriceps, isquiotibiales, aductores, gemelos y sóleo) y sombreado sutil. Vista frontal y trasera.
+- Se parte de un SVG con licencia libre verificada (por ejemplo los trazados MIT de `react-native-body-highlighter` v3, enriquecidos) o de uno propio. Antes de integrarlo, página de vista previa con varios estados (semana vacía, media, completa) para revisarla.
+- **Misma figura en toda la app:** pantalla principal, ficha del ejercicio, creación de rutinas, resumen del entreno, buscador y animaciones.
+- **Intensidad** (función pura con tests): cada serie completada cuenta **1** para los músculos principales y **0,5** para los secundarios. Gris sin trabajar; color de acento cada vez más intenso en 5 niveles, con transiciones suaves y leyenda.
+- **Tabla de correspondencia** músculo de la base de datos → regiones del avatar, con tests.
+- Al tocar un músculo se abre una ficha con su nombre en español, sus series en el periodo y los ejercicios que lo han trabajado.
+
+### Avatar de la semana (pantalla principal)
+
+- Pinta lo trabajado **esta semana, de lunes a domingo**; se actualiza con cada serie y el lunes empieza de cero. Encima, una etiqueta pequeña: "Semana del 2 al 8 nov".
+- Niveles fijos por series de la semana: **1–3, 4–6, 7–10, 11–15 y 16 o más**.
 
 ---
 
 ## Modo entreno (lo más importante: tiene que ser rapidísimo)
 
-- Pantalla completa, una tarjeta por ejercicio y botones grandes (mínimo 48 px), usable con una mano y el pulgar.
+- Pantalla completa, una tarjeta por ejercicio y botones grandes (mínimo 48 px), usable con una mano.
 - Cada serie aparece **prerrellenada** con el peso y las repeticiones de la última vez. Completar una serie es **un solo toque**.
-- **Botones +/− del peso**: el incremento lo decide solo el material del ejercicio — barra y barra Z 2,5 kg, mancuernas 2 kg, kettlebell 4 kg, máquinas y poleas 5 kg (resto 2,5 kg). No es configurable.
-- **Mantener pulsado el valor** del peso (o de las repeticiones) abre el teclado numérico para escribir cualquier valor exacto. Un toque corto no abre el teclado.
-- Al completar una serie arranca solo el **temporizador de descanso**. Se calcula a partir de una hora de fin (no acumulando con `setInterval`), para que siga siendo correcto si salgo de la app y vuelvo. Vibración al terminar si la app está abierta.
-- Tipos de serie: calentamiento, normal y drop set. Campo opcional de RIR (repeticiones en reserva).
-- Cambiar un ejercicio por una alternativa del mismo músculo principal (por si la máquina está ocupada), añadir ejercicios sobre la marcha con el selector múltiple o saltarlo.
-- Marcar "molestia" en un ejercicio, con nota opcional, y que quede visible en su historial.
-- El entreno en curso se guarda en IndexedDB tras cada cambio: si cierro la app o se reinicia el móvil, al abrirla lo retomo exactamente donde estaba.
-- Vibración breve (`navigator.vibrate`) al completar una serie.
-- Al terminar: resumen con duración, series, volumen total, **mapa de músculos trabajados**, récords conseguidos, comparación con la última vez que hice esa rutina y botón **"Guardar como rutina"**.
+- **+/− del peso** según el material: barra 2,5 kg, mancuernas 2 kg, poleas y multipower 5 kg (resto 2,5 kg). No es configurable. **Mantener pulsado** el valor abre el teclado numérico.
+- **Temporizador de descanso** calculado desde una hora de fin, con notificación nativa (ver "App Android nativa").
+- Tipos de serie: calentamiento, normal y drop set. RIR opcional.
+- Cambiar un ejercicio por otro (el mapa se abre en su músculo principal), añadir ejercicios sobre la marcha o saltarlo.
+- Marcar "molestia" con nota opcional, visible en el historial.
+- El entreno en curso se guarda tras cada cambio y se retoma exactamente donde estaba.
+- Al terminar: resumen con duración, series, volumen, **avatar con los músculos trabajados**, récords, comparación con la última vez y **"Guardar como rutina"**.
 
 ### Entreno libre
 
-- Botón **"Entreno libre"** en Hoy, junto al de empezar la rutina que toca.
-- Empieza vacío y añado ejercicios con el mismo selector de las rutinas.
-- Funciona igual que un entreno normal: prerrellenado con la última vez, descanso y sugerencias de progresión.
-- Al terminar, opción **"Guardar como rutina"**.
-- **No avanza el ciclo**: después sigue tocando la misma rutina que antes.
+- Botón **"Entreno libre"** junto al de empezar la rutina que toca. Empieza vacío; añado ejercicios con el mismo selector. Funciona igual que un entreno normal. Al terminar, **"Guardar como rutina"**. **No avanza el ciclo**.
 
 ---
 
 ## Progresión automática
 
-Implementa todo esto como funciones puras con tests:
+Funciones puras con tests:
 
-- **Doble progresión**: si en la última sesión completé todas las series en el máximo del rango, sugiere subir el peso con el incremento de su material y volver al mínimo de repeticiones. Si no, sugiere mantener el peso e intentar subir repeticiones.
-- Si registré RIR y fue 0 en la mayoría de las series, no sugerir subir peso aunque llegara al máximo del rango.
-- **Estancamiento**: 3 sesiones seguidas sin mejorar en un ejercicio (ni peso ni repeticiones) → aviso con dos opciones: bajar un 10 % y reconstruir, o cambiar de ejercicio.
-- La sugerencia se muestra como una etiqueta discreta junto al ejercicio ("↑ 2,5 kg", "+1 rep"). Al tocarla se aplica a las series; nunca cambia valores sin que yo la toque.
+- **Doble progresión**: si en la última sesión completé todas las series en el máximo del rango, sugiere subir el peso con el incremento de su material y volver al mínimo de repeticiones. Si no, mantener el peso e intentar subir repeticiones.
+- Si registré RIR y fue 0 en la mayoría de las series, no sugerir subir peso.
+- **Estancamiento**: 3 sesiones seguidas sin mejorar → aviso con dos opciones: bajar un 10 % y reconstruir, o cambiar de ejercicio.
+- Etiqueta discreta junto al ejercicio ("↑ 2,5 kg", "+1 rep"); se aplica solo si la toco.
 
 ---
 
-## Pantalla de inicio ("Hoy")
+## Pantalla principal ("Hoy"), en este orden
 
-- Si no he entrenado hoy: "Hoy toca: B — Pierna" con un botón grande "Empezar" y, a su lado, **"Entreno libre"**. Debajo, "Elegir otra rutina".
-- Si hay una entrada reciente: "En el gimnasio desde las 18:05 · enlace/ubicación/inicio del entreno". Sin botón para registrarla a mano.
-- Si hay un entreno en curso: botón para retomarlo.
-- Semana actual: días entrenados frente a mi objetivo semanal (por defecto 4, configurable) y racha de **semanas** seguidas cumpliéndolo. Nada de rachas diarias: descansar no debe romper nada.
-- Resumen del último entreno.
+1. **Objetivo mensual.**
+2. **Avatar muscular de la semana.**
+3. **Anillo de pasos y calorías**, uno al lado del otro.
+4. Botones **"Empezar [rutina que toca]"** y **"Entreno libre"** (y "Elegir otra rutina"). Si hay un entreno en curso, botón para retomarlo.
+
+Además, cuando toca: "En el gimnasio desde las 18:05", resumen del último entreno y recordatorio discreto de copia de seguridad.
+
+### Objetivo mensual (sustituye a la racha)
+
+- Sin racha semanal ni objetivo semanal en ninguna parte.
+- **Objetivo mensual:** por defecto **16 días al mes**, editable.
+- Un día cuenta si hay una entrada registrada o un entreno terminado (como máximo una vez por día).
+- Tarjeta: "9 / 16 días · noviembre", con barra de progreso y uno de estos mensajes:
+  - Aún posible: "Puedes saltarte X días más y seguir cumpliéndolo". X = días que quedan en el mes en los que todavía puedo ir − días que me faltan. Hoy cuenta como disponible si todavía no he ido.
+  - X = 0: "No puedes saltarte ningún día más".
+  - Imposible: "Este mes ya no es posible: te faltan N días y quedan M".
+  - Conseguido: "Objetivo cumplido", más los días extra.
+- Función pura con tests: principio y final de mes, hoy entrenado o no, cumplido, imposible y meses de 28, 30 y 31 días.
+
+### Pasos y calorías
+
+- **Pasos de hoy desde Health Connect**, con la **agregación** de Health Connect (no la suma de muestras, para no contar dos veces). Permisos solo de pasos y peso. Se actualiza al abrir o volver a la app y cada pocos minutos mientras está abierta.
+- **Anillo de pasos** frente a un objetivo editable (por defecto 10.000).
+- **Calorías estimadas de hoy** ("≈ X kcal") con desglose de pasos y entreno, siempre como estimación; al tocarlo se abre el desglose y cómo se calcula:
+  - Datos: peso (el último de la app o de Health Connect), altura y edad, editables en Ajustes.
+  - Pasos: calorías netas de caminar según el peso y la zancada estimada a partir de la altura, con una fórmula estándar documentada.
+  - Entreno: MET de fuerza (Compendium of Physical Activities) entre ~3,5 y 6 según la densidad real de la sesión (duración real, volumen kg × reps, series por minuto, descansos). Netas = (MET − 1) × peso × horas.
+  - Los pasos dados dentro del gimnasio durante la sesión no se cuentan dos veces.
+  - Cálculos como funciones puras con tests.
+- En el README: de dónde salen los pasos (Google Health, Mi Fitness o el propio móvil escribiendo en Health Connect) y cómo comprobar que llegan.
 
 ---
 
 ## Progreso y estadísticas
 
-- Calendario de asistencia tipo mapa de calor (estilo GitHub), asistencia por semana y duración media de las sesiones.
-- **Músculos trabajados**: mapa muscular con selector de periodo (esta semana, últimos 7 días, últimos 30 días) y, debajo, las series por grupo muscular (el principal cuenta 1 y cada secundario 0,5) con una franja de referencia de 10–20 series por semana.
-- Por ejercicio: gráfica del 1RM estimado (fórmula de Epley), mejor serie, volumen e historial completo.
-- Lista de récords personales.
-- Peso corporal (opcional): registro rápido y gráfica con media móvil de 7 días.
+- Calendario de asistencia tipo mapa de calor, **historial mensual** con los meses cumplidos y no cumplidos, y duración media de las sesiones.
+- **Músculos trabajados**: avatar con selector de periodo (esta semana, últimos 7 días, últimos 30 días) y series por grupo muscular con franja de referencia de 10–20 series por semana.
+- Por ejercicio: 1RM estimado (Epley), mejor serie, volumen e historial completo. Récords personales.
+- Peso corporal: registro rápido y gráfica con media móvil de 7 días.
 
 ---
 
 ## Ajustes y datos
 
-- Objetivo semanal, descanso por defecto, horas mínimas entre check-ins, ubicación y radio del gimnasio, enlace de check-in para MacroDroid, tema (oscuro por defecto / claro / sistema), pantalla encendida y vibración durante el entreno.
-- **Imágenes de los ejercicios**: botón "Descargar todas las imágenes para usar sin conexión", con barra de progreso, cuántas hay guardadas y el tamaño total.
-- **Copias de seguridad**: exportar e importar todo en JSON y exportar las series en CSV. Si llevo más de 2 semanas sin hacer copia, mostrar un recordatorio discreto en "Hoy".
+- Objetivo mensual, objetivo de pasos, altura y edad, descanso por defecto, horas mínimas entre entradas, ubicación y radio del gimnasio, margen de salida, notificación de entrada, **registro de detección**, tema (oscuro por defecto / claro / sistema), pantalla encendida y vibración.
+- **Actualizaciones**: versión instalada y "Buscar actualizaciones".
+- **Copias de seguridad**: exportar e importar todo en JSON (con migración de copias antiguas) y exportar las series en CSV. Recordatorio discreto en Hoy si llevo más de 2 semanas sin copia.
 
 ---
 
 ## Diseño
 
-- Interfaz cuidada y con personalidad, no una plantilla genérica: oscura por defecto, un color de acento fuerte y números grandes y legibles (`tabular-nums`) para pesos y repeticiones.
-- Navegación inferior con 4 pestañas: **Hoy, Rutinas, Progreso, Ajustes**. La biblioteca de ejercicios está dentro de Rutinas. El modo entreno ocupa toda la pantalla, sin barra inferior.
+- Interfaz cuidada y con personalidad: oscura por defecto, un color de acento fuerte y números grandes (`tabular-nums`).
+- Navegación inferior con 4 pestañas: **Hoy, Rutinas, Progreso, Ajustes**. La biblioteca está dentro de Rutinas. El modo entreno ocupa toda la pantalla.
 - Animaciones cortas y sutiles que respeten `prefers-reduced-motion`.
 
 ---
 
-## Modelo de datos (Dexie, versión 2)
+## Modelo de datos (Dexie)
 
 ```
 Ejercicio        id, nombre, alias, musculosPrincipales[], musculosSecundarios[], material, categoria,
-                 nivel, mecanica, instrucciones[], imagenes (0–2), notasFijas, personalizado, archivado,
-                 reinicioProgresion?
+                 nivel, mecanica, instrucciones[], notasFijas, personalizado, archivado, reinicioProgresion?
 Rutina           id, nombre, posicionCiclo, archivada, creada
 RutinaEjercicio  id, rutinaId, ejercicioId, orden, series, repsMin, repsMax, descansoSeg, nota, superserieConSiguiente
-Entrada          id, hora, origen (enlace|ubicacion|entreno|manual antiguo), sesionId?
-Sesion           id, rutinaId (null = entreno libre), rutinaNombre, entrada, salida, origenEntrada, estado (en_curso|terminada),
+Entrada          id, hora, origen (deteccion|entreno; enlace|ubicacion|manual solo en datos antiguos), sesionId?, salida?
+Sesion           id, rutinaId (null = entreno libre), rutinaNombre, entrada, salida, origenEntrada, estado,
                  ultimaActividad, cierreAutomatico?, descansoFin, descansoDuracion, ejercicioActivoId
 SesionEjercicio  id, sesionId, ejercicioId, orden, seriesObjetivo, repsMin, repsMax, descansoSeg, nota,
                  superserieConSiguiente, estado (activo|saltado), sustituyeA?, anadido
-Serie            id, sesionId, sesionEjercicioId, ejercicioId, orden, tipo (calentamiento|normal|drop), peso, reps, rir?, completada, hora
+Serie            id, sesionId, sesionEjercicioId, ejercicioId, orden, tipo, peso, reps, rir?, completada, hora
 Molestia         id, sesionId, ejercicioId, nota, hora
 PesoCorporal     id, fecha, kg
-Ajustes          objetivoSemanal, descansoDefecto, horasEntreCheckins, gimnasioLat, gimnasioLng, radioM, tema, wakeLock,
-                 vibracion, ultimaCopia, versionCatalogo?
+Ajustes          objetivoMensual, objetivoPasos, alturaCm, edad, descansoDefecto, horasEntreCheckins, gimnasioLat,
+                 gimnasioLng, radioM, margenSalidaM, notificarEntrada, tema, wakeLock, vibracion, ultimaCopia, versionCatalogo?
 ```
 
-- **Versión 1 → 2**: los ejercicios pasan a los id de Free Exercise DB. La migración cambia el id en rutinas, entrenos, series y molestias, conserva las notas fijas en el ejercicio nuevo y mantiene los ejercicios propios (con sus músculos traducidos a la nueva lista). Ya no existe `saltoPeso` ni `musculoPrincipal` único.
+- **v1 → v2** (ronda 1): los ejercicios pasan a los id de Free Exercise DB; se cambian todas sus referencias y se conservan notas y ejercicios propios.
+- Los cambios de la ronda 2 (biblioteca nueva, objetivo mensual, salida) llegan con nuevas versiones y sus migraciones. Los ejercicios que salen de la biblioteca se conservan para el historial, ocultos en la biblioteca y el selector.
+- La detección nativa guarda su configuración, su estado y su registro en el almacenamiento de Android, y pasa a la base de datos las entradas y salidas cuando la app se abre.
 
 ---
 
 ## Cosas que no deben volver
 
-- Botón manual "He llegado al gimnasio" (o cualquier check-in manual).
-- Campo "salto de peso" en cualquier parte de la interfaz.
-- Controles para editar músculos o material de un ejercicio (también de los propios, una vez creados).
-- Biblioteca pequeña escrita a mano, o imágenes enlazadas a servidores externos en tiempo de ejecución.
-- Cambios de base de datos sin migración que conserve los datos.
+- Cualquier check-in manual, el enlace `?checkin=auto` o `/checkin`, y la detección por ubicación al abrir Ferro.
+- Racha semanal u objetivo semanal.
+- Campo "salto de peso" en la interfaz.
+- Controles para editar músculos o material de un ejercicio.
+- Fotos o personas reales en los ejercicios, o mezclar estilos de ilustración.
+- Buscador por texto, chips, categorías o filtros para encontrar ejercicios.
+- Máquinas guiadas, peso corporal, kettlebell, bandas, balones, cardio o estiramientos en la biblioteca.
+- Imágenes o datos cargados de servidores externos en tiempo de ejecución.
+- Cambios de base de datos sin migración que conserve los datos, o cambiar el origen de la WebView.
+- Un APK firmado con otra clave.
 
 ---
 
 ## Fases
 
-1. **Base instalable**: proyecto, PWA instalable y offline, navegación, base de datos, biblioteca de ejercicios y despliegue. Al acabar esta fase quiero poder instalarla ya en el móvil.
-2. **Rutinas y entreno**: rutinas en ciclo, modo entreno completo con prerrellenado, temporizador, recuperación del entreno en curso e historial.
-3. **Check-in**: detección automática, la pantalla "Hoy" y el README con la configuración de MacroDroid.
-4. **Progresión y estadísticas**: motor de progresión con tests, gráficas, récords y peso corporal.
-5. **Pulido**: copias de seguridad, accesos directos, ajustes y revisión de rendimiento y accesibilidad (Lighthouse).
-6. **Mejoras, ronda 1** (`MEJORAS-1.md`): sin check-in manual, mapa muscular con intensidad, biblioteca Free Exercise DB traducida con imágenes, ficha de solo lectura, incremento por material, editor de rutinas en una pantalla y entreno libre.
+Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, pulido) y la ronda 1 de mejoras.
+
+**Ronda 2:**
+
+1. **App Android:** Capacitor, importación de datos, APK firmado con GitHub Actions, instalación y actualizaciones, aviso nativo de fin de descanso.
+2. **Detección:** entrada y salida, registro de detección y README de MacroDroid.
+3. **Avatar profesional:** con vista previa para revisarlo.
+4. **Biblioteca nueva y buscador por mapa:** con el listado para revisión y la migración de ejercicios.
+5. **Pantalla principal:** objetivo mensual, pasos y calorías.
+6. **Animaciones:** con galería para revisión.
 
 ---
 
 ## Criterios de terminado
 
-- `npm run build` sin errores ni avisos de TypeScript, y tests pasando para la progresión, el ciclo de rutinas, la deduplicación del check-in, la intensidad muscular, la correspondencia de músculos con el mapa y las migraciones de datos.
-- Mis datos siguen ahí después de cada actualización.
-- La app se instala desde Chrome en Android, se abre sin barra del navegador y funciona en modo avión.
+- `npm run build` sin errores ni avisos de TypeScript; tests pasando (web y nativos) para: progresión, ciclo, objetivo mensual, calorías, intensidad muscular y correspondencia con el avatar, migraciones e importación, y decisión de entrada y salida (distancia, precisión y deduplicación).
+- El APK se instala y se actualiza encima sin perder datos, y mis datos de la PWA se han importado.
+- Abrir S3 FIT ZONE en el gimnasio registra la entrada sin que Ferro se abra; abrirla en casa no registra nada. La salida se detecta al irme.
+- El avatar y todas las animaciones tienen el mismo estilo; no queda ninguna foto real.
+- La biblioteca solo tiene peso libre, poleas y multipower, y solo se busca con el mapa.
+- No queda ninguna racha ni objetivo semanal.
 - Registrar una serie lleva un solo toque.
-- Todos los ejercicios de la biblioteca tienen imagen (o su mapa muscular como sustituto) y sus músculos en español.
-- README con: cómo ejecutarla en local, cómo desplegarla, cómo instalarla y actualizarla en el Xiaomi, cómo configurar MacroDroid y cómo regenerar el catálogo.
+- `SPEC.md` y README actualizados.

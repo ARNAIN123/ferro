@@ -1,7 +1,11 @@
 // Copias de seguridad: formato JSON versionado, validación al importar, CSV de series y recordatorio.
+import { migrarDatosV1, type DatosV1 } from './migracion'
 import { claveDia } from './semanas'
 
 export const VERSION_COPIA = 1
+
+/** Versión actual de la base de datos (Dexie). Súbela junto con cada `db.version(n)` nueva. */
+export const ESQUEMA_ACTUAL = 2
 
 export const TABLAS = [
   'ejercicios',
@@ -20,12 +24,30 @@ export type NombreTabla = (typeof TABLAS)[number]
 export interface Copia {
   app: 'ferro'
   version: number
+  /** Versión de la base de datos al exportar. Las copias de la PWA 0.2.0 o anteriores no la traen. */
+  esquema?: number
   exportado: string
   datos: Record<NombreTabla, { id: string }[]>
 }
 
 export function crearCopia(datos: Record<NombreTabla, { id: string }[]>, ahora = Date.now()): Copia {
-  return { app: 'ferro', version: VERSION_COPIA, exportado: new Date(ahora).toISOString(), datos }
+  return { app: 'ferro', version: VERSION_COPIA, esquema: ESQUEMA_ACTUAL, exportado: new Date(ahora).toISOString(), datos }
+}
+
+/** Esquema de la base de datos con el que se hizo la copia; si no lo trae, se deduce de los datos. */
+export function esquemaDeCopia(copia: Copia): number {
+  if (copia.esquema) return copia.esquema
+  return copia.datos.ejercicios.some((e) => 'musculoPrincipal' in e) ? 1 : 2
+}
+
+/**
+ * Lleva una copia antigua al esquema actual con las mismas migraciones que la base de datos,
+ * para que importar una copia vieja dé el mismo resultado que actualizar la app con esos datos.
+ */
+export function migrarCopia(copia: Copia): Copia {
+  if (esquemaDeCopia(copia) >= 2) return copia
+  const migrados = migrarDatosV1(copia.datos as unknown as DatosV1)
+  return { ...copia, esquema: 2, datos: { ...copia.datos, ...migrados } as unknown as Copia['datos'] }
 }
 
 export type ResultadoValidacion = { ok: true; copia: Copia; resumen: string } | { ok: false; error: string }
@@ -35,7 +57,7 @@ export function validarCopia(json: unknown): ResultadoValidacion {
   if (typeof json !== 'object' || json === null) return { ok: false, error: 'El archivo no es un JSON válido.' }
   const c = json as Partial<Copia>
   if (c.app !== 'ferro') return { ok: false, error: 'Este archivo no es una copia de seguridad de Ferro.' }
-  if (typeof c.version !== 'number' || c.version > VERSION_COPIA)
+  if (typeof c.version !== 'number' || c.version > VERSION_COPIA || (c.esquema ?? 0) > ESQUEMA_ACTUAL)
     return { ok: false, error: 'La copia es de una versión más nueva de Ferro. Actualiza la app antes de importarla.' }
   if (typeof c.datos !== 'object' || c.datos === null) return { ok: false, error: 'La copia no contiene datos.' }
   const datos = {} as Record<NombreTabla, { id: string }[]>
@@ -47,7 +69,9 @@ export function validarCopia(json: unknown): ResultadoValidacion {
     datos[t] = filas as { id: string }[]
   }
   const resumen = `${datos.sesiones.length} entrenos, ${datos.rutinas.length} rutinas y ${datos.series.length} series`
-  return { ok: true, copia: { app: 'ferro', version: c.version, exportado: String(c.exportado ?? ''), datos }, resumen }
+  const copia: Copia = { app: 'ferro', version: c.version, exportado: String(c.exportado ?? ''), datos }
+  if (typeof c.esquema === 'number') copia.esquema = c.esquema
+  return { ok: true, copia, resumen }
 }
 
 export interface FilaCsv {

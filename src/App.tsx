@@ -8,8 +8,10 @@ import { CheckinPage, EmpezarPage } from './features/checkin/CheckinPage'
 import { EntrenoPage } from './features/entreno/EntrenoPage'
 import { HoyPage } from './features/hoy/HoyPage'
 import { useAjustes } from './hooks/useAjustes'
+import { useAvisoDescanso } from './hooks/useAvisoDescanso'
 import { useTema } from './hooks/useTema'
 import { useVigilancia } from './hooks/useVigilancia'
+import { esNativa } from './lib/plataforma'
 
 // Hoy, el check-in y el modo entreno van en el arranque; el resto se carga al entrar
 // (todo queda precacheado igualmente, así que también funciona sin conexión).
@@ -33,10 +35,12 @@ export function App() {
   const ajustes = useAjustes()
   useTema(ajustes.tema)
   useVigilancia()
+  useAvisoDescanso()
 
   return (
     <BrowserRouter>
-      <AvisoActualizacion />
+      {/* En la app Android las actualizaciones llegan como APK (Ajustes → Buscar actualizaciones). */}
+      {!esNativa() && <AvisoActualizacion />}
       <RedirigirCheckin />
       <Avisos />
       <Suspense fallback={null}>

@@ -1,4 +1,4 @@
-import { crearCopia, seriesACsv, TABLAS, validarCopia, type FilaCsv, type NombreTabla } from '../domain/copias'
+import { crearCopia, migrarCopia, seriesACsv, TABLAS, validarCopia, type FilaCsv, type NombreTabla } from '../domain/copias'
 import { NOMBRE_MUSCULO, NOMBRE_TIPO_SERIE } from '../domain/etiquetas'
 import { claveDia } from '../domain/semanas'
 import { guardarAjustes } from '../hooks/useAjustes'
@@ -28,12 +28,17 @@ export async function leerCopia(archivo: File) {
   }
 }
 
-/** Sustituye todos los datos por los de la copia, en una sola transacción (o todo o nada). */
+/**
+ * Sustituye todos los datos por los de la copia, en una sola transacción (o todo o nada).
+ * Una copia de un esquema anterior se migra antes. Si su catálogo de ejercicios es de otra
+ * versión, `prepararCatalogo()` lo pone al día después (la versión viaja en los ajustes).
+ */
 export async function restaurarCopia(copia: Extract<Awaited<ReturnType<typeof leerCopia>>, { ok: true }>['copia']): Promise<void> {
+  const { datos } = migrarCopia(copia)
   await db.transaction('rw', TABLAS.map(tabla), async () => {
     for (const t of TABLAS) {
       await tabla(t).clear()
-      await tabla(t).bulkAdd(copia.datos[t])
+      await tabla(t).bulkAdd(datos[t])
     }
   })
 }

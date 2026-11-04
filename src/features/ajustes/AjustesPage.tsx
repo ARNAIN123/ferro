@@ -4,7 +4,9 @@ import { Cabecera } from '../../components/Cabecera'
 import { Interruptor, Segmentado, Tarjeta } from '../../components/ui'
 import type { Tema } from '../../domain/tipos'
 import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
+import { esNativa } from '../../lib/plataforma'
 import { Paso } from './Paso'
+import { SeccionActualizaciones } from './SeccionActualizaciones'
 import { SeccionDatos } from './SeccionDatos'
 import { SeccionGimnasio } from './SeccionGimnasio'
 import { SeccionImagenes } from './SeccionImagenes'
@@ -71,9 +73,12 @@ export function AjustesPage() {
           />
         </Tarjeta>
 
-        <SeccionImagenes />
+        {/* En la app Android las imágenes van dentro del APK: no hace falta descargarlas. */}
+        {!esNativa() && <SeccionImagenes />}
 
         <SeccionDatos a={a} />
+
+        {esNativa() && <SeccionActualizaciones />}
 
         <p className="pt-2 text-center text-xs text-muted">
           Ferro v{__APP_VERSION__} ·{' '}

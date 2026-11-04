@@ -1,10 +1,11 @@
-// Genera los iconos PNG de la PWA a partir de un SVG original.
-// Uso: npm run icons   (los PNG resultantes se versionan en /public)
+// Genera los iconos PNG de la PWA y de la app Android a partir de un SVG original.
+// Uso: npm run icons   (los PNG resultantes se versionan en /public y en android/app/src/main/res)
 import { Resvg } from '@resvg/resvg-js'
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 const publicDir = fileURLToPath(new URL('../public/', import.meta.url))
+const resDir = fileURLToPath(new URL('../android/app/src/main/res/', import.meta.url))
 
 const FONDO = '#11100e'
 
@@ -30,9 +31,10 @@ const svg = ({ redondeado, escala = 1, transparente = false }) => `
   <g transform="translate(256 256) scale(${escala}) translate(-256 -256)">${glifo}</g>
 </svg>`
 
-function png(nombre, codigo, tamano) {
+function png(nombre, codigo, tamano, dir = publicDir) {
   const r = new Resvg(codigo, { fitTo: { mode: 'width', value: tamano } })
-  writeFileSync(publicDir + nombre, r.render().asPng())
+  mkdirSync(dir + nombre.replace(/[^/]*$/, ''), { recursive: true })
+  writeFileSync(dir + nombre, r.render().asPng())
   console.log('✓', nombre)
 }
 
@@ -61,3 +63,26 @@ png(
   </g>`),
   96,
 )
+
+// App Android: icono clásico, redondo y adaptativo (primer plano transparente sobre el color de fondo).
+const redondo = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <circle cx="256" cy="256" r="256" fill="${FONDO}"/>
+  <g transform="translate(256 256) scale(0.82) translate(-256 -256)">${glifo}</g>
+</svg>`
+const DENSIDADES = { mdpi: 1, hdpi: 1.5, xhdpi: 2, xxhdpi: 3, xxxhdpi: 4 }
+for (const [d, f] of Object.entries(DENSIDADES)) {
+  png(`mipmap-${d}/ic_launcher.png`, normal, 48 * f, resDir)
+  png(`mipmap-${d}/ic_launcher_round.png`, redondo, 48 * f, resDir)
+  // 108 dp con el glifo dentro de la zona segura de 66 dp.
+  png(`mipmap-${d}/ic_launcher_foreground.png`, svg({ redondeado: false, escala: 0.6, transparente: true }), 108 * f, resDir)
+}
+writeFileSync(
+  resDir + 'values/ic_launcher_background.xml',
+  `<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">${FONDO}</color>
+</resources>
+`,
+)
+console.log('✓ values/ic_launcher_background.xml')

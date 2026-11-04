@@ -1,0 +1,80 @@
+apply plugin: 'com.android.application'
+
+import groovy.json.JsonSlurper
+
+// La versión sale de package.json (una sola fuente): "0.3.1" → versionName "0.3.1", versionCode 301.
+// El versionCode tiene que subir siempre para que Android deje instalar la actualización encima.
+def paquete = new JsonSlurper().parse(file('../../package.json'))
+def (mayor, menor, parche) = paquete.version.tokenize('.').collect { it.toInteger() }
+
+// Firma de release: la misma clave siempre, o Android no deja actualizar sin desinstalar (y borrar los datos).
+// En GitHub Actions llega por variables de entorno; en local, desde android/keystore.properties (no se versiona).
+def firma = new Properties()
+def ficheroFirma = rootProject.file('keystore.properties')
+if (ficheroFirma.exists()) ficheroFirma.withInputStream { firma.load(it) }
+def valorFirma = { String clave, String entorno -> System.getenv(entorno) ?: firma.getProperty(clave) }
+
+android {
+    namespace = "com.ferro.app"
+    compileSdk = rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.ferro.app"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode mayor * 10000 + menor * 100 + parche
+        versionName paquete.version
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        release {
+            def almacen = valorFirma('storeFile', 'FERRO_KEYSTORE')
+            if (almacen) {
+                storeFile file(almacen)
+                storePassword valorFirma('storePassword', 'FERRO_KEYSTORE_PASSWORD')
+                keyAlias valorFirma('keyAlias', 'FERRO_KEY_ALIAS')
+                keyPassword valorFirma('keyPassword', 'FERRO_KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            if (valorFirma('storeFile', 'FERRO_KEYSTORE')) signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

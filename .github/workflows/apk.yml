@@ -1,0 +1,104 @@
+# Compila el APK firmado y lo publica en GitHub Releases cada vez que llega a main una versión
+# nueva de package.json. Si esa versión ya está publicada, no hace nada.
+name: APK de Android
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.leer.outputs.version }}
+      publicada: ${{ steps.leer.outputs.publicada }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: leer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=$(node -p "require('./package.json').version")
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if gh release view "v$v" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "publicada=true" >> "$GITHUB_OUTPUT"
+            echo "La versión $v ya está publicada: no se compila."
+          else
+            echo "publicada=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  apk:
+    needs: version
+    if: needs.version.outputs.publicada == 'false'
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comprobar los secretos de firma
+        env:
+          KS: ${{ secrets.FERRO_KEYSTORE_BASE64 }}
+          PW: ${{ secrets.FERRO_KEYSTORE_PASSWORD }}
+          AL: ${{ secrets.FERRO_KEY_ALIAS }}
+          KP: ${{ secrets.FERRO_KEY_PASSWORD }}
+        run: |
+          for s in KS PW AL KP; do
+            if [ -z "${!s}" ]; then
+              echo "::error::Faltan secretos de firma. Mira «Clave de firma» en el README."
+              exit 1
+            fi
+          done
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+      - name: Compilar la web
+        run: npm run build
+        env:
+          # Para que «Buscar actualizaciones» sepa en qué repositorio mirar.
+          VITE_REPO_GITHUB: ${{ github.repository }}
+
+      - run: npx cap sync android
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Compilar el APK firmado (y pasar los tests nativos)
+        working-directory: android
+        env:
+          FERRO_KEYSTORE: ${{ runner.temp }}/ferro.jks
+          FERRO_KEYSTORE_PASSWORD: ${{ secrets.FERRO_KEYSTORE_PASSWORD }}
+          FERRO_KEY_ALIAS: ${{ secrets.FERRO_KEY_ALIAS }}
+          FERRO_KEY_PASSWORD: ${{ secrets.FERRO_KEY_PASSWORD }}
+        run: |
+          echo "${{ secrets.FERRO_KEYSTORE_BASE64 }}" | base64 -d > "$FERRO_KEYSTORE"
+          chmod +x gradlew
+          ./gradlew --no-daemon testReleaseUnitTest assembleRelease
+          rm "$FERRO_KEYSTORE"
+
+      - name: Verificar la firma
+        run: |
+          apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$apksigner" verify --print-certs android/app/build/outputs/apk/release/app-release.apk
+          cp android/app/build/outputs/apk/release/app-release.apk "ferro-$VERSION.apk"
+
+      - name: Publicar la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v$VERSION" "ferro-$VERSION.apk" --title "Ferro $VERSION" --generate-notes

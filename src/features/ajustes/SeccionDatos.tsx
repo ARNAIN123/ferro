@@ -3,10 +3,12 @@ import { Hoja } from '../../components/Hoja'
 import { Icono } from '../../components/Icono'
 import { Boton, Tarjeta } from '../../components/ui'
 import { generarCopiaJson, generarCsvSeries, leerCopia, marcarCopiaHecha, restaurarCopia } from '../../db/copias'
+import { prepararCatalogo } from '../../db/db'
 import type { Ajustes } from '../../domain/tipos'
-import { compartir, descargar, puedeCompartirArchivos } from '../../lib/archivos'
+import { CARPETA_NATIVA, compartir, guardarArchivo, puedeCompartirArchivos } from '../../lib/archivos'
 import { avisar } from '../../lib/avisos'
 import { fmtHace } from '../../lib/formato'
+import { esNativa } from '../../lib/plataforma'
 
 type Pendiente = Extract<Awaited<ReturnType<typeof leerCopia>>, { ok: true }>
 
@@ -15,18 +17,25 @@ export function SeccionDatos({ a }: { a: Ajustes }) {
   const [pendiente, setPendiente] = useState<Pendiente | null>(null)
   const entrada = useRef<HTMLInputElement>(null)
   const conCompartir = puedeCompartirArchivos()
+  const nativa = esNativa()
+  const guardadoEn = nativa ? ` en ${CARPETA_NATIVA}` : ''
 
   useEffect(() => {
+    if (nativa) return
     navigator.storage?.persisted?.().then(setPersistente, () => setPersistente(false))
-  }, [])
+  }, [nativa])
 
-  const copiaJson = async (modo: 'descargar' | 'compartir') => {
+  const copiaJson = async (modo: 'guardar' | 'compartir') => {
     const { nombre, contenido } = await generarCopiaJson()
-    if (modo === 'compartir') {
-      if (!(await compartir(nombre, contenido, 'application/json'))) return
-    } else descargar(nombre, contenido, 'application/json')
+    try {
+      if (modo === 'compartir') {
+        if (!(await compartir(nombre, contenido, 'application/json'))) return
+      } else await guardarArchivo(nombre, contenido, 'application/json')
+    } catch {
+      return avisar('No se pudo guardar la copia. Prueba a enviarla a Drive o al correo.')
+    }
     await marcarCopiaHecha()
-    avisar('Copia de seguridad creada')
+    avisar(modo === 'guardar' ? `Copia guardada${guardadoEn}` : 'Copia de seguridad creada')
   }
 
   return (
@@ -36,6 +45,7 @@ export function SeccionDatos({ a }: { a: Ajustes }) {
       </h2>
       <p className="mt-1 text-sm text-muted">
         Todo se guarda solo en este móvil.{' '}
+        {nativa && 'Desinstalar Ferro borra sus datos (actualizarla no): haz copias de vez en cuando.'}
         {persistente === true && 'Almacenamiento persistente activo: Android no lo borrará por falta de espacio.'}
         {persistente === false && 'Instala la app para que Android no borre los datos si falta espacio.'}
       </p>
@@ -44,7 +54,7 @@ export function SeccionDatos({ a }: { a: Ajustes }) {
       </p>
 
       <div className="mt-3 grid gap-2">
-        <Boton variante="primario" onClick={() => copiaJson('descargar')}>
+        <Boton variante="primario" onClick={() => copiaJson('guardar')}>
           <Icono nombre="descargar" tamano={20} /> Exportar copia (JSON)
         </Boton>
         {conCompartir && (
@@ -55,7 +65,12 @@ export function SeccionDatos({ a }: { a: Ajustes }) {
         <Boton
           onClick={async () => {
             const { nombre, contenido } = await generarCsvSeries()
-            descargar(nombre, contenido, 'text/csv;charset=utf-8')
+            try {
+              await guardarArchivo(nombre, contenido, 'text/csv;charset=utf-8')
+              if (nativa) avisar(`CSV guardado${guardadoEn}`)
+            } catch {
+              avisar('No se pudo guardar el CSV.')
+            }
           }}
         >
           <Icono nombre="descargar" tamano={20} /> Exportar series (CSV)
@@ -66,7 +81,8 @@ export function SeccionDatos({ a }: { a: Ajustes }) {
         <input
           ref={entrada}
           type="file"
-          accept="application/json,.json"
+          // En Android las copias bajadas de Drive o del correo no siempre llegan como JSON: se valida el contenido.
+          accept={nativa ? undefined : 'application/json,.json'}
           className="hidden"
           onChange={async (e) => {
             const archivo = e.target.files?.[0]
@@ -92,6 +108,7 @@ export function SeccionDatos({ a }: { a: Ajustes }) {
               className="w-full"
               onClick={async () => {
                 await restaurarCopia(pendiente.copia)
+                await prepararCatalogo()
                 setPendiente(null)
                 avisar('Copia restaurada')
               }}

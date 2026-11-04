@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { crearCopia, necesitaCopia, seriesACsv, TABLAS, validarCopia, type NombreTabla } from './copias'
+import { crearCopia, ESQUEMA_ACTUAL, esquemaDeCopia, migrarCopia, necesitaCopia, seriesACsv, TABLAS, validarCopia, type Copia, type NombreTabla } from './copias'
 
 const vacio = () => Object.fromEntries(TABLAS.map((t) => [t, []])) as unknown as Record<NombreTabla, { id: string }[]>
 
@@ -22,6 +22,42 @@ describe('copias de seguridad JSON', () => {
   it('las tablas que faltan se importan vacías', () => {
     const r = validarCopia({ app: 'ferro', version: 1, datos: { rutinas: [{ id: 'r' }] } })
     expect(r.ok && r.copia.datos.series).toEqual([])
+  })
+})
+
+describe('copias de versiones anteriores', () => {
+  it('las copias nuevas guardan el esquema y no se aceptan las de un esquema futuro', () => {
+    expect(crearCopia(vacio(), 0).esquema).toBe(ESQUEMA_ACTUAL)
+    expect(validarCopia({ app: 'ferro', version: 1, esquema: ESQUEMA_ACTUAL + 1, datos: {} }).ok).toBe(false)
+  })
+
+  it('una copia de la PWA 0.2.0 (sin esquema) se reconoce como esquema 2 y no se toca', () => {
+    const copia: Copia = { app: 'ferro', version: 1, exportado: '', datos: { ...vacio(), ejercicios: [{ id: 'Dumbbell_Flyes', musculosPrincipales: ['pecho'] } as { id: string }] } }
+    expect(esquemaDeCopia(copia)).toBe(2)
+    expect(migrarCopia(copia)).toBe(copia)
+  })
+
+  it('una copia del esquema 1 se migra igual que la base de datos: ids nuevos en todas las referencias', () => {
+    const viejo = { id: 'press-banca', nombre: 'Press de banca', musculoPrincipal: 'pecho', musculosSecundarios: ['triceps'], material: 'barra', saltoPeso: 2.5, notasFijas: 'Banco 3', personalizado: false, archivado: false }
+    const copia: Copia = {
+      app: 'ferro',
+      version: 1,
+      exportado: '',
+      datos: {
+        ...vacio(),
+        ejercicios: [viejo],
+        rutinaEjercicios: [{ id: 're', ejercicioId: 'press-banca' } as { id: string }],
+        series: [{ id: 'x', ejercicioId: 'press-banca', peso: 80 } as { id: string }],
+        pesosCorporales: [{ id: 'p', kg: 78 } as { id: string }],
+      },
+    }
+    expect(esquemaDeCopia(copia)).toBe(1)
+    const m = migrarCopia(copia)
+    expect(m.esquema).toBe(2)
+    expect(m.datos.ejercicios).toMatchObject([{ id: 'Barbell_Bench_Press_-_Medium_Grip', notasFijas: 'Banco 3', musculosPrincipales: ['pecho'] }])
+    expect(m.datos.rutinaEjercicios).toEqual([{ id: 're', ejercicioId: 'Barbell_Bench_Press_-_Medium_Grip' }])
+    expect(m.datos.series).toEqual([{ id: 'x', ejercicioId: 'Barbell_Bench_Press_-_Medium_Grip', peso: 80 }])
+    expect(m.datos.pesosCorporales).toEqual([{ id: 'p', kg: 78 }])
   })
 })
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icono pequeño de las notificaciones: la "F" de Ferro en blanco (Android la tiñe). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M156,130h66v280h-66z M156,130h170v62h-170z M316,102h40v118h-40z M156,250h118v56h-118z M266,228h34v100h-34z" />
+</vector>

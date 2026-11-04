@@ -3,6 +3,7 @@ import { ajustarDescanso, terminarDescanso } from '../../db/entreno'
 import { restanteMs } from '../../domain/entreno'
 import { useAhora } from '../../hooks/useAhora'
 import { fmtCrono } from '../../lib/formato'
+import { avisoDescansoNativo } from '../../lib/nativo'
 import { vibrar, VIBRACION_DESCANSO } from '../../lib/vibrar'
 
 interface Props {
@@ -26,7 +27,8 @@ export function Descanso({ sesionId, fin, duracion, vibracion }: Props) {
     if (espera <= 0) return
     const t = setTimeout(() => {
       // Solo vibra si la app está a la vista y no estamos volviendo tarde de segundo plano.
-      if (document.visibilityState === 'visible' && Date.now() - fin < 2000) vibrar(VIBRACION_DESCANSO, vibracion)
+      // En Android ya vibra la notificación de fin de descanso.
+      if (document.visibilityState === 'visible' && Date.now() - fin < 2000 && !avisoDescansoNativo()) vibrar(VIBRACION_DESCANSO, vibracion)
     }, espera)
     return () => clearTimeout(t)
   }, [fin, vibracion])
