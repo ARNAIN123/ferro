@@ -1,53 +1,78 @@
-// Búsqueda y filtros de la biblioteca, y valores por defecto al añadir un ejercicio a una rutina.
-import { coincide, normalizar } from './texto'
-import type { Categoria, Ejercicio, Material, Musculo } from './tipos'
+// Búsqueda de ejercicios por músculo (el único buscador de la app es el mapa) y valores por defecto
+// al añadir un ejercicio a una rutina.
+import type { Ejercicio, Material, Musculo } from './tipos'
 
-export interface Filtros {
-  texto: string
-  /** null = todas las categorías. Por defecto, fuerza. */
-  categoria: Categoria | null
-  musculo: Musculo | null
-  material: Material | null
-  /** Incluir los ejercicios archivados (solo personalizados pueden archivarse). */
-  archivados?: boolean
+type Buscable = Pick<Ejercicio, 'id' | 'nombre' | 'musculosPrincipales' | 'musculosSecundarios' | 'archivado' | 'retirado'>
+
+export interface EjerciciosDeMusculo<T> {
+  /** Su músculo principal es ese. */
+  principal: T[]
+  /** Lo tienen como secundario. */
+  tambien: T[]
 }
-
-export const FILTROS_INICIALES: Filtros = { texto: '', categoria: 'fuerza', musculo: null, material: null }
-
-type Filtrable = Pick<
-  Ejercicio,
-  'nombre' | 'alias' | 'categoria' | 'musculosPrincipales' | 'musculosSecundarios' | 'material' | 'archivado' | 'personalizado'
->
 
 /**
- * Filtra y ordena: busca en el nombre en español y en el alias (inglés y sinónimos).
- * Con un músculo elegido aparecen primero los que lo tienen como principal.
- * Si se busca por texto se ignora la categoría, para encontrar cualquier ejercicio,
- * y van primero los nombres que coinciden exactamente, luego los que empiezan por el texto
- * y luego los que lo contienen tal cual.
+ * Ejercicios de un músculo en dos apartados: "Principal" y "También lo trabajan". En cada uno van
+ * primero los que más uso y después por orden alfabético. Los archivados y los retirados no salen.
  */
-export function filtrarEjercicios<T extends Filtrable>(lista: readonly T[], f: Filtros): T[] {
-  const texto = f.texto.trim()
-  const resultado = lista.filter((e) => {
-    if (Boolean(e.archivado) !== Boolean(f.archivados)) return false
-    if (!texto && f.categoria && e.categoria !== f.categoria) return false
-    if (f.material && e.material !== f.material) return false
-    if (f.musculo && !e.musculosPrincipales.includes(f.musculo) && !e.musculosSecundarios.includes(f.musculo)) return false
-    if (texto && !coincide(`${e.nombre} ${e.alias}`, texto)) return false
-    return true
-  })
-  const buscado = normalizar(texto)
-  const relevancia = (e: T) => {
-    if (!buscado) return 0
-    const nombre = normalizar(e.nombre)
-    return nombre === buscado ? 0 : nombre.startsWith(buscado) ? 1 : nombre.includes(buscado) ? 2 : 3
+export function ejerciciosDeMusculo<T extends Buscable>(lista: readonly T[], musculo: Musculo, usos: ReadonlyMap<string, number> = new Map()): EjerciciosDeMusculo<T> {
+  const orden = (a: T, b: T) => (usos.get(b.id) ?? 0) - (usos.get(a.id) ?? 0) || a.nombre.localeCompare(b.nombre, 'es')
+  const disponibles = lista.filter((e) => !e.archivado && !e.retirado)
+  return {
+    principal: disponibles.filter((e) => e.musculosPrincipales.includes(musculo)).sort(orden),
+    tambien: disponibles.filter((e) => !e.musculosPrincipales.includes(musculo) && e.musculosSecundarios.includes(musculo)).sort(orden),
   }
-  const peso = (e: T) => (f.musculo && !e.musculosPrincipales.includes(f.musculo) ? 1 : 0)
-  return resultado.sort((a, b) => relevancia(a) - relevancia(b) || peso(a) - peso(b) || a.nombre.localeCompare(b.nombre, 'es'))
 }
 
-const MUSCULOS_GRANDES: readonly Musculo[] = ['pecho', 'dorsales', 'espalda_media', 'hombros', 'cuadriceps', 'isquiotibiales', 'gluteos', 'lumbares']
-const MATERIAL_PESADO: readonly Material[] = ['barra', 'barra_z', 'mancuernas', 'maquina', 'kettlebell']
+/** Cuántas veces he usado cada ejercicio (en entrenos y en rutinas), para ordenar las listas. */
+export function contarUsos(...listas: readonly (readonly { ejercicioId: string }[])[]): Map<string, number> {
+  const usos = new Map<string, number>()
+  for (const lista of listas) for (const { ejercicioId } of lista) usos.set(ejercicioId, (usos.get(ejercicioId) ?? 0) + 1)
+  return usos
+}
+
+type Comparable = Pick<Ejercicio, 'id' | 'nombre' | 'musculosPrincipales' | 'musculosSecundarios' | 'mecanica' | 'archivado' | 'retirado'>
+
+const palabras = (n: string) => new Set(n.toLowerCase().split(/[^a-záéíóúñü]+/).filter((p) => p.length > 3))
+
+/**
+ * Equivalente más parecido de la biblioteca para un ejercicio retirado (una máquina, por ejemplo):
+ * pesa sobre todo coincidir en músculos principales, después en secundarios y en el tipo (compuesto o
+ * aislamiento), y como desempate las palabras del nombre ("press", "inclinado"…).
+ */
+export function equivalenteMasParecido<T extends Comparable>(retirado: Comparable, biblioteca: readonly T[]): T | null {
+  const nombre = palabras(retirado.nombre)
+  let mejor: T | null = null
+  let puntos = 0
+  for (const e of biblioteca) {
+    if (e.id === retirado.id || e.retirado || e.archivado) continue
+    const enPrincipal = e.musculosPrincipales.filter((m) => retirado.musculosPrincipales.includes(m)).length
+    if (enPrincipal === 0) continue
+    const todos = [...retirado.musculosPrincipales, ...retirado.musculosSecundarios]
+    const enSecundario = e.musculosSecundarios.filter((m) => todos.includes(m)).length
+    const sobran = e.musculosPrincipales.length - enPrincipal
+    const comunes = [...palabras(e.nombre)].filter((p) => nombre.has(p)).length
+    const p = enPrincipal * 10 + enSecundario * 2 - sobran * 4 + (e.mecanica && e.mecanica === retirado.mecanica ? 3 : 0) + comunes
+    if (p > puntos || (p === puntos && mejor && e.nombre.localeCompare(mejor.nombre, 'es') < 0)) {
+      mejor = e
+      puntos = p
+    }
+  }
+  return mejor
+}
+
+const MUSCULOS_GRANDES: readonly Musculo[] = [
+  'pectoral_superior',
+  'pectoral_inferior',
+  'dorsales',
+  'espalda_media',
+  'deltoides_anterior',
+  'cuadriceps',
+  'isquiotibiales',
+  'gluteo_mayor',
+  'lumbares',
+]
+const MATERIAL_PESADO: readonly Material[] = ['barra', 'barra_z', 'barra_hexagonal', 'landmine', 'mancuernas', 'multipower', 'maquina', 'kettlebell']
 
 /** Compuesto grande: multiarticular, de un grupo grande y con carga importante (sentadilla, press de banca, remo…). */
 export function esCompuestoGrande(e: Pick<Ejercicio, 'mecanica' | 'musculosPrincipales' | 'material'>): boolean {

@@ -2,6 +2,24 @@ import { idMigrado } from '../domain/migracion'
 import { nuevoId } from '../lib/id'
 import { db } from './db'
 
+// Las plantillas usan los id de la biblioteca antigua. Los que eran máquinas o peso corporal (ya fuera de la
+// biblioteca) se cambian por su equivalente de peso libre, polea o multipower.
+const SUSTITUTOS: Record<string, string> = {
+  'curl-femoral-tumbado': 'curl-femoral-tumbado-mancuerna',
+  'curl-femoral-sentado': 'curl-femoral-tumbado-mancuerna',
+  prensa: 'Smith_Machine_Leg_Press',
+  contractora: 'Cable_Crossover',
+  'talones-de-pie': 'Standing_Barbell_Calf_Raise',
+  'talones-sentado': 'Barbell_Seated_Calf_Raise',
+  dominadas: 'Wide-Grip_Lat_Pulldown',
+  'press-pecho-maquina': 'Dumbbell_Bench_Press',
+  'sentadilla-hack': 'Barbell_Hack_Squat',
+  'extension-cuadriceps': 'sentadilla-goblet-mancuerna',
+}
+
+/** Id del ejercicio de la biblioteca actual para una línea de plantilla. */
+export const idPlantilla = (id: string): string => SUSTITUTOS[id] ?? idMigrado(id)
+
 // [ejercicioId, series, repsMin, repsMax, descansoSeg, superserieConSiguiente?]
 type Linea = [string, number, number, number, number, boolean?]
 
@@ -164,7 +182,7 @@ export async function aplicarPlantilla(clave: string): Promise<void> {
         r.ejercicios.map(([ejercicioId, series, repsMin, repsMax, descansoSeg, superserie], orden) => ({
           id: nuevoId(),
           rutinaId,
-          ejercicioId: idMigrado(ejercicioId),
+          ejercicioId: idPlantilla(ejercicioId),
           orden,
           series,
           repsMin,

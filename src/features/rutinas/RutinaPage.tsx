@@ -11,7 +11,7 @@ import { detalleSesion } from '../../db/consultas'
 import { db } from '../../db/db'
 import { iniciarSesion } from '../../db/entreno'
 import { archivarRutina, guardarRutina } from '../../db/rutinas'
-import { valoresPorDefecto } from '../../domain/biblioteca'
+import { equivalenteMasParecido, valoresPorDefecto } from '../../domain/biblioteca'
 import { rutinasDelCiclo } from '../../domain/ciclo'
 import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { ESCALAS, gruposSinTrabajar, nivelesDeTrabajo, rotulosEscala, trabajoMuscular } from '../../domain/mapaMuscular'
@@ -185,6 +185,7 @@ export function RutinaPage() {
                       <Icono nombre="cerrar" tamano={20} />
                     </button>
                   </div>
+                  {e?.retirado && <AvisoRetirado ejercicio={e} fichas={fichas} onCambiar={(id) => cambiar(borrador.items.map((x, k) => (k === i ? { ...x, ejercicioId: id } : x)))} />}
                   <div className="grid grid-cols-2 gap-x-3 border-t border-line px-3 py-1.5">
                     <MiniPaso etiqueta="Series" valor={String(item.series)} onMenos={() => ajustar(i, 'series', -1)} onMas={() => ajustar(i, 'series', 1)} />
                     <MiniPaso etiqueta="Descanso" valor={fmtCrono(item.descansoSeg)} onMenos={() => ajustar(i, 'descansoSeg', -15)} onMas={() => ajustar(i, 'descansoSeg', 15)} />
@@ -296,6 +297,24 @@ function MiniPaso({ etiqueta, valor, onMenos, onMas }: { etiqueta: string; valor
           <Icono nombre="mas" tamano={18} />
         </button>
       </span>
+    </div>
+  )
+}
+
+/** Ejercicio que ya no está en la biblioteca (máquina, peso corporal…): aviso y su equivalente más parecido. */
+function AvisoRetirado({ ejercicio, fichas, onCambiar }: { ejercicio: Ejercicio; fichas: ReadonlyMap<string, Ejercicio>; onCambiar: (id: string) => void }) {
+  const sugerido = useMemo(() => equivalenteMasParecido(ejercicio, [...fichas.values()]), [ejercicio, fichas])
+  return (
+    <div className="mx-3 mb-2 rounded-2xl bg-warn/10 px-3 py-2 text-sm text-warn">
+      <p className="flex items-start gap-2">
+        <Icono nombre="aviso" tamano={16} className="mt-0.5 shrink-0" />
+        Ya no está en la biblioteca (solo peso libre, poleas y multipower). Su historial se conserva.
+      </p>
+      {sugerido && (
+        <button type="button" onClick={() => onCambiar(sugerido.id)} className="mt-1.5 min-h-10 w-full rounded-xl bg-surface-2 px-3 text-left font-semibold text-fg active:bg-line">
+          Cambiar por {sugerido.nombre}
+        </button>
+      )}
     </div>
   )
 }

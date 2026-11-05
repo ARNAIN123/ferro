@@ -37,15 +37,17 @@ describe('correspondencia músculo ↔ avatar', () => {
       'soleo',
     ] as RegionAvatar[])
       expect(dibujadas.has(r), r).toBe(true)
-    expect(musculoDeRegionAvatar('soleo')).toBe('gemelos')
-    expect(musculoDeRegionAvatar('deltoides_posterior')).toBe('hombros')
+    expect(musculoDeRegionAvatar('soleo')).toBe('soleo')
+    expect(musculoDeRegionAvatar('deltoides_posterior')).toBe('deltoides_posterior')
+    expect(musculoDeRegionAvatar('antebrazo_extensores')).toBe('antebrazos')
   })
 
   it('todas las regiones de un músculo comparten su nivel', () => {
-    const r = nivelesPorRegionAvatar(new Map([['pecho', 4], ['hombros', 2]]))
-    expect(r.get('pectoral_superior')).toBe(4)
-    expect(r.get('pectoral_inferior')).toBe(4)
-    expect(r.get('deltoides_lateral')).toBe(2)
+    const r = nivelesPorRegionAvatar(new Map([['cuadriceps', 4], ['antebrazos', 2]]))
+    expect(r.get('recto_femoral')).toBe(4)
+    expect(r.get('vasto_lateral')).toBe(4)
+    expect(r.get('vasto_medial')).toBe(4)
+    expect(r.get('antebrazo_flexores')).toBe(2)
     expect(r.get('biceps')).toBeUndefined()
   })
 })

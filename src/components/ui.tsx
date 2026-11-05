@@ -122,3 +122,18 @@ export function Segmentado<T extends string>({ opciones, valor, onCambio, etique
     </div>
   )
 }
+
+export function Chip({ activo, onClick, children }: { activo: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={activo}
+      onClick={onClick}
+      className={`min-h-10 shrink-0 rounded-full border px-3.5 text-sm font-medium whitespace-nowrap transition ${
+        activo ? 'border-accent bg-accent text-accent-ink' : 'border-line text-muted'
+      }`}
+    >
+      {children}
+    </button>
+  )
+}

@@ -1,29 +1,39 @@
 import type { Categoria, Material, Mecanica, Musculo, Nivel, OrigenEntrada, TipoSerie } from './tipos'
 
 export const NOMBRE_MUSCULO: Record<Musculo, string> = {
-  pecho: 'Pecho',
-  dorsales: 'Dorsales',
-  espalda_media: 'Espalda media',
-  lumbares: 'Lumbares',
-  trapecio: 'Trapecio',
-  hombros: 'Hombros',
+  pectoral_superior: 'Pectoral superior',
+  pectoral_inferior: 'Pectoral inferior',
+  deltoides_anterior: 'Deltoides anterior',
+  deltoides_lateral: 'Deltoides lateral',
+  deltoides_posterior: 'Deltoides posterior',
   biceps: 'Bíceps',
+  braquial: 'Braquial',
   triceps: 'Tríceps',
   antebrazos: 'Antebrazos',
+  trapecio: 'Trapecio',
+  espalda_media: 'Espalda media',
+  dorsales: 'Dorsales',
+  lumbares: 'Lumbares',
   abdomen: 'Abdomen',
-  gluteos: 'Glúteos',
-  abductores: 'Abductores',
-  aductores: 'Aductores',
+  oblicuos: 'Oblicuos',
+  gluteo_mayor: 'Glúteo mayor',
+  gluteo_medio: 'Glúteo medio',
   cuadriceps: 'Cuádriceps',
   isquiotibiales: 'Isquiotibiales',
+  aductores: 'Aductores',
   gemelos: 'Gemelos',
+  soleo: 'Sóleo',
   cuello: 'Cuello',
 }
 
 export const NOMBRE_MATERIAL: Record<Material, string> = {
   barra: 'Barra',
   barra_z: 'Barra Z',
+  barra_hexagonal: 'Barra hexagonal',
+  landmine: 'Landmine',
   mancuernas: 'Mancuernas',
+  discos: 'Discos',
+  multipower: 'Multipower',
   kettlebell: 'Kettlebell',
   maquina: 'Máquina',
   polea: 'Polea',
@@ -58,11 +68,16 @@ export const NOMBRE_MECANICA: Record<Mecanica, string> = {
 
 /**
  * Incremento de peso de los botones +/− y de la progresión. No se configura:
- * depende solo del material (barra 2,5 kg, mancuernas 2 kg, kettlebell 4 kg, máquinas y poleas 5 kg).
+ * depende solo del material (barras, landmine y discos 2,5 kg, mancuernas 2 kg, kettlebell 4 kg,
+ * poleas, multipower y máquinas 5 kg).
  */
 export const SALTO_POR_MATERIAL: Record<Material, number> = {
   barra: 2.5,
   barra_z: 2.5,
+  barra_hexagonal: 2.5,
+  landmine: 2.5,
+  discos: 2.5,
+  multipower: 5,
   mancuernas: 2,
   kettlebell: 4,
   maquina: 5,

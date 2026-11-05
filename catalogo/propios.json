@@ -1,0 +1,320 @@
+{
+  "nota": "Ejercicios de peso libre, polea y multipower que faltan en Free Exercise DB. Músculos con las regiones del avatar.",
+  "ejercicios": [
+    {
+      "id": "sentadilla-goblet-mancuerna",
+      "nombre": "Sentadilla goblet con mancuerna",
+      "alias": "Dumbbell Goblet Squat",
+      "principales": ["cuadriceps"],
+      "secundarios": ["gluteo_mayor", "aductores", "abdomen"],
+      "material": "mancuernas",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "De pie, con los pies algo más abiertos que los hombros, sujeta una mancuerna en vertical pegada al pecho con las dos manos.",
+        "Baja flexionando rodillas y cadera, con el pecho alto y los codos entre las rodillas, hasta que los muslos pasen de paralelo.",
+        "Sube empujando con los talones sin dejar que las rodillas se vayan hacia dentro."
+      ]
+    },
+    {
+      "id": "remo-pendlay",
+      "nombre": "Remo Pendlay",
+      "alias": "Pendlay Row",
+      "principales": ["espalda_media", "dorsales"],
+      "secundarios": ["deltoides_posterior", "biceps", "lumbares"],
+      "material": "barra",
+      "nivel": "intermedio",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Con la barra en el suelo, inclina el tronco hasta casi quedar paralelo al suelo, con la espalda recta y agarre prono algo más ancho que los hombros.",
+        "Tira de la barra de forma explosiva hasta tocar la parte baja del pecho, juntando los omóplatos y sin levantar el tronco.",
+        "Devuelve la barra al suelo en cada repetición y vuelve a colocarte antes de la siguiente."
+      ]
+    },
+    {
+      "id": "remo-meadows",
+      "nombre": "Remo Meadows",
+      "alias": "Meadows Row",
+      "principales": ["dorsales", "espalda_media"],
+      "secundarios": ["deltoides_posterior", "biceps", "antebrazos"],
+      "material": "landmine",
+      "nivel": "intermedio",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Colócate de lado junto al extremo libre de una barra en landmine, con el pie adelantado junto a la barra y el tronco inclinado.",
+        "Agarra el extremo de la barra en prono con la mano más alejada, apoyando el otro antebrazo en el muslo.",
+        "Tira del codo hacia arriba y atrás hasta que la mano pase la cadera; baja estirando bien el dorsal. Cambia de lado."
+      ]
+    },
+    {
+      "id": "press-landmine-una-mano",
+      "nombre": "Press landmine a una mano",
+      "alias": "Single-Arm Landmine Press",
+      "principales": ["deltoides_anterior", "pectoral_superior"],
+      "secundarios": ["triceps", "deltoides_lateral", "oblicuos"],
+      "material": "landmine",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "De pie o de rodillas frente a la barra en landmine, sujeta el extremo a la altura del hombro con una mano.",
+        "Empuja la barra hacia arriba y adelante hasta estirar el brazo, sin arquear la zona lumbar.",
+        "Baja con control al hombro. Completa la serie y cambia de brazo."
+      ]
+    },
+    {
+      "id": "curl-bayesiano-polea",
+      "nombre": "Curl bayesiano en polea",
+      "alias": "Bayesian Cable Curl, Behind-the-Body Cable Curl",
+      "principales": ["biceps"],
+      "secundarios": ["braquial"],
+      "material": "polea",
+      "nivel": "intermedio",
+      "mecanica": "aislamiento",
+      "instrucciones": [
+        "Engancha un asa a una polea baja y colócate de espaldas a ella, con un pie adelantado y el brazo estirado por detrás del cuerpo.",
+        "Sin mover el codo hacia delante, flexiona el brazo y sube el asa hasta la altura del hombro.",
+        "Baja despacio hasta notar el estiramiento del bíceps. Cambia de brazo."
+      ]
+    },
+    {
+      "id": "patada-triceps-polea",
+      "nombre": "Patada de tríceps en polea",
+      "alias": "Cable Triceps Kickback",
+      "principales": ["triceps"],
+      "secundarios": [],
+      "material": "polea",
+      "nivel": "principiante",
+      "mecanica": "aislamiento",
+      "instrucciones": [
+        "Engancha un asa a una polea baja e inclina el tronco hacia delante con la espalda recta, sujetando el asa con el codo pegado al costado.",
+        "Sin mover la parte superior del brazo, extiende el codo hacia atrás hasta estirar el brazo.",
+        "Aguanta un segundo y vuelve despacio. Cambia de brazo al terminar."
+      ]
+    },
+    {
+      "id": "sentadilla-bulgara-barra",
+      "nombre": "Sentadilla búlgara con barra",
+      "alias": "Barbell Bulgarian Split Squat",
+      "principales": ["cuadriceps", "gluteo_mayor"],
+      "secundarios": ["aductores", "isquiotibiales"],
+      "material": "barra",
+      "nivel": "intermedio",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Con la barra en la parte alta de la espalda, apoya el empeine de un pie en un banco detrás de ti y adelanta el otro.",
+        "Baja flexionando la rodilla delantera hasta que el muslo quede casi paralelo al suelo, con el tronco firme.",
+        "Sube empujando con el talón delantero. Completa la serie y cambia de pierna."
+      ]
+    },
+    {
+      "id": "peso-muerto-rumano-una-pierna-mancuernas",
+      "nombre": "Peso muerto rumano a una pierna con mancuernas",
+      "alias": "Single-Leg Dumbbell Romanian Deadlift",
+      "principales": ["isquiotibiales", "gluteo_mayor"],
+      "secundarios": ["gluteo_medio", "lumbares"],
+      "material": "mancuernas",
+      "nivel": "intermedio",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "De pie sobre una pierna con la rodilla algo flexionada y una mancuerna en cada mano.",
+        "Inclina el tronco desde la cadera llevando la otra pierna estirada hacia atrás, con la espalda recta, hasta notar el estiramiento del isquio.",
+        "Vuelve a la posición erguida apretando el glúteo. Completa la serie y cambia de pierna."
+      ]
+    },
+    {
+      "id": "hip-thrust-multipower",
+      "nombre": "Hip thrust en multipower",
+      "alias": "Smith Machine Hip Thrust",
+      "principales": ["gluteo_mayor"],
+      "secundarios": ["isquiotibiales", "gluteo_medio"],
+      "material": "multipower",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Coloca un banco junto a la multipower y apoya la parte alta de la espalda en él, con la barra sobre la cadera (usa almohadilla).",
+        "Con los pies apoyados a la anchura de la cadera, desbloquea la barra y sube la cadera hasta que el tronco quede alineado con los muslos.",
+        "Aprieta el glúteo un segundo arriba y baja con control."
+      ]
+    },
+    {
+      "id": "hip-thrust-una-pierna-mancuerna",
+      "nombre": "Hip thrust a una pierna con mancuerna",
+      "alias": "Single-Leg Dumbbell Hip Thrust",
+      "principales": ["gluteo_mayor"],
+      "secundarios": ["isquiotibiales", "gluteo_medio"],
+      "material": "mancuernas",
+      "nivel": "intermedio",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Apoya la parte alta de la espalda en un banco con una mancuerna sobre la cadera de la pierna que trabaja; levanta la otra pierna.",
+        "Empuja con el talón apoyado y sube la cadera hasta alinearla con el tronco.",
+        "Baja despacio. Completa la serie y cambia de pierna."
+      ]
+    },
+    {
+      "id": "zancada-lateral-mancuernas",
+      "nombre": "Zancada lateral con mancuernas",
+      "alias": "Dumbbell Lateral Lunge, Side Lunge",
+      "principales": ["cuadriceps", "aductores"],
+      "secundarios": ["gluteo_mayor"],
+      "material": "mancuernas",
+      "nivel": "intermedio",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "De pie con una mancuerna en cada mano, da un paso amplio hacia un lado.",
+        "Flexiona la rodilla de esa pierna llevando la cadera atrás, con la otra pierna estirada, hasta que el muslo quede casi paralelo al suelo.",
+        "Empuja con el talón para volver al centro. Alterna los lados o completa la serie con uno."
+      ]
+    },
+    {
+      "id": "zancadas-multipower",
+      "nombre": "Zancadas en multipower",
+      "alias": "Smith Machine Lunge, Smith Machine Split Squat",
+      "principales": ["cuadriceps", "gluteo_mayor"],
+      "secundarios": ["isquiotibiales", "aductores"],
+      "material": "multipower",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Colócate bajo la barra de la multipower con ella en la parte alta de la espalda y los pies en zancada, uno delante y otro detrás.",
+        "Desbloquea la barra y baja en vertical hasta que la rodilla de atrás casi toque el suelo.",
+        "Sube empujando con el talón delantero. Completa la serie y cambia de pierna."
+      ]
+    },
+    {
+      "id": "sentadilla-frontal-multipower",
+      "nombre": "Sentadilla frontal en multipower",
+      "alias": "Smith Machine Front Squat",
+      "principales": ["cuadriceps"],
+      "secundarios": ["gluteo_mayor", "abdomen"],
+      "material": "multipower",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Coloca la barra de la multipower sobre la parte delantera de los hombros, con los codos altos y los pies algo adelantados.",
+        "Desbloquea la barra y baja con el tronco erguido hasta que los muslos queden paralelos al suelo.",
+        "Sube empujando con los talones manteniendo los codos arriba."
+      ]
+    },
+    {
+      "id": "curl-femoral-tumbado-mancuerna",
+      "nombre": "Curl femoral tumbado con mancuerna",
+      "alias": "Lying Dumbbell Leg Curl",
+      "principales": ["isquiotibiales"],
+      "secundarios": ["gemelos"],
+      "material": "mancuernas",
+      "nivel": "intermedio",
+      "mecanica": "aislamiento",
+      "instrucciones": [
+        "Túmbate boca abajo en un banco plano con las rodillas en el borde y sujeta una mancuerna entre los pies.",
+        "Flexiona las rodillas llevando la mancuerna hacia los glúteos sin levantar la cadera del banco.",
+        "Baja despacio sin dejar que la mancuerna se suelte."
+      ]
+    },
+    {
+      "id": "remo-polea-baja-agarre-ancho",
+      "nombre": "Remo en polea baja agarre ancho",
+      "alias": "Wide-Grip Seated Cable Row",
+      "principales": ["espalda_media"],
+      "secundarios": ["deltoides_posterior", "dorsales", "biceps"],
+      "material": "polea",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Sentado frente a la polea baja con una barra larga, agárrala en prono algo más ancho que los hombros, con el tronco erguido.",
+        "Tira de la barra hacia la parte baja del pecho llevando los codos hacia fuera y juntando los omóplatos.",
+        "Vuelve despacio estirando los brazos sin inclinar el tronco hacia delante."
+      ]
+    },
+    {
+      "id": "crunch-con-disco",
+      "nombre": "Crunch con disco",
+      "alias": "Weighted Plate Crunch",
+      "principales": ["abdomen"],
+      "secundarios": ["oblicuos"],
+      "material": "discos",
+      "nivel": "principiante",
+      "mecanica": "aislamiento",
+      "instrucciones": [
+        "Túmbate boca arriba con las rodillas flexionadas y sujeta un disco sobre el pecho.",
+        "Despega los hombros del suelo contrayendo el abdomen, sin tirar del cuello.",
+        "Aguanta un segundo arriba y baja despacio."
+      ]
+    },
+    {
+      "id": "press-svend-disco",
+      "nombre": "Press Svend con disco",
+      "alias": "Svend Press, Plate Press",
+      "principales": ["pectoral_inferior"],
+      "secundarios": ["pectoral_superior", "deltoides_anterior"],
+      "material": "discos",
+      "nivel": "principiante",
+      "mecanica": "aislamiento",
+      "instrucciones": [
+        "De pie, aprieta dos discos ligeros entre las palmas a la altura del pecho, con los dedos hacia delante.",
+        "Sin dejar de apretar, estira los brazos al frente.",
+        "Vuelve despacio al pecho manteniendo la presión de las palmas."
+      ]
+    },
+    {
+      "id": "sentadilla-landmine",
+      "nombre": "Sentadilla landmine",
+      "alias": "Landmine Squat",
+      "principales": ["cuadriceps"],
+      "secundarios": ["gluteo_mayor", "abdomen"],
+      "material": "landmine",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Sujeta el extremo de una barra en landmine con las dos manos a la altura del pecho, con los pies a la anchura de los hombros.",
+        "Baja en sentadilla con el pecho alto hasta que los muslos queden paralelos al suelo.",
+        "Sube empujando con los talones."
+      ]
+    },
+    {
+      "id": "peso-muerto-mancuernas",
+      "nombre": "Peso muerto con mancuernas",
+      "alias": "Dumbbell Deadlift",
+      "principales": ["isquiotibiales", "gluteo_mayor"],
+      "secundarios": ["lumbares", "cuadriceps", "trapecio", "antebrazos"],
+      "material": "mancuernas",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "De pie con una mancuerna a cada lado de los pies, flexiona cadera y rodillas y agárralas con la espalda recta.",
+        "Ponte de pie extendiendo cadera y rodillas a la vez, con las mancuernas pegadas a las piernas.",
+        "Baja con control llevando la cadera atrás."
+      ]
+    },
+    {
+      "id": "curl-predicador-barra-z",
+      "nombre": "Curl predicador con barra Z",
+      "alias": "EZ-Bar Preacher Curl",
+      "principales": ["biceps"],
+      "secundarios": ["braquial"],
+      "material": "barra_z",
+      "nivel": "principiante",
+      "mecanica": "aislamiento",
+      "instrucciones": [
+        "Siéntate en el banco Scott con la parte trasera de los brazos apoyada y agarra la barra Z en supino por la parte interior.",
+        "Sube la barra contrayendo los bíceps hasta que los antebrazos queden casi verticales.",
+        "Baja despacio hasta casi estirar los brazos."
+      ]
+    },
+    {
+      "id": "paseo-granjero-mancuernas",
+      "nombre": "Paseo del granjero con mancuernas",
+      "alias": "Dumbbell Farmer's Walk, Farmer's Carry",
+      "principales": ["antebrazos", "trapecio"],
+      "secundarios": ["abdomen", "gluteo_mayor", "cuadriceps"],
+      "material": "mancuernas",
+      "nivel": "principiante",
+      "mecanica": "compuesto",
+      "instrucciones": [
+        "Coge una mancuerna pesada en cada mano y ponte de pie con los hombros atrás y el abdomen firme.",
+        "Camina con pasos cortos y rápidos la distancia o el tiempo indicados, sin dejar que los hombros caigan.",
+        "Deja las mancuernas en el suelo con la espalda recta."
+      ]
+    }
+  ]
+}

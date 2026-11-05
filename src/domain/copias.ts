@@ -1,11 +1,11 @@
 // Copias de seguridad: formato JSON versionado, validación al importar, CSV de series y recordatorio.
-import { migrarDatosV1, type DatosV1 } from './migracion'
+import { migrarDatosV1, migrarMusculosEjercicio, type DatosV1 } from './migracion'
 import { claveDia } from './semanas'
 
 export const VERSION_COPIA = 1
 
 /** Versión actual de la base de datos (Dexie). Súbela junto con cada `db.version(n)` nueva. */
-export const ESQUEMA_ACTUAL = 2
+export const ESQUEMA_ACTUAL = 3
 
 export const TABLAS = [
   'ejercicios',
@@ -45,9 +45,16 @@ export function esquemaDeCopia(copia: Copia): number {
  * para que importar una copia vieja dé el mismo resultado que actualizar la app con esos datos.
  */
 export function migrarCopia(copia: Copia): Copia {
-  if (esquemaDeCopia(copia) >= 2) return copia
-  const migrados = migrarDatosV1(copia.datos as unknown as DatosV1)
-  return { ...copia, esquema: 2, datos: { ...copia.datos, ...migrados } as unknown as Copia['datos'] }
+  let actual = copia
+  if (esquemaDeCopia(actual) < 2) {
+    const migrados = migrarDatosV1(actual.datos as unknown as DatosV1)
+    actual = { ...actual, esquema: 2, datos: { ...actual.datos, ...migrados } as unknown as Copia['datos'] }
+  }
+  if (esquemaDeCopia(actual) < 3) {
+    const ejercicios = (actual.datos.ejercicios as unknown as Parameters<typeof migrarMusculosEjercicio>[0][]).map(migrarMusculosEjercicio)
+    actual = { ...actual, esquema: 3, datos: { ...actual.datos, ejercicios: ejercicios as unknown as Copia['datos']['ejercicios'] } }
+  }
+  return actual
 }
 
 export type ResultadoValidacion = { ok: true; copia: Copia; resumen: string } | { ok: false; error: string }

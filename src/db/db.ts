@@ -1,6 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie'
 import { VERSION_CATALOGO } from '../catalogo/version'
-import { migrarDatosV1, sincronizarCatalogo, type DatosV1, type EjercicioCatalogo } from '../domain/migracion'
+import { migrarDatosV1, migrarMusculosEjercicio, sincronizarCatalogo, type DatosV1, type EjercicioCatalogo, type EjercicioRetirado } from '../domain/migracion'
 import {
   AJUSTES_POR_DEFECTO,
   type Ajustes,
@@ -68,6 +68,20 @@ export class FerroDB extends Dexie {
         })
       })
 
+    // v3 (ronda 2): los músculos pasan a ser las regiones del avatar (pectoral superior e inferior,
+    // deltoides anterior/lateral/posterior…). La biblioteca nueva (peso libre, poleas y multipower) se
+    // aplica al sincronizar el catálogo: los ejercicios usados que quedan fuera se conservan como retirados.
+    this.version(3)
+      .stores({})
+      .upgrade(async (tx) => {
+        await tx.table('ejercicios').toCollection().modify((e: Ejercicio) => {
+          Object.assign(e, migrarMusculosEjercicio(e))
+        })
+        await tx.table('ajustes').where('id').equals('ajustes').modify((a: Ajustes) => {
+          delete a.versionCatalogo
+        })
+      })
+
     this.on('populate', (tx) => {
       tx.table('ajustes').add(AJUSTES_POR_DEFECTO)
     })
@@ -88,10 +102,21 @@ export function prepararCatalogo(): Promise<void> {
     const ajustes = await db.ajustes.get('ajustes')
     if (ajustes?.versionCatalogo === VERSION_CATALOGO) return
     const { default: catalogo } = await import('../catalogo/ejercicios.json')
-    const existentes = await db.ejercicios.toArray()
-    const filas = sincronizarCatalogo(catalogo.ejercicios as EjercicioCatalogo[], existentes)
-    await db.transaction('rw', db.ejercicios, db.ajustes, async () => {
-      await db.ejercicios.bulkPut(filas)
+    await db.transaction('rw', [db.ejercicios, db.ajustes, db.rutinaEjercicios, db.sesionEjercicios, db.series, db.molestias], async () => {
+      const existentes = await db.ejercicios.toArray()
+      // Ejercicios con historial, en rutinas o con molestias: no se borran aunque salgan de la biblioteca.
+      const usados = new Set<string>()
+      for (const t of [db.rutinaEjercicios, db.sesionEjercicios, db.series, db.molestias] as const)
+        for (const id of (await t.orderBy('ejercicioId').uniqueKeys()) as string[]) usados.add(id)
+      for (const se of await db.sesionEjercicios.filter((s) => Boolean(s.sustituyeA)).toArray()) usados.add(se.sustituyeA!)
+      const { poner, borrar } = sincronizarCatalogo(
+        catalogo.ejercicios as EjercicioCatalogo[],
+        existentes,
+        usados,
+        catalogo.retirados as EjercicioRetirado[],
+      )
+      await db.ejercicios.bulkDelete(borrar)
+      await db.ejercicios.bulkPut(poner)
       await db.ajustes.update('ajustes', { versionCatalogo: VERSION_CATALOGO })
     })
   })().finally(() => {

@@ -1,33 +1,48 @@
 // Modelo de datos de Ferro. Todas las fechas son milisegundos desde epoch (Date.now()).
 
+/** Músculos = regiones del avatar (ronda 2). Los ejercicios usan estos nombres para principales y secundarios. */
 export const MUSCULOS = [
-  'pecho',
-  'dorsales',
-  'espalda_media',
-  'lumbares',
-  'trapecio',
-  'hombros',
+  'pectoral_superior',
+  'pectoral_inferior',
+  'deltoides_anterior',
+  'deltoides_lateral',
+  'deltoides_posterior',
   'biceps',
+  'braquial',
   'triceps',
   'antebrazos',
+  'trapecio',
+  'espalda_media',
+  'dorsales',
+  'lumbares',
   'abdomen',
-  'gluteos',
-  'abductores',
-  'aductores',
+  'oblicuos',
+  'gluteo_mayor',
+  'gluteo_medio',
   'cuadriceps',
   'isquiotibiales',
+  'aductores',
   'gemelos',
+  'soleo',
   'cuello',
 ] as const
 export type Musculo = (typeof MUSCULOS)[number]
 
+/**
+ * Materiales. La biblioteca solo usa los de peso libre, polea y multipower (MATERIALES_BIBLIOTECA);
+ * los demás quedan para ejercicios antiguos del historial y los propios.
+ */
 export const MATERIALES = [
   'barra',
   'barra_z',
+  'barra_hexagonal',
+  'landmine',
   'mancuernas',
+  'discos',
+  'polea',
+  'multipower',
   'kettlebell',
   'maquina',
-  'polea',
   'peso_corporal',
   'bandas',
   'balon_medicinal',
@@ -37,6 +52,8 @@ export const MATERIALES = [
   'ninguno',
 ] as const
 export type Material = (typeof MATERIALES)[number]
+
+export const MATERIALES_BIBLIOTECA: readonly Material[] = ['barra', 'barra_z', 'barra_hexagonal', 'landmine', 'mancuernas', 'discos', 'polea', 'multipower']
 
 export const CATEGORIAS = ['fuerza', 'halterofilia', 'strongman', 'pliometria', 'cardio', 'estiramientos'] as const
 export type Categoria = (typeof CATEGORIAS)[number]
@@ -62,6 +79,8 @@ export interface Ejercicio {
   notasFijas: string
   personalizado: boolean
   archivado: boolean
+  /** Ya no está en la biblioteca (máquina, peso corporal…): se conserva por el historial, pero no se puede elegir. */
+  retirado?: boolean
   /** Si eliges "bajar un 10 % y reconstruir", el estancamiento se cuenta desde aquí. */
   reinicioProgresion?: number
 }

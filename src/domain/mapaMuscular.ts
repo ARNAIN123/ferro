@@ -88,12 +88,12 @@ export function nivelesDeTrabajo(trabajo: ReadonlyMap<Musculo, TrabajoMuscular>,
 
 /** Grupos musculares grandes que una rutina o un ciclo debería trabajar. */
 export const GRUPOS_GRANDES: { nombre: string; musculos: Musculo[] }[] = [
-  { nombre: 'Pecho', musculos: ['pecho'] },
+  { nombre: 'Pecho', musculos: ['pectoral_superior', 'pectoral_inferior'] },
   { nombre: 'Espalda', musculos: ['dorsales', 'espalda_media'] },
-  { nombre: 'Hombros', musculos: ['hombros'] },
+  { nombre: 'Hombros', musculos: ['deltoides_anterior', 'deltoides_lateral', 'deltoides_posterior'] },
   { nombre: 'Cuádriceps', musculos: ['cuadriceps'] },
   { nombre: 'Isquiotibiales', musculos: ['isquiotibiales'] },
-  { nombre: 'Glúteos', musculos: ['gluteos'] },
+  { nombre: 'Glúteos', musculos: ['gluteo_mayor', 'gluteo_medio'] },
 ]
 
 /**

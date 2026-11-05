@@ -97,8 +97,29 @@ export const MAPA_IDS_V1: Record<string, string> = {
   'press-pallof': 'Pallof_Press',
 }
 
-const MUSCULO_V1: Record<string, Musculo> = { espalda: 'dorsales' }
-const migrarMusculo = (m: string): Musculo => MUSCULO_V1[m] ?? (m as Musculo)
+/**
+ * Músculos de versiones anteriores (v1 y v2) → regiones del avatar (v3). Los demás no cambian de nombre.
+ * Para ejercicios propios no se sabe qué porción trabajan: pecho y hombros pasan a sus porciones principales.
+ */
+const MUSCULOS_ANTIGUOS: Record<string, Musculo[]> = {
+  espalda: ['dorsales'],
+  pecho: ['pectoral_inferior', 'pectoral_superior'],
+  hombros: ['deltoides_anterior', 'deltoides_lateral'],
+  gluteos: ['gluteo_mayor'],
+  abductores: ['gluteo_medio'],
+}
+
+export const musculosActuales = (lista: readonly string[]): Musculo[] => [
+  ...new Set(lista.flatMap((m) => MUSCULOS_ANTIGUOS[m] ?? [m as Musculo])),
+]
+
+/** v2 → v3: los músculos de un ejercicio pasan a las regiones del avatar. Es idempotente. */
+export function migrarMusculosEjercicio<T extends { musculosPrincipales: readonly string[]; musculosSecundarios: readonly string[] }>(
+  e: T,
+): T & { musculosPrincipales: Musculo[]; musculosSecundarios: Musculo[] } {
+  const principales = musculosActuales(e.musculosPrincipales)
+  return { ...e, musculosPrincipales: principales, musculosSecundarios: musculosActuales(e.musculosSecundarios).filter((m) => !principales.includes(m)) }
+}
 
 /** Forma de un ejercicio en la versión 1 de la base de datos. */
 export interface EjercicioV1 {
@@ -118,13 +139,13 @@ export const idMigrado = (id: string): string => MAPA_IDS_V1[id] ?? id
 
 /** Ejercicio v1 → v2. Los campos del catálogo se completan después al sincronizarlo. */
 export function migrarEjercicioV1(e: EjercicioV1): Ejercicio {
-  const principal = migrarMusculo(e.musculoPrincipal)
+  const principales = musculosActuales([e.musculoPrincipal])
   return {
     id: e.personalizado ? e.id : idMigrado(e.id),
     nombre: e.nombre,
     alias: '',
-    musculosPrincipales: [principal],
-    musculosSecundarios: e.musculosSecundarios.map(migrarMusculo).filter((m) => m !== principal),
+    musculosPrincipales: principales,
+    musculosSecundarios: musculosActuales(e.musculosSecundarios).filter((m) => !principales.includes(m)),
     material: e.material as Material,
     categoria: 'fuerza',
     nivel: null,
@@ -202,13 +223,37 @@ export interface EjercicioCatalogo {
   imagenes: number
 }
 
+/** Ejercicio que ya no está en la biblioteca, con sus músculos actuales (para el historial). */
+export interface EjercicioRetirado {
+  id: string
+  principales: Musculo[]
+  secundarios: Musculo[]
+}
+
+export interface ResultadoSincronizacion {
+  /** Ejercicios a guardar (biblioteca al día y retirados que se conservan). */
+  poner: Ejercicio[]
+  /** Ejercicios antiguos sin uso que ya no están en la biblioteca. */
+  borrar: string[]
+}
+
 /**
- * Sincroniza el catálogo con lo que hay en la base de datos: actualiza los datos de la biblioteca
- * y conserva lo mío (notas, archivado, reinicio de progresión). Los personalizados no se tocan.
+ * Sincroniza la biblioteca con lo que hay en la base de datos:
+ * - los de la biblioteca se actualizan y conservan lo mío (notas, archivado, reinicio de progresión);
+ * - los de antes que ya no están (máquinas, peso corporal…) se quedan como retirados si los he usado
+ *   (historial, rutinas, molestias o notas), con sus músculos al día, y si no se borran;
+ * - los personalizados no se tocan.
  */
-export function sincronizarCatalogo(catalogo: readonly EjercicioCatalogo[], existentes: readonly Ejercicio[]): Ejercicio[] {
+export function sincronizarCatalogo(
+  catalogo: readonly EjercicioCatalogo[],
+  existentes: readonly Ejercicio[],
+  usados: ReadonlySet<string> = new Set(),
+  retirados: readonly EjercicioRetirado[] = [],
+): ResultadoSincronizacion {
   const previos = new Map(existentes.map((e) => [e.id, e]))
-  return catalogo
+  const enBiblioteca = new Set(catalogo.map((c) => c.id))
+  const datosRetirados = new Map(retirados.map((r) => [r.id, r]))
+  const poner: Ejercicio[] = catalogo
     .filter((c) => !previos.get(c.id)?.personalizado)
     .map((c) => {
       const previo = previos.get(c.id)
@@ -230,4 +275,16 @@ export function sincronizarCatalogo(catalogo: readonly EjercicioCatalogo[], exis
         ...(previo?.reinicioProgresion ? { reinicioProgresion: previo.reinicioProgresion } : {}),
       }
     })
+  const borrar: string[] = []
+  for (const e of existentes) {
+    if (e.personalizado || enBiblioteca.has(e.id)) continue
+    if (!usados.has(e.id) && !e.notasFijas.trim()) {
+      borrar.push(e.id)
+      continue
+    }
+    const r = datosRetirados.get(e.id)
+    const musculos = r ? { musculosPrincipales: r.principales, musculosSecundarios: r.secundarios } : migrarMusculosEjercicio(e)
+    poner.push({ ...e, ...musculos, retirado: true })
+  }
+  return { poner, borrar }
 }

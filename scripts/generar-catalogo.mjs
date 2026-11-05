@@ -1,10 +1,13 @@
-// Genera el catálogo de ejercicios en español a partir de Free Exercise DB (dominio público)
-// y de las traducciones de /catalogo. Se ejecuta una sola vez (o al cambiar las traducciones):
+// Genera la biblioteca de ejercicios en español. Solo peso libre (barra olímpica, Z, hexagonal, landmine,
+// mancuernas y discos), poleas y multipower: de Free Exercise DB (dominio público, filtrada) más los
+// ejercicios propios de catalogo/propios.json. Los demás (máquinas, peso corporal, kettlebell, bandas,
+// cardio, estiramientos…) salen como "retirados": no están en la biblioteca, pero los que ya están en el
+// historial conservan sus músculos.
 //
-//   npm run catalogo                                  → solo regenera src/catalogo/ejercicios.json
+//   npm run catalogo                                  → regenera src/catalogo/ejercicios.json y el listado
 //   npm run catalogo -- --imagenes <ruta>/exercises   → además convierte las imágenes a WebP
 //
-// Las imágenes se guardan en public/img/ejercicios/<id>/<n>.webp y se sirven desde la propia app.
+// Los músculos son las regiones del avatar (ver src/domain/tipos.ts → MUSCULOS).
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -13,26 +16,50 @@ import { fileURLToPath } from 'node:url'
 const raiz = fileURLToPath(new URL('..', import.meta.url))
 const dir = (...p) => join(raiz, ...p)
 
-const MUSCULOS = {
-  abdominals: 'abdomen',
-  abductors: 'abductores',
-  adductors: 'aductores',
-  biceps: 'biceps',
-  calves: 'gemelos',
-  chest: 'pecho',
-  forearms: 'antebrazos',
-  glutes: 'gluteos',
-  hamstrings: 'isquiotibiales',
-  lats: 'dorsales',
-  'lower back': 'lumbares',
-  'middle back': 'espalda_media',
-  neck: 'cuello',
-  quadriceps: 'cuadriceps',
-  shoulders: 'hombros',
-  traps: 'trapecio',
-  triceps: 'triceps',
+const NOMBRE_MUSCULO = {
+  pectoral_superior: 'Pectoral superior',
+  pectoral_inferior: 'Pectoral inferior',
+  deltoides_anterior: 'Deltoides anterior',
+  deltoides_lateral: 'Deltoides lateral',
+  deltoides_posterior: 'Deltoides posterior',
+  biceps: 'Bíceps',
+  braquial: 'Braquial',
+  triceps: 'Tríceps',
+  antebrazos: 'Antebrazos',
+  trapecio: 'Trapecio',
+  espalda_media: 'Espalda media',
+  dorsales: 'Dorsales',
+  lumbares: 'Lumbares',
+  abdomen: 'Abdomen',
+  oblicuos: 'Oblicuos',
+  gluteo_mayor: 'Glúteo mayor',
+  gluteo_medio: 'Glúteo medio',
+  cuadriceps: 'Cuádriceps',
+  isquiotibiales: 'Isquiotibiales',
+  aductores: 'Aductores',
+  gemelos: 'Gemelos',
+  soleo: 'Sóleo',
+  cuello: 'Cuello',
 }
-const MATERIALES = {
+const NOMBRE_MATERIAL = {
+  barra: 'Barra',
+  barra_z: 'Barra Z',
+  barra_hexagonal: 'Barra hexagonal',
+  landmine: 'Landmine',
+  mancuernas: 'Mancuernas',
+  discos: 'Discos',
+  polea: 'Polea',
+  multipower: 'Multipower',
+}
+// Músculos antiguos (biblioteca de la ronda 1) → regiones nuevas, para los ejercicios máquina de extra.json.
+const MUSCULOS_ANTIGUOS = {
+  pecho: ['pectoral_inferior', 'pectoral_superior'],
+  hombros: ['deltoides_anterior', 'deltoides_lateral'],
+  gluteos: ['gluteo_mayor'],
+  abductores: ['gluteo_medio'],
+}
+const antiguos = (l) => [...new Set(l.flatMap((m) => MUSCULOS_ANTIGUOS[m] ?? [m]))]
+const MATERIALES_ANTIGUOS = {
   barbell: 'barra',
   'e-z curl bar': 'barra_z',
   dumbbell: 'mancuernas',
@@ -46,17 +73,120 @@ const MATERIALES = {
   'foam roll': 'foam_roller',
   other: 'otro',
 }
-const CATEGORIAS = {
-  strength: 'fuerza',
-  powerlifting: 'fuerza',
-  'olympic weightlifting': 'halterofilia',
-  strongman: 'strongman',
-  plyometrics: 'pliometria',
-  cardio: 'cardio',
-  stretching: 'estiramientos',
-}
 const NIVELES = { beginner: 'principiante', intermediate: 'intermedio', expert: 'avanzado' }
 const MECANICAS = { compound: 'compuesto', isolation: 'aislamiento' }
+
+// Fuera aunque su material encaje: en realidad son de peso corporal, pliométricos o necesitan otro aparato.
+const EXCLUIDOS = new Set([
+  'Crunch en polea sobre bosu con inclinaciones',
+  'Aperturas con peso corporal',
+  'Elevación de tibiales en multipower',
+  'Salto desde rodillas con barra',
+  'Sentadilla con salto con barra',
+  'Sentadilla con traslado de discos',
+])
+// Correcciones de músculos donde la fuente se equivoca.
+const CORRECCIONES = {
+  'Aducción de cadera en polea': { principales: ['aductores'], secundarios: [] },
+  'Elevación lateral en polea baja': { principales: ['deltoides_lateral'], secundarios: ['trapecio'] },
+  'Elevaciones de deltoides alternas': { principales: ['deltoides_anterior', 'deltoides_lateral'], secundarios: [] },
+  'Remo en polea baja al cuello': { principales: ['deltoides_posterior'], secundarios: ['espalda_media', 'trapecio', 'biceps'] },
+  'Press balancín alterno': { principales: ['deltoides_anterior'], secundarios: ['deltoides_lateral', 'triceps', 'oblicuos'] },
+  'Remo al mentón con mancuernas': { principales: ['deltoides_lateral', 'trapecio'], secundarios: ['biceps'] },
+}
+
+/** Material dentro de la biblioteca, o null si el ejercicio no entra. */
+function materialDe(e, nombre) {
+  if (/band|chain/i.test(e.name)) return null
+  if (/landmine/i.test(e.name) || /landmine/i.test(nombre) || /linear jammer/i.test(e.name)) return 'landmine'
+  if (/trap bar/i.test(e.name)) return 'barra_hexagonal'
+  if (/multipower/i.test(nombre) || /smith/i.test(e.name)) return e.equipment === 'machine' || e.equipment === 'barbell' ? 'multipower' : null
+  if (/barra Z/.test(nombre) && ['barbell', 'e-z curl bar'].includes(e.equipment)) return 'barra_z'
+  if (e.equipment === 'barbell') return 'barra'
+  if (e.equipment === 'e-z curl bar') return 'barra_z'
+  if (e.equipment === 'dumbbell') return 'mancuernas'
+  if (e.equipment === 'cable') return 'polea'
+  if (e.equipment === 'other' && /plate/i.test(e.name)) return 'discos'
+  return null
+}
+
+/** Músculos de un ejercicio de Free Exercise DB en las regiones del avatar, según su nombre. */
+function musculosDe(e) {
+  const n = e.name.toLowerCase()
+  const has = (re) => re.test(n)
+  const principales = []
+  const secundarios = []
+  const de = (m, lista) => {
+    switch (m) {
+      case 'chest':
+        if (has(/incline|from below|low.?to.?high|upward/)) return lista.push('pectoral_superior')
+        if (has(/decline|dip|high.?to.?low|downward/)) return lista.push('pectoral_inferior')
+        if (lista === secundarios && has(/front|overhead|raise/)) return lista.push('pectoral_superior')
+        return lista.push('pectoral_inferior')
+      case 'shoulders':
+        if (lista === secundarios) {
+          if (e.primaryMuscles.some((p) => ['lats', 'middle back', 'traps'].includes(p))) return lista.push('deltoides_posterior')
+          if (has(/lateral|side/)) return
+          return lista.push('deltoides_anterior')
+        }
+        if (has(/external rotation/)) return lista.push('deltoides_posterior')
+        if (has(/internal rotation/)) return lista.push('deltoides_anterior')
+        if (has(/rear|reverse fl|face pull|posterior|bent.?over.*(raise|lateral|fly)|seated bent/)) return lista.push('deltoides_posterior')
+        if (has(/upright.*row/)) return lista.push('deltoides_lateral')
+        if (has(/iron cross|lateral|side|scaption|\by raise/)) return lista.push('deltoides_lateral')
+        if (has(/front|raise/)) return lista.push('deltoides_anterior')
+        return lista.push('deltoides_anterior')
+      case 'calves':
+        return lista.push(has(/seated/) ? 'soleo' : 'gemelos')
+      case 'abdominals':
+        return lista.push(has(/twist|side bend|oblique|wood|chop|judo|russian|pallof|landmine 180|spell/) ? 'oblicuos' : 'abdomen')
+      case 'biceps':
+        if (lista === principales && has(/hammer/)) return lista.push('braquial')
+        if (lista === principales && has(/reverse/)) return lista.push('braquial', 'antebrazos')
+        if (lista === principales && has(/zottman/)) return lista.push('biceps', 'braquial')
+        return lista.push('biceps')
+      case 'traps':
+        if (lista === principales && has(/upright.*row/)) return lista.push('deltoides_lateral', 'trapecio')
+        return lista.push('trapecio')
+      case 'glutes':
+        return lista.push('gluteo_mayor')
+      case 'abductors':
+        return lista.push('gluteo_medio')
+      case 'adductors':
+        return lista.push('aductores')
+      case 'forearms':
+        return lista.push('antebrazos')
+      case 'hamstrings':
+        return lista.push('isquiotibiales')
+      case 'lats':
+        return lista.push('dorsales')
+      case 'lower back':
+        return lista.push('lumbares')
+      case 'middle back':
+        return lista.push('espalda_media')
+      case 'neck':
+        return lista.push('cuello')
+      case 'quadriceps':
+        return lista.push('cuadriceps')
+      case 'triceps':
+        return lista.push('triceps')
+      default:
+        throw new Error(`Músculo desconocido: ${m}`)
+    }
+  }
+  for (const m of e.primaryMuscles) de(m, principales)
+  for (const m of e.secondaryMuscles) de(m, secundarios)
+  // Complementos según el tipo de ejercicio.
+  if (principales.includes('pectoral_inferior') && !has(/decline|dip/)) secundarios.push('pectoral_superior')
+  if (principales.includes('pectoral_superior')) secundarios.push('pectoral_inferior')
+  if (principales.includes('deltoides_anterior') && has(/press|jerk|push/)) secundarios.push('deltoides_lateral')
+  if (principales.includes('gemelos')) secundarios.push('soleo')
+  if (principales.includes('soleo')) secundarios.push('gemelos')
+  if (principales.includes('biceps') && !principales.includes('braquial')) secundarios.push('braquial')
+  if (principales.includes('braquial') && !principales.includes('biceps')) secundarios.push('biceps')
+  const p = [...new Set(principales)]
+  return { principales: p, secundarios: [...new Set(secundarios)].filter((m) => !p.includes(m)) }
+}
 
 function leerTsv(prefijo) {
   const mapa = new Map()
@@ -103,9 +233,9 @@ async function convertirImagenes(origen, ejercicios) {
 
 const fuente = JSON.parse(readFileSync(dir('catalogo', 'fuente', 'free-exercise-db.json'), 'utf8'))
 const nombres = leerTsv('nombres')
-const sinonimos = leerTsv('sinonimos')
 const instrucciones = leerInstrucciones()
 const extra = JSON.parse(readFileSync(dir('catalogo', 'extra.json'), 'utf8')).ejercicios
+const propios = JSON.parse(readFileSync(dir('catalogo', 'propios.json'), 'utf8')).ejercicios
 
 const iImg = process.argv.indexOf('--imagenes')
 if (iImg > 0) await convertirImagenes(process.argv[iImg + 1], fuente)
@@ -118,9 +248,17 @@ const bytesDe = (id, n) => {
 let bytesImagenes = 0
 let totalImagenes = 0
 
-const ejercicios = fuente.map((e) => {
-  const nombre = nombres.get(e.id)
-  if (!nombre) faltan.nombre.push(e.id)
+const ejercicios = []
+const retirados = []
+for (const e of fuente) {
+  const nombre = nombres.get(e.id) ?? e.name
+  const material = ['stretching', 'cardio', 'plyometrics'].includes(e.category) || EXCLUIDOS.has(nombre) ? null : materialDe(e, nombre)
+  const musculos = CORRECCIONES[nombre] ?? musculosDe(e)
+  if (!material) {
+    retirados.push({ id: e.id, ...musculos })
+    continue
+  }
+  if (!nombres.has(e.id)) faltan.nombre.push(e.id)
   const pasos = instrucciones.get(e.id) ?? []
   if (pasos.length === 0) faltan.instrucciones.push(e.id)
   let imagenes = 0
@@ -132,49 +270,44 @@ const ejercicios = fuente.map((e) => {
   }
   totalImagenes += imagenes
   if (imagenes === 0) faltan.imagen.push(e.id)
-  const material = e.equipment ? MATERIALES[e.equipment] : 'ninguno'
-  if (!material) throw new Error(`Material desconocido: ${e.equipment}`)
-  const mus = (lista) => lista.map((m) => MUSCULOS[m] ?? (() => { throw new Error(`Músculo desconocido: ${m}`) })())
-  const principales = mus(e.primaryMuscles)
-  return {
+  ejercicios.push({
     id: e.id,
-    nombre: nombre ?? e.name,
-    alias: [e.name, sinonimos.get(e.id)].filter(Boolean).join(', '),
-    principales,
-    secundarios: mus(e.secondaryMuscles).filter((m) => !principales.includes(m)),
+    nombre,
+    alias: e.name,
+    ...musculos,
     material,
-    categoria: CATEGORIAS[e.category],
+    categoria: e.category === 'olympic weightlifting' ? 'halterofilia' : 'fuerza',
     nivel: NIVELES[e.level] ?? null,
     mecanica: MECANICAS[e.mechanic] ?? null,
     instrucciones: pasos,
     imagenes,
-  }
-})
-
-for (const x of extra) {
-  ejercicios.push({
-    id: x.id,
-    nombre: x.nombre,
-    alias: [x.alias, sinonimos.get(x.id)].filter(Boolean).join(', '),
-    principales: x.principales,
-    secundarios: x.secundarios,
-    material: x.material,
-    categoria: 'fuerza',
-    nivel: x.nivel,
-    mecanica: x.mecanica,
-    instrucciones: x.instrucciones,
-    imagenes: 0,
   })
 }
 
+// Los de extra.json: los de polea entran; las máquinas quedan retiradas (con sus músculos al día).
+for (const x of extra) {
+  const musculos = { principales: antiguos(x.principales), secundarios: antiguos(x.secundarios) }
+  if (x.material !== 'polea') {
+    retirados.push({ id: x.id, ...musculos })
+    continue
+  }
+  ejercicios.push({ id: x.id, nombre: x.nombre, alias: x.alias, ...musculos, material: 'polea', categoria: 'fuerza', nivel: x.nivel, mecanica: x.mecanica, instrucciones: x.instrucciones, imagenes: 0 })
+}
+for (const x of propios) {
+  for (const m of [...x.principales, ...x.secundarios]) if (!NOMBRE_MUSCULO[m]) throw new Error(`${x.id}: músculo desconocido ${m}`)
+  if (!NOMBRE_MATERIAL[x.material]) throw new Error(`${x.id}: material fuera de la biblioteca ${x.material}`)
+  ejercicios.push({ ...x, categoria: 'fuerza', imagenes: 0 })
+}
+
+const repetidos = ejercicios.map((e) => e.nombre).filter((n, i, a) => a.indexOf(n) !== i)
+if (repetidos.length) throw new Error(`Nombres repetidos: ${repetidos.join(', ')}`)
+
 ejercicios.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
-const cuerpo = JSON.stringify(ejercicios)
+retirados.sort((a, b) => a.id.localeCompare(b.id))
+const cuerpo = JSON.stringify({ ejercicios, retirados })
 const version = createHash('sha1').update(cuerpo).digest('hex').slice(0, 12)
 mkdirSync(dir('src', 'catalogo'), { recursive: true })
-writeFileSync(
-  dir('src', 'catalogo', 'ejercicios.json'),
-  JSON.stringify({ version, totalImagenes, bytesImagenes, ejercicios }) + '\n',
-)
+writeFileSync(dir('src', 'catalogo', 'ejercicios.json'), JSON.stringify({ version, totalImagenes, bytesImagenes, ejercicios, retirados }) + '\n')
 
 // Módulo diminuto con la versión: la app solo descarga el catálogo completo si cambia.
 writeFileSync(
@@ -186,5 +319,19 @@ export const BYTES_IMAGENES = ${bytesImagenes}
 `,
 )
 
-console.log(`✓ ${ejercicios.length} ejercicios (versión ${version}), ${totalImagenes} imágenes, ${(bytesImagenes / 1048576).toFixed(1)} MB`)
+// Listado para revisar, agrupado por músculo principal (el primero).
+const grupos = new Map(Object.keys(NOMBRE_MUSCULO).map((m) => [m, []]))
+for (const e of ejercicios) grupos.get(e.principales[0]).push(e)
+let md = `# Biblioteca de Ferro (${ejercicios.length} ejercicios)\n\nSolo peso libre (barra, barra Z, barra hexagonal, landmine, mancuernas y discos), poleas y multipower. Agrupados por su primer músculo principal. Generado por \`npm run catalogo\`.\n`
+for (const [m, lista] of grupos) {
+  if (!lista.length) continue
+  md += `\n## ${NOMBRE_MUSCULO[m]} (${lista.length})\n\n| Ejercicio | Material | Principales | Secundarios |\n|---|---|---|---|\n`
+  for (const e of lista) {
+    const n = (l) => l.map((x) => NOMBRE_MUSCULO[x]).join(', ') || '—'
+    md += `| ${e.nombre} | ${NOMBRE_MATERIAL[e.material]} | ${n(e.principales)} | ${n(e.secundarios)} |\n`
+  }
+}
+writeFileSync(dir('catalogo', 'LISTADO-BIBLIOTECA.md'), md)
+
+console.log(`✓ ${ejercicios.length} ejercicios en la biblioteca (versión ${version}), ${retirados.length} retirados, ${totalImagenes} imágenes, ${(bytesImagenes / 1048576).toFixed(1)} MB`)
 for (const [k, v] of Object.entries(faltan)) if (v.length) console.log(`  · sin ${k}: ${v.length}${v.length < 8 ? ' → ' + v.join(', ') : ''}`)

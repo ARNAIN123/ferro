@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { esCompuestoGrande, filtrarEjercicios, FILTROS_INICIALES, valoresPorDefecto } from './biblioteca'
+import { contarUsos, ejerciciosDeMusculo, equivalenteMasParecido, esCompuestoGrande, valoresPorDefecto } from './biblioteca'
 import type { Ejercicio } from './tipos'
 
 const e = (id: string, nombre: string, extra: Partial<Ejercicio> = {}): Ejercicio => ({
   id,
   nombre,
   alias: '',
-  musculosPrincipales: ['pecho'],
+  musculosPrincipales: ['pectoral_inferior'],
   musculosSecundarios: [],
   material: 'barra',
   categoria: 'fuerza',
@@ -21,56 +21,46 @@ const e = (id: string, nombre: string, extra: Partial<Ejercicio> = {}): Ejercici
 })
 
 const lista = [
-  e('banca', 'Press de banca con barra', { alias: 'Barbell Bench Press' }),
-  e('jalon', 'Jalón al pecho agarre ancho', { alias: 'Wide-Grip Lat Pulldown, polea alta', musculosPrincipales: ['dorsales'], musculosSecundarios: ['biceps'], material: 'polea' }),
-  e('curl', 'Curl con barra', { musculosPrincipales: ['biceps'], mecanica: 'aislamiento' }),
-  e('estir', 'Estiramiento de pecho', { categoria: 'estiramientos', material: 'ninguno' }),
+  e('banca', 'Press de banca con barra', { musculosSecundarios: ['pectoral_superior', 'triceps'] }),
+  e('inclinado', 'Press inclinado con mancuernas', { musculosPrincipales: ['pectoral_superior'], musculosSecundarios: ['pectoral_inferior'], material: 'mancuernas' }),
+  e('aperturas', 'Aperturas con mancuernas', { mecanica: 'aislamiento', material: 'mancuernas' }),
+  e('fondos', 'Fondos en paralelas', { material: 'peso_corporal', retirado: true }),
   e('viejo', 'Mi press archivado', { personalizado: true, archivado: true }),
+  e('curl', 'Curl con barra', { musculosPrincipales: ['biceps'], mecanica: 'aislamiento' }),
 ]
 
-describe('filtros de la biblioteca', () => {
-  it('por defecto muestra solo fuerza y no archivados', () => {
-    expect(filtrarEjercicios(lista, FILTROS_INICIALES).map((x) => x.id)).toEqual(['curl', 'jalon', 'banca'])
+describe('buscar ejercicios con el mapa', () => {
+  it('separa "Principal" y "También lo trabajan", sin archivados ni retirados', () => {
+    const r = ejerciciosDeMusculo(lista, 'pectoral_inferior')
+    expect(r.principal.map((x) => x.id)).toEqual(['aperturas', 'banca'])
+    expect(r.tambien.map((x) => x.id)).toEqual(['inclinado'])
+    const sup = ejerciciosDeMusculo(lista, 'pectoral_superior')
+    expect(sup.principal.map((x) => x.id)).toEqual(['inclinado'])
+    expect(sup.tambien.map((x) => x.id)).toEqual(['banca'])
   })
 
-  it('busca en español y en inglés sin tildes', () => {
-    expect(filtrarEjercicios(lista, { ...FILTROS_INICIALES, texto: 'jalon' }).map((x) => x.id)).toEqual(['jalon'])
-    expect(filtrarEjercicios(lista, { ...FILTROS_INICIALES, texto: 'bench press' }).map((x) => x.id)).toEqual(['banca'])
+  it('primero los que más uso y después por orden alfabético', () => {
+    const usos = contarUsos([{ ejercicioId: 'banca' }, { ejercicioId: 'banca' }], [{ ejercicioId: 'banca' }])
+    expect(usos.get('banca')).toBe(3)
+    expect(ejerciciosDeMusculo(lista, 'pectoral_inferior', usos).principal.map((x) => x.id)).toEqual(['banca', 'aperturas'])
   })
 
-  it('al buscar ordena: exacto, empieza igual, contiene la frase y el resto', () => {
-    const sentadillas = [
-      e('una', 'Sentadilla a una pierna con barra'),
-      e('frontal', 'Sentadilla frontal con barra'),
-      e('barra', 'Sentadilla con barra'),
-      e('banco', 'Sentadilla con barra a banco'),
-      e('hack', 'Hack: sentadilla con barra'),
-    ]
-    expect(filtrarEjercicios(sentadillas, { ...FILTROS_INICIALES, texto: 'sentadilla con barra' }).map((x) => x.id)).toEqual([
-      'barra',
-      'banco',
-      'hack',
-      'una',
-      'frontal',
-    ])
+  it('un músculo sin ejercicios devuelve listas vacías', () => {
+    expect(ejerciciosDeMusculo(lista, 'soleo')).toEqual({ principal: [], tambien: [] })
+  })
+})
+
+describe('equivalente de un ejercicio retirado', () => {
+  it('elige el de la biblioteca que más se parece en músculos, tipo y nombre', () => {
+    const maquina = e('maquina', 'Press de pecho en máquina', { material: 'maquina', retirado: true, musculosSecundarios: ['triceps', 'pectoral_superior'] })
+    expect(equivalenteMasParecido(maquina, lista)?.id).toBe('banca')
+    const contractora = e('contractora', 'Contractora de pecho', { material: 'maquina', retirado: true, mecanica: 'aislamiento' })
+    expect(equivalenteMasParecido(contractora, lista)?.id).toBe('aperturas')
   })
 
-  it('al buscar por texto ignora la categoría', () => {
-    expect(filtrarEjercicios(lista, { ...FILTROS_INICIALES, texto: 'estiramiento' }).map((x) => x.id)).toEqual(['estir'])
-  })
-
-  it('por músculo incluye secundarios pero pone primero los principales', () => {
-    const r = filtrarEjercicios(lista, { ...FILTROS_INICIALES, musculo: 'biceps' }).map((x) => x.id)
-    expect(r).toEqual(['curl', 'jalon'])
-  })
-
-  it('por material y por categoría', () => {
-    expect(filtrarEjercicios(lista, { ...FILTROS_INICIALES, material: 'polea' }).map((x) => x.id)).toEqual(['jalon'])
-    expect(filtrarEjercicios(lista, { ...FILTROS_INICIALES, categoria: null }).length).toBe(4)
-  })
-
-  it('puede mostrar los archivados', () => {
-    expect(filtrarEjercicios(lista, { ...FILTROS_INICIALES, archivados: true }).map((x) => x.id)).toEqual(['viejo'])
+  it('sin ningún músculo principal en común, no propone nada', () => {
+    const gemelos = e('gemelos', 'Gemelos en máquina', { musculosPrincipales: ['gemelos'], retirado: true })
+    expect(equivalenteMasParecido(gemelos, lista)).toBeNull()
   })
 })
 
@@ -81,9 +71,9 @@ describe('valores por defecto en una rutina', () => {
   })
 
   it('un compuesto en polea o de un músculo pequeño no es "grande"', () => {
-    expect(esCompuestoGrande(lista[1]!)).toBe(false)
+    expect(esCompuestoGrande({ mecanica: 'compuesto', musculosPrincipales: ['dorsales'], material: 'polea' })).toBe(false)
     expect(esCompuestoGrande({ mecanica: 'compuesto', musculosPrincipales: ['biceps'], material: 'barra' })).toBe(false)
-    expect(esCompuestoGrande({ mecanica: 'compuesto', musculosPrincipales: ['hombros'], material: 'barra' })).toBe(true)
+    expect(esCompuestoGrande({ mecanica: 'compuesto', musculosPrincipales: ['deltoides_anterior'], material: 'barra' })).toBe(true)
     expect(esCompuestoGrande({ mecanica: 'compuesto', musculosPrincipales: ['cuadriceps'], material: 'maquina' })).toBe(true)
   })
 })

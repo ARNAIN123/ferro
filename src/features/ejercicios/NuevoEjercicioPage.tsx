@@ -2,11 +2,10 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { Cabecera } from '../../components/Cabecera'
 import { MapaMuscular } from '../../components/mapa/MapaMuscular'
-import { Boton, Campo, claseInput } from '../../components/ui'
+import { Boton, Campo, Chip, claseInput } from '../../components/ui'
 import { crearEjercicio } from '../../db/ejercicios'
 import { NOMBRE_MATERIAL, NOMBRE_MUSCULO } from '../../domain/etiquetas'
-import { MATERIALES, type Material, type Musculo } from '../../domain/tipos'
-import { Chip } from './FiltrosBiblioteca'
+import { MATERIALES_BIBLIOTECA, type Material, type Musculo } from '../../domain/tipos'
 
 type Papel = 'principal' | 'secundario'
 
@@ -14,7 +13,7 @@ type Papel = 'principal' | 'secundario'
 export function NuevoEjercicioPage() {
   const navegar = useNavigate()
   const [nombre, setNombre] = useState('')
-  const [material, setMaterial] = useState<Material>('maquina')
+  const [material, setMaterial] = useState<Material>('polea')
   const [musculos, setMusculos] = useState<Map<Musculo, Papel>>(new Map())
 
   const principales = [...musculos].filter(([, p]) => p === 'principal').map(([m]) => m)
@@ -56,7 +55,7 @@ export function NuevoEjercicioPage() {
         <fieldset>
           <legend className="mb-1.5 text-sm font-medium text-muted">Material</legend>
           <div className="flex flex-wrap gap-2">
-            {MATERIALES.filter((m) => m !== 'ninguno').map((m) => (
+            {MATERIALES_BIBLIOTECA.map((m) => (
               <Chip key={m} activo={material === m} onClick={() => setMaterial(m)}>
                 {NOMBRE_MATERIAL[m]}
               </Chip>
