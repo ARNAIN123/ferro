@@ -81,10 +81,11 @@ export function Avatar3D({ niveles, seleccionado, onTocar, describir, className 
   }
 
   return (
-    <div className={`relative ${className}`}>
+    // Sin alto propio, la figura toma una proporción de 4:5; con un alto (h-80…), lo llena.
+    <div className={`relative aspect-[4/5] w-full ${className}`}>
       <canvas
         ref={lienzo}
-        className="block aspect-[4/5] w-full touch-pan-y select-none"
+        className="absolute inset-0 block h-full w-full touch-pan-y select-none"
         aria-label="Avatar muscular en 3D. Arrastra en horizontal para girarlo."
         role="img"
       />

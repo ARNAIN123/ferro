@@ -1,61 +1,5 @@
-// Mapa muscular: correspondencia músculo ↔ región del dibujo, cálculo de intensidad y niveles.
+// Intensidad muscular y niveles para pintar el avatar (la correspondencia con el dibujo está en domain/avatar).
 import type { Musculo, TipoSerie } from './tipos'
-
-/** Regiones del dibujo anatómico. Las que no son músculos entrenables nunca se colorean. */
-export type RegionMapa =
-  | 'pecho'
-  | 'abdominales'
-  | 'oblicuos'
-  | 'deltoides'
-  | 'biceps'
-  | 'triceps'
-  | 'antebrazos'
-  | 'trapecio'
-  | 'cuello'
-  | 'dorsales'
-  | 'espalda_media'
-  | 'lumbares'
-  | 'gluteos'
-  | 'abductores'
-  | 'aductores'
-  | 'cuadriceps'
-  | 'isquiotibiales'
-  | 'gemelos'
-  | 'tibial'
-  | 'rodillas'
-  | 'manos'
-  | 'pies'
-  | 'tobillos'
-  | 'cabeza'
-  | 'pelo'
-
-/** Qué regiones del dibujo representan cada músculo de la base de datos. */
-export const REGIONES_DE_MUSCULO: Record<Musculo, RegionMapa[]> = {
-  pecho: ['pecho'],
-  dorsales: ['dorsales'],
-  espalda_media: ['espalda_media'],
-  lumbares: ['lumbares'],
-  trapecio: ['trapecio'],
-  hombros: ['deltoides'],
-  biceps: ['biceps'],
-  triceps: ['triceps'],
-  antebrazos: ['antebrazos'],
-  abdomen: ['abdominales', 'oblicuos'],
-  gluteos: ['gluteos'],
-  abductores: ['abductores'],
-  aductores: ['aductores'],
-  cuadriceps: ['cuadriceps'],
-  isquiotibiales: ['isquiotibiales'],
-  gemelos: ['gemelos'],
-  cuello: ['cuello'],
-}
-
-const MUSCULO_DE_REGION = new Map<RegionMapa, Musculo>(
-  (Object.entries(REGIONES_DE_MUSCULO) as [Musculo, RegionMapa[]][]).flatMap(([m, rs]) => rs.map((r) => [r, m] as const)),
-)
-
-/** Músculo al que pertenece una región (null si no es un músculo: cabeza, manos, rodillas…). */
-export const musculoDeRegion = (region: RegionMapa): Musculo | null => MUSCULO_DE_REGION.get(region) ?? null
 
 export interface TrabajoMuscular {
   /** Series ponderadas: 1 si es músculo principal del ejercicio, 0,5 si es secundario. */
@@ -140,13 +84,6 @@ export function nivelesDeTrabajo(trabajo: ReadonlyMap<Musculo, TrabajoMuscular>,
     if (n > 0) niveles.set(m, n)
   }
   return niveles
-}
-
-/** Nivel de cada región del dibujo (las regiones de un mismo músculo comparten nivel). */
-export function nivelesPorRegion(niveles: ReadonlyMap<Musculo, number>): Map<RegionMapa, number> {
-  const r = new Map<RegionMapa, number>()
-  for (const [m, n] of niveles) for (const region of REGIONES_DE_MUSCULO[m]) r.set(region, Math.max(r.get(region) ?? 0, n))
-  return r
 }
 
 /** Grupos musculares grandes que una rutina o un ciclo debería trabajar. */

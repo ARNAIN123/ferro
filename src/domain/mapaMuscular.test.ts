@@ -1,18 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { ESPALDA, FRENTE } from '../components/mapa/trazados'
 import {
   ESCALAS,
   gruposSinTrabajar,
-  musculoDeRegion,
   nivelesDeEjercicio,
   nivelesDeTrabajo,
-  nivelesPorRegion,
   nivelIntensidad,
-  REGIONES_DE_MUSCULO,
   rotulosEscala,
   trabajoMuscular,
 } from './mapaMuscular'
-import { MUSCULOS, type Musculo } from './tipos'
+import type { Musculo } from './tipos'
 
 const ejercicios = new Map<string, { musculosPrincipales: Musculo[]; musculosSecundarios: Musculo[] }>([
   ['banca', { musculosPrincipales: ['pecho'], musculosSecundarios: ['triceps', 'hombros'] }],
@@ -82,36 +78,6 @@ describe('niveles de intensidad', () => {
   it('rótulos de la leyenda', () => {
     expect(rotulosEscala(ESCALAS.semana)).toEqual(['1–3', '4–7', '8–11', '12–15', '16+'])
     expect(rotulosEscala(ESCALAS.sesion)).toEqual(['1', '2–3', '4–5', '6–8', '9+'])
-  })
-})
-
-describe('correspondencia músculos ↔ mapa', () => {
-  const regionesDibujadas = new Set([...FRENTE, ...ESPALDA].map((p) => p.region))
-
-  it('todos los músculos de la base de datos tienen al menos una región dibujada', () => {
-    for (const m of MUSCULOS) {
-      expect(REGIONES_DE_MUSCULO[m].length, m).toBeGreaterThan(0)
-      for (const r of REGIONES_DE_MUSCULO[m]) expect(regionesDibujadas.has(r), `${m} → ${r}`).toBe(true)
-    }
-  })
-
-  it('cada región muscular vuelve a su músculo y las que no son músculo no se colorean', () => {
-    expect(musculoDeRegion('deltoides')).toBe('hombros')
-    expect(musculoDeRegion('oblicuos')).toBe('abdomen')
-    expect(musculoDeRegion('abductores')).toBe('abductores')
-    expect(musculoDeRegion('cabeza')).toBeNull()
-    expect(musculoDeRegion('rodillas')).toBeNull()
-  })
-
-  it('el nivel de un músculo se aplica a todas sus regiones', () => {
-    const r = nivelesPorRegion(new Map([['abdomen', 4]]))
-    expect(r.get('abdominales')).toBe(4)
-    expect(r.get('oblicuos')).toBe(4)
-  })
-
-  it('hombros cubre deltoides frontal y posterior (aparece en las dos vistas)', () => {
-    expect(FRENTE.some((p) => p.region === 'deltoides')).toBe(true)
-    expect(ESPALDA.some((p) => p.region === 'deltoides')).toBe(true)
   })
 })
 
