@@ -31,6 +31,7 @@ const AjustesPage = perezosa(() => import('./features/ajustes/AjustesPage'), 'Aj
 const RegistroDeteccionPage = perezosa(() => import('./features/ajustes/RegistroDeteccionPage'), 'RegistroDeteccionPage')
 const ResumenPage = perezosa(() => import('./features/entreno/ResumenPage'), 'ResumenPage')
 const VistaPreviaAvatar = perezosa(() => import('./features/vista-previa/VistaPreviaAvatar'), 'VistaPreviaAvatar')
+const GaleriaAnimaciones = perezosa(() => import('./features/vista-previa/GaleriaAnimaciones'), 'GaleriaAnimaciones')
 
 export function App() {
   const ajustes = useAjustes()
@@ -60,6 +61,7 @@ export function App() {
             <Route path="ajustes" element={<AjustesPage />} />
             <Route path="ajustes/deteccion" element={<RegistroDeteccionPage />} />
             <Route path="vista-previa/avatar" element={<VistaPreviaAvatar />} />
+            <Route path="vista-previa/animaciones" element={<GaleriaAnimaciones />} />
             <Route path="*" element={<HoyPage />} />
           </Route>
           <Route path="empezar" element={<EmpezarPage />} />

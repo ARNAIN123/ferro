@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo, type ReactNode } from 'react'
-import { MiniaturaEjercicio } from '../../components/ImagenEjercicio'
+import { MiniaturaEjercicio } from '../../components/animacion/AnimacionEjercicio'
 import { MapaMuscular } from '../../components/mapa/MapaMuscular'
 import { db } from '../../db/db'
 import { contarUsos, ejerciciosDeMusculo } from '../../domain/biblioteca'

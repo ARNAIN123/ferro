@@ -13,7 +13,6 @@ const e = (id: string, nombre: string, extra: Partial<Ejercicio> = {}): Ejercici
   nivel: 'principiante',
   mecanica: 'compuesto',
   instrucciones: [],
-  imagenes: 2,
   notasFijas: '',
   personalizado: false,
   archivado: false,

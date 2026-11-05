@@ -4,12 +4,13 @@
 // cardio, estiramientos…) salen como "retirados": no están en la biblioteca, pero los que ya están en el
 // historial conservan sus músculos.
 //
-//   npm run catalogo                                  → regenera src/catalogo/ejercicios.json y el listado
-//   npm run catalogo -- --imagenes <ruta>/exercises   → además convierte las imágenes a WebP
+//   npm run catalogo   → regenera src/catalogo/ejercicios.json y el listado
+//
+// Ya no se usa ninguna foto: cada ejercicio se dibuja con las animaciones propias (src/animacion).
 //
 // Los músculos son las regiones del avatar (ver src/domain/tipos.ts → MUSCULOS).
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -215,38 +216,13 @@ function leerInstrucciones() {
   return mapa
 }
 
-async function convertirImagenes(origen, ejercicios) {
-  const { default: sharp } = await import('sharp')
-  let hechas = 0
-  for (const e of ejercicios) {
-    for (const [i, ruta] of e.images.entries()) {
-      const destinoDir = dir('public', 'img', 'ejercicios', e.id)
-      const destino = join(destinoDir, `${i}.webp`)
-      if (existsSync(destino)) continue
-      mkdirSync(destinoDir, { recursive: true })
-      await sharp(join(origen, ruta)).resize({ width: 560, withoutEnlargement: true }).webp({ quality: 62, effort: 5 }).toFile(destino)
-      if (++hechas % 100 === 0) console.log(`  ${hechas} imágenes convertidas…`)
-    }
-  }
-  console.log(`✓ ${hechas} imágenes nuevas en WebP`)
-}
-
 const fuente = JSON.parse(readFileSync(dir('catalogo', 'fuente', 'free-exercise-db.json'), 'utf8'))
 const nombres = leerTsv('nombres')
 const instrucciones = leerInstrucciones()
 const extra = JSON.parse(readFileSync(dir('catalogo', 'extra.json'), 'utf8')).ejercicios
 const propios = JSON.parse(readFileSync(dir('catalogo', 'propios.json'), 'utf8')).ejercicios
 
-const iImg = process.argv.indexOf('--imagenes')
-if (iImg > 0) await convertirImagenes(process.argv[iImg + 1], fuente)
-
-const faltan = { nombre: [], instrucciones: [], imagen: [] }
-const bytesDe = (id, n) => {
-  const f = dir('public', 'img', 'ejercicios', id, `${n}.webp`)
-  return existsSync(f) ? statSync(f).size : 0
-}
-let bytesImagenes = 0
-let totalImagenes = 0
+const faltan = { nombre: [], instrucciones: [] }
 
 const ejercicios = []
 const retirados = []
@@ -261,15 +237,6 @@ for (const e of fuente) {
   if (!nombres.has(e.id)) faltan.nombre.push(e.id)
   const pasos = instrucciones.get(e.id) ?? []
   if (pasos.length === 0) faltan.instrucciones.push(e.id)
-  let imagenes = 0
-  for (let n = 0; n < e.images.length; n++) {
-    const b = bytesDe(e.id, n)
-    if (!b) break
-    imagenes++
-    bytesImagenes += b
-  }
-  totalImagenes += imagenes
-  if (imagenes === 0) faltan.imagen.push(e.id)
   ejercicios.push({
     id: e.id,
     nombre,
@@ -280,7 +247,6 @@ for (const e of fuente) {
     nivel: NIVELES[e.level] ?? null,
     mecanica: MECANICAS[e.mechanic] ?? null,
     instrucciones: pasos,
-    imagenes,
   })
 }
 
@@ -291,12 +257,12 @@ for (const x of extra) {
     retirados.push({ id: x.id, ...musculos })
     continue
   }
-  ejercicios.push({ id: x.id, nombre: x.nombre, alias: x.alias, ...musculos, material: 'polea', categoria: 'fuerza', nivel: x.nivel, mecanica: x.mecanica, instrucciones: x.instrucciones, imagenes: 0 })
+  ejercicios.push({ id: x.id, nombre: x.nombre, alias: x.alias, ...musculos, material: 'polea', categoria: 'fuerza', nivel: x.nivel, mecanica: x.mecanica, instrucciones: x.instrucciones })
 }
 for (const x of propios) {
   for (const m of [...x.principales, ...x.secundarios]) if (!NOMBRE_MUSCULO[m]) throw new Error(`${x.id}: músculo desconocido ${m}`)
   if (!NOMBRE_MATERIAL[x.material]) throw new Error(`${x.id}: material fuera de la biblioteca ${x.material}`)
-  ejercicios.push({ ...x, categoria: 'fuerza', imagenes: 0 })
+  ejercicios.push({ ...x, categoria: 'fuerza' })
 }
 
 const repetidos = ejercicios.map((e) => e.nombre).filter((n, i, a) => a.indexOf(n) !== i)
@@ -307,15 +273,13 @@ retirados.sort((a, b) => a.id.localeCompare(b.id))
 const cuerpo = JSON.stringify({ ejercicios, retirados })
 const version = createHash('sha1').update(cuerpo).digest('hex').slice(0, 12)
 mkdirSync(dir('src', 'catalogo'), { recursive: true })
-writeFileSync(dir('src', 'catalogo', 'ejercicios.json'), JSON.stringify({ version, totalImagenes, bytesImagenes, ejercicios, retirados }) + '\n')
+writeFileSync(dir('src', 'catalogo', 'ejercicios.json'), JSON.stringify({ version, ejercicios, retirados }) + '\n')
 
 // Módulo diminuto con la versión: la app solo descarga el catálogo completo si cambia.
 writeFileSync(
   dir('src', 'catalogo', 'version.ts'),
   `// Generado por scripts/generar-catalogo.mjs. No editar a mano.
 export const VERSION_CATALOGO = '${version}'
-export const TOTAL_IMAGENES = ${totalImagenes}
-export const BYTES_IMAGENES = ${bytesImagenes}
 `,
 )
 
@@ -333,5 +297,5 @@ for (const [m, lista] of grupos) {
 }
 writeFileSync(dir('catalogo', 'LISTADO-BIBLIOTECA.md'), md)
 
-console.log(`✓ ${ejercicios.length} ejercicios en la biblioteca (versión ${version}), ${retirados.length} retirados, ${totalImagenes} imágenes, ${(bytesImagenes / 1048576).toFixed(1)} MB`)
+console.log(`✓ ${ejercicios.length} ejercicios en la biblioteca (versión ${version}), ${retirados.length} retirados`)
 for (const [k, v] of Object.entries(faltan)) if (v.length) console.log(`  · sin ${k}: ${v.length}${v.length < 8 ? ' → ' + v.join(', ') : ''}`)

@@ -151,7 +151,6 @@ export function migrarEjercicioV1(e: EjercicioV1): Ejercicio {
     nivel: null,
     mecanica: null,
     instrucciones: [],
-    imagenes: 0,
     notasFijas: e.notasFijas ?? '',
     personalizado: e.personalizado,
     archivado: e.archivado,
@@ -220,7 +219,6 @@ export interface EjercicioCatalogo {
   nivel: Nivel | null
   mecanica: Mecanica | null
   instrucciones: string[]
-  imagenes: number
 }
 
 /** Ejercicio que ya no está en la biblioteca, con sus músculos actuales (para el historial). */
@@ -268,7 +266,6 @@ export function sincronizarCatalogo(
         nivel: c.nivel,
         mecanica: c.mecanica,
         instrucciones: c.instrucciones,
-        imagenes: c.imagenes,
         notasFijas: previo?.notasFijas ?? '',
         personalizado: false,
         archivado: previo?.archivado ?? false,

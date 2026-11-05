@@ -90,13 +90,12 @@ describe('sincronización del catálogo', () => {
     nivel: 'principiante',
     mecanica: 'compuesto',
     instrucciones: ['Paso'],
-    imagenes: 2,
   }
 
   it('actualiza los datos de la biblioteca y conserva mis notas', () => {
     const [migrado] = migrarDatosV1({ ejercicios: [viejo('X', { notasFijas: 'asiento 4', archivado: true })], rutinaEjercicios: [], sesionEjercicios: [], series: [], molestias: [] }).ejercicios
     const [r] = sincronizarCatalogo([base], [migrado!]).poner
-    expect(r).toMatchObject({ id: 'X', nombre: 'Press', imagenes: 2, notasFijas: 'asiento 4', archivado: true, personalizado: false })
+    expect(r).toMatchObject({ id: 'X', nombre: 'Press', notasFijas: 'asiento 4', archivado: true, personalizado: false })
   })
 
   it('no toca ejercicios personalizados', () => {

@@ -10,7 +10,6 @@ import { SeccionActualizaciones } from './SeccionActualizaciones'
 import { SeccionCuerpo } from './SeccionCuerpo'
 import { SeccionDatos } from './SeccionDatos'
 import { SeccionGimnasio } from './SeccionGimnasio'
-import { SeccionImagenes } from './SeccionImagenes'
 
 export function AjustesPage() {
   const a = useAjustes()
@@ -76,17 +75,19 @@ export function AjustesPage() {
           />
         </Tarjeta>
 
-        {/* En la app Android las imágenes van dentro del APK: no hace falta descargarlas. */}
-        {!esNativa() && <SeccionImagenes />}
-
         <SeccionDatos a={a} />
 
         {esNativa() && <SeccionActualizaciones />}
 
-        {/* Provisional: para revisar el avatar nuevo antes de usarlo en toda la app (ronda 2, fase 3). */}
-        <Link to="/vista-previa/avatar" className="flex min-h-12 items-center justify-center rounded-2xl font-semibold text-accent active:bg-surface-2">
-          Vista previa del avatar nuevo
-        </Link>
+        {/* Provisional: páginas para revisar el avatar y las animaciones (ronda 2). */}
+        <div className="grid grid-cols-2 gap-2">
+          <Link to="/vista-previa/avatar" className="flex min-h-12 items-center justify-center rounded-2xl font-semibold text-accent active:bg-surface-2">
+            Vista previa del avatar
+          </Link>
+          <Link to="/vista-previa/animaciones" className="flex min-h-12 items-center justify-center rounded-2xl font-semibold text-accent active:bg-surface-2">
+            Galería de animaciones
+          </Link>
+        </div>
 
         <p className="pt-2 text-center text-xs text-muted">
           Ferro v{__APP_VERSION__} ·{' '}

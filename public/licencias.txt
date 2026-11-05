@@ -1,10 +1,14 @@
 ﻿Ferro · Créditos y licencias
 ============================
 
-Ejercicios e imágenes
----------------------
+Ejercicios
+----------
 Free Exercise DB (https://github.com/yuhonas/free-exercise-db), dominio público (The Unlicense).
-Nombres e instrucciones traducidos al español para Ferro. Imágenes convertidas a WebP.
+Lista de ejercicios, nombres e instrucciones traducidos al español para Ferro. No se usa ninguna de sus fotos.
+
+Animaciones de los ejercicios
+-----------------------------
+Dibujadas por Ferro: figura vectorial propia con esqueleto articulado y patrones de movimiento (src/animacion).
 
 Visor 3D
 --------

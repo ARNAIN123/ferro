@@ -73,8 +73,6 @@ export interface Ejercicio {
   nivel: Nivel | null
   mecanica: Mecanica | null
   instrucciones: string[]
-  /** Número de imágenes (0, 1 o 2) en /img/ejercicios/<id>/<n>.webp. Sin imágenes se muestra el mapa muscular. */
-  imagenes: number
   /** Mis notas: ajustes de la máquina, agarre… Es lo único editable de la ficha. */
   notasFijas: string
   personalizado: boolean

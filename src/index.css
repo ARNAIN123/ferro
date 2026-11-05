@@ -179,3 +179,77 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Animaciones de ejercicios (src/animacion): mismo gris que el avatar y los músculos en acento. */
+.an-cuerpo {
+  fill: var(--avatar-musculo);
+  stroke: var(--avatar-surco);
+  stroke-width: 0.7;
+  stroke-linejoin: round;
+}
+.an-lejos {
+  fill: var(--avatar-piel);
+  stroke: var(--avatar-surco);
+  stroke-width: 0.7;
+  stroke-linejoin: round;
+}
+.an-musculo {
+  fill: var(--accent);
+}
+.an-musculoLejos {
+  fill: var(--accent);
+  opacity: 0.55;
+}
+.an-surco {
+  fill: none;
+  stroke: var(--avatar-surco);
+  stroke-width: 0.8;
+  opacity: 0.45;
+}
+.an-disco {
+  fill: var(--surface-2);
+  fill-opacity: 0.88;
+  stroke: var(--muted);
+  stroke-width: 2.2;
+}
+.an-metal {
+  fill: var(--muted);
+}
+.an-barra {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.an-cable {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.1;
+  stroke-dasharray: 3 2;
+}
+.an-torre {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+.an-banco {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+.an-bancoAncho {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 18;
+  stroke-linecap: round;
+}
+.an-caja {
+  fill: var(--line);
+}
+.an-suelo {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+}

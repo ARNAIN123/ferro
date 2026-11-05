@@ -20,7 +20,6 @@ export async function crearEjercicio(datos: DatosEjercicioPropio): Promise<strin
     nivel: null,
     mecanica: null,
     instrucciones: [],
-    imagenes: 0,
     notasFijas: '',
     personalizado: true,
     archivado: false,

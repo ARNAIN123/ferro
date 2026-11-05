@@ -56,20 +56,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Sin fotos: las animaciones de los ejercicios se dibujan en el propio código (SVG).
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest,txt}'],
-        // Las ~1.750 imágenes de ejercicios no se precachean: se guardan al verlas (cache-first)
-        // o todas de golpe desde Ajustes, en la caché "ferro-imagenes".
-        globIgnores: ['img/**'],
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => url.pathname.startsWith('/img/ejercicios/'),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'ferro-imagenes',
-              cacheableResponse: { statuses: [200] },
-            },
-          },
-        ],
         navigateFallback: '/index.html',
         // /licencias.txt se abre como texto, no como la app.
         navigateFallbackDenylist: [/\.txt$/],

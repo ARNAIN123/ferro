@@ -4,7 +4,7 @@ import { useParams } from 'react-router'
 import { Cabecera } from '../../components/Cabecera'
 import { Hoja } from '../../components/Hoja'
 import { Icono } from '../../components/Icono'
-import { ImagenGrande } from '../../components/ImagenEjercicio'
+import { AnimacionEjercicio } from '../../components/animacion/AnimacionEjercicio'
 import { MapaMuscular } from '../../components/mapa/MapaMuscular'
 import { Boton, claseInput, Etiqueta, Tarjeta, Vacio } from '../../components/ui'
 import { historialEjercicio } from '../../db/consultas'
@@ -40,7 +40,9 @@ export function EjercicioPage() {
       <Cabecera titulo={ejercicio.nombre} subtitulo={ejercicio.personalizado ? 'Ejercicio propio' : NOMBRE_CATEGORIA[ejercicio.categoria]} atras />
 
       <div className="mt-3 space-y-4">
-        <ImagenGrande ejercicio={ejercicio} />
+        <figure className="overflow-hidden rounded-3xl bg-surface-2">
+          <AnimacionEjercicio ejercicio={ejercicio} className="mx-auto aspect-square w-full max-w-sm" />
+        </figure>
 
         <div className="flex flex-wrap gap-2">
           {ejercicio.archivado && <Etiqueta className="text-warn">Archivado</Etiqueta>}
