@@ -34,7 +34,7 @@ Tengo datos reales (rutinas, entrenos, notas, peso). **Cualquier cambio en la ba
 - **Vite + React + TypeScript**, **Tailwind CSS**, **React Router**, **Recharts**, **@dnd-kit**, **Vitest**.
 - **Capacitor 8** (Android, `appId` `com.ferro.app`, nombre "Ferro", con el icono de siempre). Plugins oficiales: App, Filesystem, Share, Local Notifications. Código nativo propio en **Kotlin** para la detección del gimnasio, con tests JUnit.
 - **Dexie.js** (IndexedDB) con `dexie-react-hooks`. Todos los datos en el móvil (local-first, sin backend).
-- **Health Connect** con un plugin de Capacitor gratuito y mantenido (licencia comprobada) para pasos y peso.
+- **Health Connect** con la librería oficial de Google (`androidx.health.connect:connect-client`, Apache 2.0, gratuita) desde un plugin propio en Kotlin que solo lee pasos y peso. Se valoró `@capgo/capacitor-health` (MPL-2.0, gratuito), pero declara unos 50 permisos de salud y la app solo debe pedir dos. Por Health Connect, la app necesita Android 8 (minSdk 26).
 - **GitHub Actions** compila el APK de release firmado y lo publica en **GitHub Releases** (repositorio público; solo código).
 - Solo en desarrollo: **sharp** y **resvg** (iconos e imágenes).
 - La web sigue compilando con vite-plugin-pwa para desarrollar en el navegador; la PWA publicada se queda en 0.2.0.
@@ -139,7 +139,7 @@ El método es exactamente este: **la entrada se registra cuando abro la app S3 F
 ## Avatar muscular
 
 - Ilustración anatómica **de calidad profesional**, como la imagen de referencia: silueta limpia y proporcionada, contorno continuo y grosores de línea coherentes; cada músculo con su contorno y sus líneas internas; detalle suficiente (pectoral superior e inferior; deltoides anterior, lateral y posterior; bíceps, braquial, tríceps, antebrazo; trapecio, dorsal ancho, zona media de la espalda, lumbares; recto abdominal, oblicuos; glúteo mayor y medio; cuádriceps, isquiotibiales, aductores, gemelos y sóleo) y sombreado sutil. Vista frontal y trasera.
-- Se parte de un SVG con licencia libre verificada (por ejemplo los trazados MIT de `react-native-body-highlighter` v3, enriquecidos) o de uno propio. Antes de integrarlo, página de vista previa con varios estados (semana vacía, media, completa) para revisarla.
+- La geometría sale de **Open Muscle Map** (MIT, licencia verificada y guardada en `catalogo/fuente/avatar/`): `scripts/generar-avatar.mjs` la convierte en regiones con nombre. Con esas siluetas se construye una **figura 3D** (three.js, MIT) con volumen y relieve muscular que se **gira con el dedo** (frente y espalda); si el móvil no tiene WebGL se muestra la versión plana. Página de vista previa en `/vista-previa/avatar` con semana vacía, media, completa y la ficha de un ejercicio.
 - **Misma figura en toda la app:** pantalla principal, ficha del ejercicio, creación de rutinas, resumen del entreno, buscador y animaciones.
 - **Intensidad** (función pura con tests): cada serie completada cuenta **1** para los músculos principales y **0,5** para los secundarios. Gris sin trabajar; color de acento cada vez más intenso en 5 niveles, con transiciones suaves y leyenda.
 - **Tabla de correspondencia** músculo de la base de datos → regiones del avatar, con tests.
@@ -208,9 +208,10 @@ Además, cuando toca: "En el gimnasio desde las 18:05", resumen del último entr
 - **Anillo de pasos** frente a un objetivo editable (por defecto 10.000).
 - **Calorías estimadas de hoy** ("≈ X kcal") con desglose de pasos y entreno, siempre como estimación; al tocarlo se abre el desglose y cómo se calcula:
   - Datos: peso (el último de la app o de Health Connect), altura y edad, editables en Ajustes.
-  - Pasos: calorías netas de caminar según el peso y la zancada estimada a partir de la altura, con una fórmula estándar documentada.
-  - Entreno: MET de fuerza (Compendium of Physical Activities) entre ~3,5 y 6 según la densidad real de la sesión (duración real, volumen kg × reps, series por minuto, descansos). Netas = (MET − 1) × peso × horas.
-  - Los pasos dados dentro del gimnasio durante la sesión no se cuentan dos veces.
+  - Pasos: ecuación del ACSM para caminar en llano sin el término de reposo: 0,1 ml O₂/kg/m ≈ **0,5 kcal por kg y km**. Distancia = pasos × longitud del paso, estimada como **0,414 × altura**.
+  - Entreno: MET de fuerza (Compendium of Physical Activities) entre **3,5 y 6** según la densidad real de la sesión: series por minuto (0,2 → 0,6), tiempo entre series (4 min → 75 s) y kilos movidos por minuto respecto al peso corporal (0,5 → 5 veces). Duración de la entrada a la salida, o de la primera a la última serie. Netas = **(MET − 1) × peso × horas**.
+  - La edad se guarda en Ajustes, pero estas fórmulas dan calorías netas (por encima del reposo) y no dependen de ella.
+  - Los pasos dados dentro del gimnasio durante la sesión no se cuentan dos veces: se piden a Health Connect los pasos de cada entreno y se restan de los del día.
   - Cálculos como funciones puras con tests.
 - En el README: de dónde salen los pasos (Google Health, Mi Fitness o el propio móvil escribiendo en Health Connect) y cómo comprobar que llegan.
 

@@ -7,11 +7,13 @@ interface Props {
   min: number
   max: number
   paso?: number
+  /** Cómo mostrar el valor (p. ej. 10.000). */
+  formato?: (v: number) => string
   onCambio: (v: number) => void
 }
 
 /** Fila de ajuste numérico con botones −/+ grandes. */
-export function Paso({ etiqueta, valor, unidad, min, max, paso = 1, onCambio }: Props) {
+export function Paso({ etiqueta, valor, unidad, min, max, paso = 1, formato = String, onCambio }: Props) {
   const cambiar = (d: number) => onCambio(Math.min(max, Math.max(min, valor + d)))
   return (
     <div className="flex min-h-14 items-center gap-2">
@@ -25,9 +27,9 @@ export function Paso({ etiqueta, valor, unidad, min, max, paso = 1, onCambio }: 
       >
         <Icono nombre="menos" tamano={20} />
       </button>
-      <output className="num w-16 text-center text-xl" aria-live="polite">
-        {valor}
-        <span className="ml-0.5 text-sm font-medium text-muted">{unidad}</span>
+      <output className="num min-w-16 text-center text-xl" aria-live="polite">
+        {formato(valor)}
+        {unidad && <span className="ml-0.5 text-sm font-medium text-muted">{unidad}</span>}
       </output>
       <button
         type="button"

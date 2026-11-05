@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { asistenciaPorSemana, duracionMedia, evolucionEjercicio, mapaCalor, mediaMovil } from './estadisticas'
+import { duracionMedia, evolucionEjercicio, mapaCalor, mediaMovil } from './estadisticas'
 
 const dia = (a: number, m: number, d: number, h = 18) => new Date(a, m - 1, d, h).getTime()
 
@@ -15,11 +15,6 @@ describe('asistencia', () => {
     expect(mapa[1]![2]!.futuro).toBe(false)
     expect(mapa[1]![3]!.futuro).toBe(true)
     expect(mapa[0]![0]!.clave).toBe('2026-10-26')
-  })
-
-  it('días por semana de la más antigua a la actual', () => {
-    const r = asistenciaPorSemana([dia(2026, 11, 2), dia(2026, 11, 2, 9), dia(2026, 10, 27), dia(2026, 10, 29)], ahora, 3)
-    expect(r.map((x) => x.dias)).toEqual([0, 2, 1])
   })
 
   it('duración media de las sesiones cerradas', () => {

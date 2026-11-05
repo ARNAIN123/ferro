@@ -34,20 +34,6 @@ export function mapaCalor(entradas: readonly number[], entrenos: readonly number
   )
 }
 
-/** Días entrenados en cada una de las últimas `semanas` semanas (de la más antigua a la actual). */
-export function asistenciaPorSemana(entrenos: readonly number[], ahora: number, semanas = 12): { inicio: number; dias: number }[] {
-  const porSemana = new Map<number, Set<string>>()
-  for (const t of entrenos) {
-    const s = inicioSemana(t)
-    porSemana.set(s, (porSemana.get(s) ?? new Set()).add(claveDia(t)))
-  }
-  const actual = inicioSemana(ahora)
-  return Array.from({ length: semanas }, (_, i) => {
-    const inicio = inicioSemana(sumarDias(actual, -7 * (semanas - 1 - i)))
-    return { inicio, dias: porSemana.get(inicio)?.size ?? 0 }
-  })
-}
-
 export function duracionMedia(sesiones: readonly { entrada: number; salida: number | null }[]): number | null {
   const validas = sesiones.filter((s) => s.salida !== null && s.salida > s.entrada)
   if (validas.length === 0) return null

@@ -1,4 +1,4 @@
-// Fechas locales y semanas (lunes a domingo). Nada de rachas diarias: descansar no rompe nada.
+// Fechas locales y semanas (lunes a domingo).
 
 /** Día local en formato AAAA-MM-DD. */
 export function claveDia(t: number): string {
@@ -32,29 +32,14 @@ export function diasDeSemana(t: number): number[] {
   return Array.from({ length: 7 }, (_, i) => sumarDias(lunes, i))
 }
 
-/** Número de días distintos entrenados en la semana de `t`. */
-export function diasEntrenadosEnSemana(horas: readonly number[], t: number): number {
-  const lunes = inicioSemana(t)
-  const siguiente = sumarDias(lunes, 7)
-  return new Set(horas.filter((h) => h >= lunes && h < siguiente).map(claveDia)).size
-}
+const mesCorto = (t: number) => new Date(t).toLocaleDateString('es-ES', { month: 'short' }).replace('.', '')
 
-/**
- * Semanas seguidas cumpliendo el objetivo. La semana actual suma si ya está cumplida,
- * pero si aún no lo está no rompe la racha (todavía quedan días).
- */
-export function rachaSemanas(horas: readonly number[], objetivo: number, ahora: number): number {
-  if (objetivo <= 0) return 0
-  const porSemana = new Map<number, Set<string>>()
-  for (const h of horas) {
-    const s = inicioSemana(h)
-    const dias = porSemana.get(s) ?? new Set<string>()
-    dias.add(claveDia(h))
-    porSemana.set(s, dias)
-  }
-  const cumple = (semana: number) => (porSemana.get(semana)?.size ?? 0) >= objetivo
-  const actual = inicioSemana(ahora)
-  let racha = cumple(actual) ? 1 : 0
-  for (let s = inicioSemana(sumarDias(actual, -7)); cumple(s); s = inicioSemana(sumarDias(s, -7))) racha++
-  return racha
+/** "Semana del 2 al 8 nov" o, si cruza de mes, "Semana del 30 nov al 6 dic". */
+export function etiquetaSemana(t: number): string {
+  const lunes = inicioSemana(t)
+  const domingo = sumarDias(lunes, 6)
+  const dl = new Date(lunes).getDate()
+  const dd = new Date(domingo).getDate()
+  const mismoMes = new Date(lunes).getMonth() === new Date(domingo).getMonth()
+  return mismoMes ? `Semana del ${dl} al ${dd} ${mesCorto(domingo)}` : `Semana del ${dl} ${mesCorto(lunes)} al ${dd} ${mesCorto(domingo)}`
 }

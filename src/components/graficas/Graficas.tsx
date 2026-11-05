@@ -9,7 +9,6 @@ import {
   Line,
   LineChart,
   ReferenceArea,
-  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   Tooltip,
@@ -113,33 +112,6 @@ export function GraficaVolumen({ puntos }: { puntos: PuntoEjercicio[] }) {
           }}
         />
         <Bar dataKey="volumen" fill={c.acento} radius={[4, 4, 0, 0]} maxBarSize={28} isAnimationActive={!sinAnimacion} />
-      </BarChart>
-    </Marco>
-  )
-}
-
-export function GraficaAsistencia({ semanas, objetivo }: { semanas: { inicio: number; dias: number }[]; objetivo: number }) {
-  const c = useColores()
-  return (
-    <Marco alto={150} etiqueta="Días entrenados por semana">
-      <BarChart data={semanas} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-        <CartesianGrid vertical={false} stroke={c.linea} />
-        <XAxis dataKey="inicio" tickFormatter={fmtFechaCorta} {...ejes(c)} minTickGap={16} />
-        <YAxis {...ejes(c)} width={28} allowDecimals={false} domain={[0, Math.max(7, objetivo)]} ticks={[0, objetivo, 7]} />
-        <ReferenceLine y={objetivo} stroke={c.tenue} strokeDasharray="4 4" />
-        <Tooltip
-          cursor={{ fill: c.superficie2 }}
-          content={({ active, payload }) => {
-            const p = payload?.[0]?.payload as { inicio: number; dias: number } | undefined
-            if (!active || !p) return null
-            return <Burbuja titulo={`Semana del ${fmtFechaCorta(p.inicio)}`} filas={[{ etiqueta: 'Días', valor: `${p.dias} de ${objetivo}` }]} />
-          }}
-        />
-        <Bar dataKey="dias" radius={[4, 4, 0, 0]} maxBarSize={22} isAnimationActive={!sinAnimacion}>
-          {semanas.map((s) => (
-            <Cell key={s.inicio} fill={s.dias >= objetivo ? c.acento : c.tenue} />
-          ))}
-        </Bar>
       </BarChart>
     </Marco>
   )

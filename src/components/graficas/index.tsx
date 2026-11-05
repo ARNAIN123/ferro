@@ -16,6 +16,5 @@ const modulo = () => import('./Graficas')
 
 export const GraficaE1rm = perezosa(async () => (await modulo()).GraficaE1rm, 200)
 export const GraficaVolumen = perezosa(async () => (await modulo()).GraficaVolumen, 160)
-export const GraficaAsistencia = perezosa(async () => (await modulo()).GraficaAsistencia, 150)
 export const GraficaMusculos = perezosa(async () => (await modulo()).GraficaMusculos, 200)
 export const GraficaPeso = perezosa(async () => (await modulo()).GraficaPeso, 220)

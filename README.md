@@ -80,7 +80,7 @@ HyperOS cierra las apps en segundo plano con mucha agresividad. Para que el desc
 - **Ahorro de batería**: en esa misma pantalla → Ahorro de batería → **Sin restricciones**.
 - **Notificaciones**: permitidas, con el canal **"Fin del descanso"** con sonido y vibración.
 - **Ubicación**: **Permitir todo el tiempo** (la usa la detección del gimnasio con Ferro cerrada).
-- **Health Connect**: permisos de pasos y peso (fase 5).
+- **Health Connect**: en Ferro, **Ajustes → Pasos y calorías → Conectar** y concede **Pasos** y **Peso** (no pide nada más).
 - Opcional: en la multitarea, mantén pulsada la tarjeta de Ferro y toca el **candado** para que no se cierre al limpiar.
 
 ## Actualizar la app
@@ -207,11 +207,28 @@ Pruébalas con el botón ▶ de cada macro estando en el gimnasio (o fuera, para
 
 ## Rutinas, entreno libre y mapa muscular
 
-- **Crear una rutina**: Rutinas → **+**. Nombre → **Añadir ejercicios** (selector a pantalla completa, con búsqueda en español o inglés, filtros y selección múltiple) → ajusta series, repeticiones y descanso con +/− → **Guardar rutina**. Debajo se ve en vivo el mapa de músculos que cubre y un aviso si a tu ciclo le falta algún grupo grande.
+- **Crear una rutina**: Rutinas → **+**. Nombre → **Añadir ejercicios**: toca un músculo en la figura y marca los ejercicios que quieras (selección múltiple; arriba los de **Principal**, debajo **También lo trabajan**) → ajusta series, repeticiones y descanso con +/− → **Guardar rutina**. Debajo se ve en vivo el mapa de músculos que cubre y un aviso si a tu ciclo le falta algún grupo grande.
 - **Entreno libre**: en Hoy, junto a "Empezar". Añades ejercicios sobre la marcha; al terminar puedes **Guardar como rutina**. No cambia la rutina que te toca.
-- **Peso exacto**: mantén pulsado el número del peso para escribirlo con el teclado. Los botones +/− suben según el material: barra 2,5 kg, mancuernas 2 kg, kettlebell 4 kg, máquinas y poleas 5 kg.
+- **Peso exacto**: mantén pulsado el número del peso para escribirlo con el teclado. Los botones +/− suben según el material: barras y discos 2,5 kg, mancuernas 2 kg, poleas y multipower 5 kg.
 - **Fin del descanso**: en la app Android, al terminar el descanso llega una notificación con sonido y vibración aunque Ferro esté en segundo plano o con la pantalla apagada (usa una alarma exacta de Android).
 - **Mapa muscular**: en el resumen de cada entreno, en Progreso (esta semana, 7 días, 30 días), en la ficha de cada ejercicio y en el editor de rutinas. Toca un músculo para ver sus series y qué ejercicios lo han trabajado.
+
+## Hoy: objetivo del mes, pasos y calorías
+
+La pantalla principal tiene, por este orden: el **objetivo del mes**, tu **semana** en el avatar, los **pasos y las calorías** y los botones para empezar.
+
+- **Objetivo mensual** (por defecto 16 días; se cambia en Ajustes → Entreno). Cuenta un día si hay una entrada registrada o un entreno terminado. La tarjeta te dice cuántos días te puedes saltar y seguir cumpliéndolo. En **Progreso** está el historial de meses cumplidos y no cumplidos.
+- **Avatar de la semana**: de lunes a domingo, con niveles de 1–3, 4–6, 7–10, 11–15 y 16+ series. Gíralo con el dedo para ver la espalda y toca un músculo para ver sus series y ejercicios.
+- **Pasos**: los lee de **Health Connect**, el almacén de salud de Android. Ferro no cuenta pasos por sí misma: los escribe en Health Connect otra app. En el Xiaomi puede ser **Mi Fitness** (con o sin pulsera), **Google Health / Fit** o el propio podómetro del móvil. Para comprobar que llegan:
+  1. Abre **Health Connect** (Ajustes de Android → Privacidad → Health Connect, o desde Ferro: Ajustes → Pasos y calorías → Abrir Health Connect).
+  2. En **Permisos de apps**, comprueba que Mi Fitness (o la app que uses) tiene permiso para **escribir** pasos y que Ferro tiene permiso para **leer** pasos y peso.
+  3. En **Datos y acceso → Actividad → Pasos** deberías ver los pasos de hoy. Si salen ahí, Ferro los verá (se actualizan al abrir la app, al volver a ella y cada 5 minutos).
+  4. Si tienes varias apps escribiendo pasos, en **Prioridad de las apps** pon primero la más fiable: Health Connect junta las fuentes sin contar dos veces el mismo paso, y Ferro pide ese total.
+- **Calorías** (≈, siempre una estimación de lo gastado por encima del reposo). Necesitan tu **peso** (el último que apuntes en Ferro o, si no hay, el de Health Connect) y tu **altura** (Ajustes → Pasos y calorías). Al tocarlas se ve el desglose y cómo se calcula:
+  - **Caminar**: distancia = pasos × 0,414 × altura; coste = 0,5 kcal por kg y km (ecuación del ACSM para caminar en llano, sin el gasto de reposo).
+  - **Entreno**: MET del entrenamiento de fuerza entre 3,5 y 6 (Compendium of Physical Activities) según lo densa que fue la sesión (series por minuto, tiempo entre series y kilos por minuto); calorías = (MET − 1) × peso × horas, de la entrada a la salida.
+  - Los pasos que das durante el entreno se restan de los del día para no contarlos dos veces.
+- En la web (navegador) no hay Health Connect: el anillo de pasos sale vacío y las calorías solo cuentan el entreno.
 
 ## Copias de seguridad
 
@@ -227,5 +244,5 @@ Si llevas más de 2 semanas sin hacer copia, Hoy muestra un recordatorio discret
 ## Calidad
 
 - `npm run build`: comprobación de tipos estricta + build sin avisos.
-- `npm test`: tests de la lógica pura de la web (progresión, ciclo de rutinas, entradas y eventos de la detección, cierre automático, semanas, estadísticas, récords, prerrellenado, superseries, copias de seguridad e importación con migración, actualizaciones, intensidad y mapa muscular, biblioteca y migraciones de la base de datos).
+- `npm test`: tests de la lógica pura de la web (progresión, ciclo de rutinas, entradas y eventos de la detección, cierre automático, semanas, **objetivo mensual**, **calorías**, estadísticas, récords, prerrellenado, superseries, copias de seguridad e importación con migración, actualizaciones, intensidad y mapa muscular, biblioteca y migraciones de la base de datos).
 - `cd android && ./gradlew testDebugUnitTest`: tests nativos de la decisión de entrada y salida (distancia, precisión, deduplicación, confirmación de la salida y hora del aviso). GitHub Actions los pasa antes de publicar cada APK.

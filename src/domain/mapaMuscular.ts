@@ -53,8 +53,8 @@ export const NIVELES = 5
 export const ESCALAS = {
   /** Una sesión o una rutina. */
   sesion: [2, 4, 6, 9],
-  /** Series por semana (franja de referencia 10–20). */
-  semana: [4, 8, 12, 16],
+  /** Series por semana: los mismos niveles que el avatar de Hoy (1–3, 4–6, 7–10, 11–15, 16+). */
+  semana: [4, 7, 11, 16],
 } as const
 
 export function nivelIntensidad(valor: number, escala: readonly number[]): number {

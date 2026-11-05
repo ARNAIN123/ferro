@@ -76,7 +76,7 @@ describe('niveles de intensidad', () => {
   })
 
   it('rótulos de la leyenda', () => {
-    expect(rotulosEscala(ESCALAS.semana)).toEqual(['1–3', '4–7', '8–11', '12–15', '16+'])
+    expect(rotulosEscala(ESCALAS.semana)).toEqual(['1–3', '4–6', '7–10', '11–15', '16+'])
     expect(rotulosEscala(ESCALAS.sesion)).toEqual(['1', '2–3', '4–5', '6–8', '9+'])
   })
 })

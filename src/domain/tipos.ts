@@ -198,7 +198,13 @@ export type Tema = 'oscuro' | 'claro' | 'sistema'
 
 export interface Ajustes {
   id: 'ajustes'
-  objetivoSemanal: number
+  /** Días al mes que quiero ir al gimnasio. */
+  objetivoMensual: number
+  /** Pasos al día. */
+  objetivoPasos: number
+  /** Para estimar la longitud del paso y las calorías. */
+  alturaCm: number | null
+  edad: number | null
   descansoDefecto: number
   horasEntreCheckins: number
   gimnasioLat: number | null
@@ -218,7 +224,10 @@ export interface Ajustes {
 
 export const AJUSTES_POR_DEFECTO: Ajustes = {
   id: 'ajustes',
-  objetivoSemanal: 4,
+  objetivoMensual: 16,
+  objetivoPasos: 10_000,
+  alturaCm: null,
+  edad: null,
   descansoDefecto: 120,
   horasEntreCheckins: 3,
   gimnasioLat: null,

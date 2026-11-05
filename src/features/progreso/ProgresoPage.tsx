@@ -2,20 +2,22 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { Cabecera } from '../../components/Cabecera'
-import { GraficaAsistencia, GraficaMusculos, GraficaPeso } from '../../components/graficas'
+import { GraficaMusculos, GraficaPeso } from '../../components/graficas'
 import { Icono } from '../../components/Icono'
 import { Segmentado, Tarjeta, Vacio } from '../../components/ui'
 import { aSerieHecha, sesionesTerminadas } from '../../db/consultas'
 import { db } from '../../db/db'
-import { asistenciaPorSemana, duracionMedia, FRANJA_SERIES, mapaCalor, mediaMovil } from '../../domain/estadisticas'
+import { duracionMedia, FRANJA_SERIES, mapaCalor, mediaMovil } from '../../domain/estadisticas'
 import { ESCALAS, nivelesDeTrabajo, rotulosEscala, trabajoMuscular } from '../../domain/mapaMuscular'
 import { MapaConDetalle } from '../../components/mapa/MapaConDetalle'
 import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { recordsPersonales } from '../../domain/marcas'
+import { diasQueCuentan, historialMensual } from '../../domain/objetivoMensual'
 import { inicioSemana, sumarDias } from '../../domain/semanas'
 import { MUSCULOS, type Ejercicio, type Entrada, type PesoCorporal, type Serie, type Sesion } from '../../domain/tipos'
 import { useAjustes } from '../../hooks/useAjustes'
 import { fmtDuracion, fmtHace, fmtKg } from '../../lib/formato'
+import { HistorialMeses } from './HistorialMeses'
 import { MapaCalor } from './MapaCalor'
 
 type Vista = 'general' | 'ejercicios' | 'peso'
@@ -74,7 +76,7 @@ export function ProgresoPage() {
         />
       </div>
 
-      {datos && vista === 'general' && <General datos={datos} ahora={ahora} objetivo={ajustes.objetivoSemanal} periodo={periodo} setPeriodo={setPeriodo} />}
+      {datos && vista === 'general' && <General datos={datos} ahora={ahora} objetivo={ajustes.objetivoMensual} periodo={periodo} setPeriodo={setPeriodo} />}
       {datos && vista === 'ejercicios' && <Ejercicios datos={datos} ahora={ahora} />}
       {datos && vista === 'peso' && <Peso pesos={datos.pesos} />}
     </>
@@ -106,9 +108,10 @@ function General({
     return <Vacio titulo="Todavía no hay datos">Termina tu primer entreno y aquí verás tu asistencia y tus series por músculo.</Vacio>
 
   const horasEntreno = datos.sesiones.map((s) => s.entrada)
-  const semanas = asistenciaPorSemana(horasEntreno, ahora, 12)
-  const completas = semanas.slice(0, -1).filter((s) => s.inicio >= inicioSemana(Math.min(...horasEntreno, ahora)))
-  const mediaDias = completas.length ? completas.reduce((t, s) => t + s.dias, 0) / completas.length : null
+  const horasEntradas = datos.entradas.map((e) => e.hora)
+  const meses = historialMensual(diasQueCuentan(horasEntradas, horasEntreno), objetivo, ahora, Math.min(...horasEntreno, ...horasEntradas, ahora))
+  const cerrados = meses.filter((m) => !m.enCurso)
+  const mediaDias = cerrados.length ? cerrados.reduce((t, m) => t + m.hechos, 0) / cerrados.length : null
   const media = duracionMedia(datos.sesiones.slice(0, 20))
 
   const { desde, semanas: enSemanas, texto } = PERIODOS[periodo](ahora)
@@ -126,18 +129,21 @@ function General({
     <div className="space-y-3">
       <Tarjeta>
         <h2 className="mb-3 font-bold">Asistencia</h2>
-        <MapaCalor semanas={mapaCalor(datos.entradas.map((e) => e.hora), horasEntreno, ahora, 18)} />
+        <MapaCalor semanas={mapaCalor(horasEntradas, horasEntreno, ahora, 18)} />
         <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-line pt-3">
           <Mini etiqueta="Entrenos" valor={String(datos.sesiones.length)} />
-          <Mini etiqueta="Días/semana" valor={mediaDias === null ? '—' : fmtKg(Math.round(mediaDias * 10) / 10)} />
+          <Mini etiqueta="Días/mes" valor={mediaDias === null ? '—' : fmtKg(Math.round(mediaDias * 10) / 10)} />
           <Mini etiqueta="Duración media" valor={media === null ? '—' : fmtDuracion(media)} />
         </dl>
       </Tarjeta>
 
       <Tarjeta>
-        <h2 className="font-bold">Días por semana</h2>
-        <p className="mb-2 text-xs text-muted">Últimas 12 semanas · la línea es tu objetivo ({objetivo})</p>
-        <GraficaAsistencia semanas={semanas} objetivo={objetivo} />
+        <h2 className="font-bold">Objetivo mensual</h2>
+        <p className="mb-3 text-xs text-muted">
+          {objetivo} días al mes
+          {cerrados.length > 0 && ` · ${cerrados.filter((m) => m.cumplido).length} de ${cerrados.length} ${cerrados.length === 1 ? 'mes cumplido' : 'meses cumplidos'}`}
+        </p>
+        <HistorialMeses meses={meses} />
       </Tarjeta>
 
       <Tarjeta>

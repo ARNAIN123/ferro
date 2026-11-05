@@ -7,6 +7,7 @@ import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
 import { esNativa } from '../../lib/plataforma'
 import { Paso } from './Paso'
 import { SeccionActualizaciones } from './SeccionActualizaciones'
+import { SeccionCuerpo } from './SeccionCuerpo'
 import { SeccionDatos } from './SeccionDatos'
 import { SeccionGimnasio } from './SeccionGimnasio'
 import { SeccionImagenes } from './SeccionImagenes'
@@ -27,12 +28,12 @@ export function AjustesPage() {
         <Tarjeta>
           <h2 className="mb-3 font-bold">Entreno</h2>
           <Paso
-            etiqueta="Objetivo semanal"
-            valor={a.objetivoSemanal}
-            unidad={a.objetivoSemanal === 1 ? 'día' : 'días'}
+            etiqueta="Objetivo mensual"
+            valor={a.objetivoMensual}
+            unidad={a.objetivoMensual === 1 ? 'día' : 'días'}
             min={1}
-            max={7}
-            onCambio={(v) => guardarAjustes({ objetivoSemanal: v })}
+            max={31}
+            onCambio={(v) => guardarAjustes({ objetivoMensual: v })}
           />
           <Paso
             etiqueta="Descanso por defecto"
@@ -56,6 +57,8 @@ export function AjustesPage() {
             onCambio={(v) => guardarAjustes({ vibracion: v })}
           />
         </Tarjeta>
+
+        <SeccionCuerpo a={a} />
 
         <SeccionGimnasio a={a} />
 
