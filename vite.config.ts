@@ -18,6 +18,8 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'prompt',
+      // La web de Vercel pide contraseña: el manifiesto también tiene que pedirse con ella.
+      useCredentials: true,
       manifest: {
         id: '/',
         name: 'Ferro',

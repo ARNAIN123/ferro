@@ -70,6 +70,16 @@ La app Android guarda los datos en otro sitio que la PWA, así que **no se pasan
 
 La web de Vercel (https://ferro-kappa-rosy.vercel.app) se publica con la misma versión que el APK, para verla en el navegador. Ahí no funciona lo que depende del móvil (detección del gimnasio, pasos de Health Connect, aviso de descanso con la pantalla apagada, actualizaciones), pero la exportación de datos sigue estando en Ajustes. Para publicarla: `vercel deploy --prod` (`.vercelignore` deja fuera el proyecto Android).
 
+La web pide **contraseña** (el navegador muestra su ventana de usuario y contraseña; el usuario da igual). No es la protección de pago de Vercel: la pide `middleware.ts` y la contraseña está guardada como variable secreta `FERRO_CLAVE` en el proyecto de Vercel, nunca en el código. Para cambiarla:
+
+```bash
+vercel env rm FERRO_CLAVE production
+vercel env add FERRO_CLAVE production --sensitive
+vercel deploy --prod
+```
+
+Si la variable falta, la web no se abre a nadie. La app Android no se ve afectada: lleva la web dentro.
+
 ## Instalar el APK en el Xiaomi (HyperOS)
 
 1. En el móvil, abre la página de **Releases** del repositorio en GitHub y descarga `ferro-X.Y.Z.apk` de la última versión (o, ya con Ferro instalada, **Ajustes → Actualizaciones → Buscar actualizaciones**).
