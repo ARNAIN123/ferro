@@ -24,7 +24,7 @@ Su trabajo es este ciclo: **detectar cuándo entro y salgo del gimnasio → sabe
 
 Tengo datos reales (rutinas, entrenos, notas, peso). **Cualquier cambio en la base de datos se hace con una nueva versión de Dexie y una migración (`upgrade`) que conserve todo.** Nunca se borra ni se recrea la base de datos. Cada migración es una función pura con tests (`src/domain/migracion.ts`) y se prueba con datos de la versión anterior antes de publicar.
 
-- **De la PWA a la app nativa:** el almacenamiento es distinto y los datos no pasan solos. Se exportan a JSON desde la PWA (versión 0.2.0, que se queda congelada en Vercel para eso) y se importan en la app. La importación no pierde nada (rutinas, entrenos, series, notas, molestias, peso, entradas, ajustes) y **migra las copias antiguas** con las mismas migraciones que la base de datos (la copia guarda su versión de esquema; las que no la traen se reconocen por sus datos).
+- **De la PWA a la app nativa:** el almacenamiento es distinto y los datos no pasan solos. Se exportan a JSON desde la PWA (Ajustes → Datos) y se importan en la app. La importación no pierde nada (rutinas, entrenos, series, notas, molestias, peso, entradas, ajustes) y **migra las copias antiguas** con las mismas migraciones que la base de datos (la copia guarda su versión de esquema; las que no la traen se reconocen por sus datos).
 - Las actualizaciones del APK se instalan **encima** (misma firma) y conservan los datos. El origen de la WebView (`https://localhost`) no cambia nunca, porque IndexedDB va ligada a él.
 
 ---
@@ -37,7 +37,7 @@ Tengo datos reales (rutinas, entrenos, notas, peso). **Cualquier cambio en la ba
 - **Health Connect** con la librería oficial de Google (`androidx.health.connect:connect-client`, Apache 2.0, gratuita) desde un plugin propio en Kotlin que solo lee pasos y peso. Se valoró `@capgo/capacitor-health` (MPL-2.0, gratuito), pero declara unos 50 permisos de salud y la app solo debe pedir dos. Por Health Connect, la app necesita Android 8 (minSdk 26).
 - **GitHub Actions** compila el APK de release firmado y lo publica en **GitHub Releases** (repositorio público; solo código).
 - Solo en desarrollo: **sharp** y **resvg** (iconos).
-- La web sigue compilando con vite-plugin-pwa para desarrollar en el navegador; la PWA publicada se queda en 0.2.0.
+- La web sigue compilando con vite-plugin-pwa y se publica en Vercel con la misma versión que el APK, sin las funciones nativas.
 
 ---
 

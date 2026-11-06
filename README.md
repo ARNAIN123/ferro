@@ -6,7 +6,7 @@ Mi app personal de gimnasio para Android. Es una app nativa hecha con **Capacito
 
 ## Stack
 
-Vite + React + TypeScript estricto · Tailwind CSS 4 · Capacitor 8 (Android) · Dexie (IndexedDB) · React Router · Recharts · @dnd-kit · three.js (avatar 3D) · Vitest. En desarrollo, sharp para los iconos. La versión web (vite-plugin-pwa) sigue compilando, pero solo se usa para desarrollar y para exportar los datos de la antigua PWA.
+Vite + React + TypeScript estricto · Tailwind CSS 4 · Capacitor 8 (Android) · Dexie (IndexedDB) · React Router · Recharts · @dnd-kit · three.js (avatar 3D) · Vitest. En desarrollo, sharp para los iconos. La versión web (vite-plugin-pwa) también se publica en Vercel, sin las funciones nativas.
 
 ```
 catalogo/          fuente de la biblioteca (Free Exercise DB fijada) y traducciones al español
@@ -68,7 +68,7 @@ La app Android guarda los datos en otro sitio que la PWA, así que **no se pasan
 3. En la **app**: **Ajustes → Datos y copias de seguridad → Importar copia…**, elige el archivo de *Descargas* y confirma **Restaurar**. Se importan rutinas, entrenos, series, notas, molestias, peso corporal, entradas y ajustes. Las copias antiguas se migran solas al formato actual.
 4. Comprueba que están tus rutinas y tu historial. Cuando lo veas todo, puedes desinstalar la PWA (mantén pulsado su icono → Desinstalar).
 
-La web de Vercel (https://ferro-kappa-rosy.vercel.app) se queda en la versión 0.2.0 solo para poder hacer esa exportación; ya no se actualiza.
+La web de Vercel (https://ferro-kappa-rosy.vercel.app) se publica con la misma versión que el APK, para verla en el navegador. Ahí no funciona lo que depende del móvil (detección del gimnasio, pasos de Health Connect, aviso de descanso con la pantalla apagada, actualizaciones), pero la exportación de datos sigue estando en Ajustes. Para publicarla: `vercel deploy --prod` (`.vercelignore` deja fuera el proyecto Android).
 
 ## Instalar el APK en el Xiaomi (HyperOS)
 
