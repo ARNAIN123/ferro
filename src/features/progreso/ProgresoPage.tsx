@@ -18,6 +18,7 @@ import { MUSCULOS, type Ejercicio, type Entrada, type PesoCorporal, type Serie, 
 import { useAjustes } from '../../hooks/useAjustes'
 import { fmtDuracion, fmtHace, fmtKg } from '../../lib/formato'
 import { HistorialMeses } from './HistorialMeses'
+import { HojaPeso } from '../peso/HojaPeso'
 import { MapaCalor } from './MapaCalor'
 
 type Vista = 'general' | 'ejercicios' | 'peso'
@@ -239,13 +240,19 @@ function Ejercicios({ datos, ahora }: { datos: Datos; ahora: number }) {
 function Peso({ pesos }: { pesos: Datos['pesos'] }) {
   const puntos = mediaMovil(pesos)
   const ultimo = puntos.at(-1)
+  const [registrando, setRegistrando] = useState(false)
   return (
     <div className="space-y-3">
-      <Link
-        to="/peso"
-        className="flex min-h-16 items-center justify-center gap-2 rounded-2xl bg-accent text-lg font-bold text-accent-ink"
+      <button
+        type="button"
+        onClick={() => setRegistrando(true)}
+        className="flex min-h-16 w-full items-center justify-center gap-2 rounded-2xl bg-accent text-lg font-bold text-accent-ink"
       >
         <Icono nombre="bascula" /> Registrar peso
+      </button>
+      <HojaPeso abierta={registrando} onCerrar={() => setRegistrando(false)} />
+      <Link to="/peso" className="flex min-h-11 items-center justify-center text-sm font-semibold text-accent">
+        Ver todos los registros
       </Link>
       {puntos.length === 0 ? (
         <Vacio titulo="Sin registros">El peso corporal es opcional. Regístralo cuando quieras y verás su media de 7 días.</Vacio>

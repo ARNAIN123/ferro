@@ -15,6 +15,8 @@ interface PluginSalud {
   pedirPermisos(): Promise<EstadoSalud>
   pasos(o: { tramos: { desde: number; hasta: number }[] }): Promise<{ pasos: number[] }>
   ultimoPeso(): Promise<{ kg?: number; hora?: number }>
+  /** Mediciones de peso entre dos instantes (ms), de la más antigua a la más reciente. */
+  pesos(o: { desde: number; hasta: number }): Promise<{ pesos: { kg: number; hora: number }[] }>
   abrirHealthConnect(): Promise<void>
 }
 

@@ -2,6 +2,7 @@ import { lazy, Suspense, type ComponentType } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import { AvisoActualizacion } from './components/AvisoActualizacion'
 import { Avisos } from './components/Avisos'
+import { EnlacesNativos } from './components/EnlacesNativos'
 import { Marco } from './components/Marco'
 import { EmpezarPage } from './features/entreno/EmpezarPage'
 import { EntrenoPage } from './features/entreno/EntrenoPage'
@@ -44,6 +45,7 @@ export function App() {
       {/* En la app Android las actualizaciones llegan como APK (Ajustes → Buscar actualizaciones). */}
       {!esNativa() && <AvisoActualizacion />}
       <Avisos />
+      <EnlacesNativos />
       <Suspense fallback={null}>
         <Routes>
           <Route element={<Marco />}>

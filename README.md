@@ -251,6 +251,8 @@ La pantalla principal tiene, por este orden: el **objetivo del mes**, tu **seman
   - **Caminar**: distancia = pasos × 0,414 × altura; coste = 0,5 kcal por kg y km (ecuación del ACSM para caminar en llano, sin el gasto de reposo).
   - **Entreno**: MET del entrenamiento de fuerza entre 3,5 y 6 (Compendium of Physical Activities) según lo densa que fue la sesión (series por minuto, tiempo entre series y kilos por minuto); calorías = (MET − 1) × peso × horas, de la entrada a la salida.
   - Los pasos que das durante el entreno se restan de los del día para no contarlos dos veces.
+- **Registrar peso** (Hoy, Progreso → Peso o mantener pulsado el icono de Ferro → *Registrar peso*): se abre ya en tu último peso; arrastra la regla (un lanzamiento rápido salta varios kilos), usa ±0,1/±1 (mantén pulsado para ir más rápido) o toca el número para escribirlo, y **Guardar**. El chip de la fecha sirve para apuntar un día anterior.
+- **Báscula**: si tu báscula (por ejemplo con Mi Fitness o Zepp Life) escribe el peso en Health Connect y Ferro tiene permiso de **Peso**, al abrir la app se importan solas las mediciones de los últimos 30 días, una por día. Lo que apuntes a mano nunca se sobrescribe; en el historial lo importado lleva la etiqueta *Báscula*.
 - En la web (navegador) no hay Health Connect: el anillo de pasos sale vacío y las calorías solo cuentan el entreno.
 
 ## Copias de seguridad

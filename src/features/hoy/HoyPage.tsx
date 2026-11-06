@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { Cabecera } from '../../components/Cabecera'
 import { Icono } from '../../components/Icono'
 import { MapaConDetalle } from '../../components/mapa/MapaConDetalle'
@@ -19,7 +19,8 @@ import { claveDia, etiquetaSemana, inicioSemana } from '../../domain/semanas'
 import { useAhora } from '../../hooks/useAhora'
 import { useAjustes } from '../../hooks/useAjustes'
 import { usePasosHoy } from '../../hooks/usePasosHoy'
-import { fmtCrono, fmtFechaLarga, fmtHace, fmtHora } from '../../lib/formato'
+import { fmtCrono, fmtFechaLarga, fmtHace, fmtHora, fmtKg } from '../../lib/formato'
+import { HojaPeso } from '../peso/HojaPeso'
 import { ElegirRutina } from './ElegirRutina'
 import { ObjetivoMes } from './ObjetivoMes'
 import { PasosYCalorias } from './PasosYCalorias'
@@ -33,6 +34,10 @@ export function HoyPage() {
   const ahora = useAhora(1000)
   const ajustes = useAjustes()
   const [eligiendo, setEligiendo] = useState(false)
+  // ?peso=1 abre directamente el registro de peso (acceso directo del icono de la app).
+  const [params, setParams] = useSearchParams()
+  const pesoAbierto = params.get('peso') === '1'
+  const abrirPeso = (abrir: boolean) => setParams(abrir ? { peso: '1' } : {}, { replace: true })
   const hoy = claveDia(ahora)
   const lunes = inicioSemana(ahora)
 
@@ -174,6 +179,23 @@ export function HoyPage() {
           nombresEntrenos={medidas.map((m) => m.nombre)}
         />
 
+        <button
+          type="button"
+          onClick={() => abrirPeso(true)}
+          className="flex min-h-14 w-full items-center gap-3 rounded-3xl border border-line bg-surface px-4 text-left active:bg-surface-2"
+        >
+          <Icono nombre="bascula" tamano={20} className="text-muted" />
+          <span className="flex-1">
+            <span className="font-semibold">Registrar peso</span>
+            {datos.ultimoPeso && (
+              <span className="block text-sm text-muted">
+                Último: <span className="num">{fmtKg(datos.ultimoPeso.kg)}</span> kg · {fmtHace(new Date(`${datos.ultimoPeso.fecha}T12:00`).getTime(), ahora)}
+              </span>
+            )}
+          </span>
+          <Icono nombre="mas" tamano={20} className="text-accent" />
+        </button>
+
         {datos.enCurso ? (
           <Tarjeta className="border-accent">
             <p className="text-sm font-semibold text-accent">Entreno en curso</p>
@@ -228,6 +250,7 @@ export function HoyPage() {
       )}
 
       <ElegirRutina abierta={eligiendo} onCerrar={() => setEligiendo(false)} tocaId={datos.toca?.id ?? null} />
+      <HojaPeso abierta={pesoAbierto} onCerrar={() => abrirPeso(false)} />
     </>
   )
 }

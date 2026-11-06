@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect } from 'react'
 import { db } from '../db/db'
 import { importarEventosDeteccion } from '../db/deteccion'
+import { importarPesoDeSalud } from '../db/peso'
 import { cerrarSesionCaducada } from '../db/entreno'
 import { AJUSTES_POR_DEFECTO } from '../domain/tipos'
 import { Deteccion, hayDeteccion } from '../lib/deteccion'
@@ -10,7 +11,8 @@ import { Deteccion, hayDeteccion } from '../lib/deteccion'
 /**
  * Cada vez que la app pasa a primer plano (y cuando la detección nativa avisa de un cambio):
  * 1. pasa a la base de datos las entradas y salidas que se detectaron con Ferro cerrada;
- * 2. cierra el entreno si lleva 3 h sin actividad.
+ * 2. cierra el entreno si lleva 3 h sin actividad;
+ * 3. trae el peso de la báscula si escribe en Health Connect.
  * Además mantiene la configuración del gimnasio sincronizada con la parte nativa.
  */
 export function useVigilancia() {
@@ -23,6 +25,7 @@ export function useVigilancia() {
       try {
         await importarEventosDeteccion()
         await cerrarSesionCaducada()
+        await importarPesoDeSalud().catch(() => 0)
       } catch {
         // Si falla, se reintenta la próxima vez que la app vuelva a primer plano.
       } finally {

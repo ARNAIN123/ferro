@@ -56,7 +56,7 @@ export default defineConfig({
             name: 'Registrar peso',
             short_name: 'Peso',
             description: 'Apunta tu peso corporal de hoy',
-            url: '/peso',
+            url: '/?peso=1',
             icons: [{ src: '/atajo-peso.png', sizes: '96x96', type: 'image/png' }],
           },
         ],

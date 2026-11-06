@@ -4,14 +4,15 @@
 
 Su trabajo es este ciclo: **detectar cuándo entro y salgo del gimnasio → saber qué rutina me toca → dejarme registrar el entreno lo más rápido posible → decirme qué peso usar la próxima vez → enseñarme mi progreso, mis músculos de la semana, mis pasos y mi objetivo del mes.**
 
-> Este documento ya incluye las **rondas 1 y 2 de mejoras** (`MEJORAS-1.md`, `MEJORAS-2.md`). Donde se contradicen, manda la más reciente. Lo que está en "Cosas que no deben volver" se quitó a propósito: no lo reintroduzcas.
+> Este documento ya incluye las **rondas 1, 2 y 3 de mejoras** (`MEJORAS-1.md`, `MEJORAS-2.md`, `MEJORAS-3.md`). Donde se contradicen, manda la más reciente. Lo que está en "Cosas que no deben volver" se quitó a propósito: no lo reintroduzcas.
 
 ---
 
 ## Cómo quiero que trabajes
 
 - Antes de escribir código, lee este documento entero y hazme solo las preguntas imprescindibles.
-- Construye por fases (ver "Fases" al final). Al acabar cada fase: compila, pasa los tests, haz commit y dime exactamente cómo probarla en el móvil.
+- Construye por fases (ver "Fases" al final). Al acabar cada fase: compila, pasa los tests, haz commit, **publica una versión nueva del APK** y dime exactamente qué probar en el móvil.
+- Si necesito descargar o instalar algo a mano (por ejemplo Blender), dímelo con pasos concretos.
 - Si una fase pide algo para revisar (vista previa, listado, galería), genera eso y espera mi visto bueno antes de integrarlo en la app.
 - No añadas dependencias innecesarias. TypeScript estricto, componentes pequeños y la lógica de negocio (progresión, ciclo, detección, intensidad muscular, objetivo mensual, calorías, migraciones) separada de la interfaz en funciones puras con tests. La lógica nativa (Kotlin) también tiene tests unitarios.
 - Toda la interfaz en español.
@@ -228,7 +229,17 @@ Además, cuando toca: "En el gimnasio desde las 18:05", resumen del último entr
 - Calendario de asistencia tipo mapa de calor, **historial mensual** con los meses cumplidos y no cumplidos, y duración media de las sesiones.
 - **Músculos trabajados**: avatar con selector de periodo (esta semana, últimos 7 días, últimos 30 días) y series por grupo muscular con franja de referencia de 10–20 series por semana.
 - Por ejercicio: 1RM estimado (Epley), mejor serie, volumen e historial completo. Récords personales.
-- Peso corporal: registro rápido y gráfica con media móvil de 7 días.
+- Peso corporal: registro rápido (ver abajo) y gráfica con media móvil de 7 días.
+
+### Registro de peso corporal (menos de 3 segundos)
+
+- **Hoja inferior** que se abre desde Hoy ("Registrar peso", con el último peso), desde Progreso → Peso y desde el **acceso directo del icono** de la app (mantener pulsado → "Registrar peso"; abre `ferro://app/?peso=1`).
+- Se abre **ya colocada en el último peso** (o en el de ese día si ya existe). Guardar es un toque.
+- **Regla horizontal deslizable** (`src/components/Regla.tsx`): se arrastra, un lanzamiento rápido sigue por inercia y salta varios kilos, siempre acaba ajustada a 0,1 kg; vibración suave en cada 0,1 y más marcada en cada kilo (`@capacitor/haptics`). Número grande en el centro; al tocarlo se escribe con el teclado decimal.
+- Botones ±0,1 y ±1 kg que **aceleran al mantenerlos pulsados**.
+- Fecha hoy por defecto, con un chip para cambiarla. Un registro por día: guardar otro ese día lo sustituye.
+- **Báscula vía Health Connect**: al abrir o volver a la app (como mucho cada 10 min) se traen los pesos de los últimos 30 días, uno por día (la última medición), **sin duplicados y sin pisar nunca lo que apunté a mano** (campo `origen`). Lógica pura con tests en `src/domain/pesoSalud.ts`.
+- La misma regla se usa para los gramos de la sección de nutrición.
 
 ---
 
@@ -262,7 +273,7 @@ SesionEjercicio  id, sesionId, ejercicioId, orden, seriesObjetivo, repsMin, reps
                  superserieConSiguiente, estado (activo|saltado), sustituyeA?, anadido
 Serie            id, sesionId, sesionEjercicioId, ejercicioId, orden, tipo, peso, reps, rir?, completada, hora
 Molestia         id, sesionId, ejercicioId, nota, hora
-PesoCorporal     id, fecha, kg
+PesoCorporal     id, fecha, kg, origen? (manual|salud)
 Ajustes          objetivoMensual, objetivoPasos, alturaCm, edad, descansoDefecto, horasEntreCheckins, gimnasioLat,
                  gimnasioLng, radioM, margenSalidaM, notificarEntrada, tema, wakeLock, vibracion, ultimaCopia, versionCatalogo?
 ```
@@ -292,7 +303,16 @@ Ajustes          objetivoMensual, objetivoPasos, alturaCm, edad, descansoDefecto
 
 Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, pulido) y la ronda 1 de mejoras.
 
-**Ronda 2:**
+**Ronda 2:** hecha (app Android, detección, avatar, biblioteca y buscador por mapa, pantalla principal, animaciones).
+
+**Ronda 3** (`MEJORAS-3.md`):
+
+1. **Registro de peso rápido** y acceso directo del icono.
+2. **Nutrición:** asistente, objetivos adaptativos, registro rápido, escáner, Open Food Facts, base genérica, mis platos, "Cerrar el día", reto de fruta y verdura, revisión semanal y tarjeta en Hoy.
+3. **Modelo 3D y avatar:** flujo con Blender, vista previa para revisión y sustitución de todas las vistas del mapa.
+4. **Animaciones 3D:** piloto de 10 ejercicios con galería; el resto de la biblioteca solo tras aprobarlo.
+
+**Ronda 2 (detalle):**
 
 1. **App Android:** Capacitor, importación de datos, APK firmado con GitHub Actions, instalación y actualizaciones, aviso nativo de fin de descanso.
 2. **Detección:** entrada y salida, registro de detección y README de MacroDroid.

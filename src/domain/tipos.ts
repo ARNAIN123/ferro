@@ -190,6 +190,8 @@ export interface PesoCorporal {
   /** Día local en formato AAAA-MM-DD (uno por día). */
   fecha: string
   kg: number
+  /** De dónde viene: sin origen o 'manual' si lo apunté yo; 'salud' si lo trajo Health Connect. */
+  origen?: 'manual' | 'salud'
 }
 
 export type Tema = 'oscuro' | 'claro' | 'sistema'

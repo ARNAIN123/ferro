@@ -4,6 +4,10 @@
     <string name="title_activity_main">Ferro</string>
     <string name="package_name">com.ferro.app</string>
     <string name="custom_url_scheme">com.ferro.app</string>
+    <string name="atajo_peso">Registrar peso</string>
+    <string name="atajo_peso_corto">Peso</string>
+    <string name="atajo_entreno">Empezar entreno</string>
+    <string name="atajo_entreno_corto">Entrenar</string>
     <string name="salud_titulo">Ferro y tus datos de salud</string>
     <string name="salud_privacidad">Ferro y tus datos de salud
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Accesos directos al mantener pulsado el icono de Ferro. Abren la app en ferro://app/… -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/atajo_peso"
+        android:shortcutId="registrar_peso"
+        android:shortcutLongLabel="@string/atajo_peso"
+        android:shortcutShortLabel="@string/atajo_peso_corto">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="ferro://app/?peso=1"
+            android:targetClass="com.ferro.app.MainActivity"
+            android:targetPackage="com.ferro.app" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/atajo_entreno"
+        android:shortcutId="empezar_entreno"
+        android:shortcutLongLabel="@string/atajo_entreno"
+        android:shortcutShortLabel="@string/atajo_entreno_corto">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="ferro://app/empezar"
+            android:targetClass="com.ferro.app.MainActivity"
+            android:targetPackage="com.ferro.app" />
+    </shortcut>
+</shortcuts>

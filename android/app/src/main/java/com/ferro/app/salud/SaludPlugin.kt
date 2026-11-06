@@ -138,6 +138,30 @@ class SaludPlugin : Plugin() {
         resolve(r)
     }
 
+    /** Todas las mediciones de peso entre dos instantes (ms), de la más antigua a la más reciente. */
+    @PluginMethod
+    fun pesos(call: PluginCall) = call.lanzar {
+        val c = cliente() ?: return@lanzar reject("Health Connect no está disponible")
+        val desde = Instant.ofEpochMilli(getLong("desde") ?: 0L)
+        val hasta = Instant.ofEpochMilli(getLong("hasta") ?: System.currentTimeMillis())
+        val lista = JSArray()
+        var pagina: String? = null
+        do {
+            val r = c.readRecords(
+                ReadRecordsRequest(
+                    recordType = WeightRecord::class,
+                    timeRangeFilter = TimeRangeFilter.between(desde, hasta),
+                    ascendingOrder = true,
+                    pageSize = 500,
+                    pageToken = pagina,
+                ),
+            )
+            r.records.forEach { lista.put(JSObject().put("kg", it.weight.inKilograms).put("hora", it.time.toEpochMilli())) }
+            pagina = r.pageToken
+        } while (pagina != null)
+        resolve(JSObject().put("pesos", lista))
+    }
+
     /** Ajustes de Health Connect, o su ficha en Play Store si hay que instalarlo o actualizarlo. */
     @PluginMethod
     fun abrirHealthConnect(call: PluginCall) {
