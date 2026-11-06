@@ -6,18 +6,18 @@ Mi app personal de gimnasio para Android. Es una app nativa hecha con **Capacito
 
 ## Stack
 
-Vite + React + TypeScript estricto · Tailwind CSS 4 · Capacitor 8 (Android) · Dexie (IndexedDB) · React Router · Recharts · @dnd-kit · Vitest. En desarrollo, sharp para convertir imágenes. La versión web (vite-plugin-pwa) sigue compilando, pero solo se usa para desarrollar y para exportar los datos de la antigua PWA.
+Vite + React + TypeScript estricto · Tailwind CSS 4 · Capacitor 8 (Android) · Dexie (IndexedDB) · React Router · Recharts · @dnd-kit · three.js (avatar 3D) · Vitest. En desarrollo, sharp para los iconos. La versión web (vite-plugin-pwa) sigue compilando, pero solo se usa para desarrollar y para exportar los datos de la antigua PWA.
 
 ```
 catalogo/          fuente de la biblioteca (Free Exercise DB fijada) y traducciones al español
 scripts/           generación del catálogo, del mapa muscular y de los iconos (web y Android)
-public/img/        imágenes WebP de los ejercicios (posición inicial y final)
 android/           proyecto Android de Capacitor (Gradle); la web compilada se copia dentro con `npx cap sync`
 .github/workflows/ APK firmado y publicado en GitHub Releases
 src/
 ├─ domain/     lógica de negocio pura y sus tests (progresión, ciclo, entradas, mapa muscular, migraciones…)
 ├─ db/         esquema Dexie y migraciones, sincronización del catálogo, plantillas y operaciones de datos
-├─ catalogo/   ejercicios.json generado (890 ejercicios) y su versión
+├─ catalogo/   ejercicios.json generado (407 ejercicios) y su versión
+├─ animacion/  figura articulada, patrones de movimiento y animación de cada ejercicio
 ├─ features/   pantallas: hoy, rutinas, ejercicios, entreno, progreso, ajustes…
 ├─ components/ piezas de interfaz reutilizables (incluido el mapa muscular)
 ├─ hooks/      wake lock, temporizador, aviso de fin de descanso…
@@ -42,17 +42,22 @@ Los iconos se generan desde un SVG con `npm run icons` (los PNG ya están en `pu
 
 ## Biblioteca de ejercicios
 
-La biblioteca sale de [Free Exercise DB](https://github.com/yuhonas/free-exercise-db) (dominio público), fijada a un commit en `catalogo/fuente/`, más 14 máquinas que faltaban (`catalogo/extra.json`). Las traducciones se hicieron una sola vez y viven en el repositorio:
+La biblioteca sale de [Free Exercise DB](https://github.com/yuhonas/free-exercise-db) (dominio público), fijada a un commit en `catalogo/fuente/`, filtrada a peso libre, poleas y multipower, más los ejercicios de polea de `catalogo/extra.json` y los propios de `catalogo/propios.json`. El listado para revisar está en `catalogo/LISTADO-BIBLIOTECA.md`. Las traducciones se hicieron una sola vez y viven en el repositorio:
 
-- `catalogo/nombres-*.tsv`: nombre en español de cada ejercicio (el inglés queda como alias para buscar).
+- `catalogo/nombres-*.tsv`: nombre en español de cada ejercicio (el inglés queda como alias; las reglas de las animaciones lo usan).
 - `catalogo/instrucciones-*.txt`: pasos en español, en bloques `@Id_Del_Ejercicio` + líneas `- paso`.
 
 ```bash
-npm run catalogo                                   # regenera src/catalogo/ejercicios.json
-npm run catalogo -- --imagenes <ruta>/exercises    # además convierte las imágenes a WebP en public/img/
+npm run catalogo    # regenera src/catalogo/ejercicios.json y el listado
 ```
 
 Al arrancar, la app compara la versión del catálogo con la guardada y, si cambió, actualiza los ejercicios de la biblioteca sin tocar tus notas ni tus ejercicios propios. El **avatar muscular** nuevo parte de la figura de [Open Muscle Map](https://github.com/PerspicaciousGuy/Open-Muscle-Map) (MIT, fijada en `catalogo/fuente/avatar/`); `node scripts/generar-avatar.mjs` la convierte en `src/components/avatar/trazados.ts`, divide el pectoral en porción superior e inferior y calcula las fibras de cada músculo. El **avatar 3D** (`src/components/avatar3d`) se genera en el móvil a partir de esa misma figura: se rasteriza la silueta, se infla según la distancia a su borde (miembros redondos, tronco más plano), cada músculo sobresale con un surco en su contorno y la espalda lleva los músculos de la vista trasera. Se dibuja con three.js, se gira arrastrando con el dedo y un toque elige el músculo. Vista previa para revisarlo en `/vista-previa/avatar`. Créditos completos en `/licencias.txt` (enlazado al pie de Ajustes).
+
+### Animaciones de los ejercicios
+
+No hay ninguna foto: cada ejercicio se dibuja con un sistema de animación propio (`src/animacion/`), en el mismo gris que el avatar y con los músculos principales en naranja. Una figura vectorial articulada (sin cara) se mueve con cinemática inversa entre poses clave que generan unos patrones reutilizables (press, remo, curl, sentadilla, bisagra, zancada, jalón…), con el material dibujado: barra con discos, mancuernas, polea con su cable, multipower con sus guías, landmine y bancos con su inclinación. Las reglas de `asignacion.ts` eligen el patrón y sus parámetros para cada ejercicio; si un ejercicio sale raro, se corrige ahí o en `patrones.ts`. Todo va en el código (unos 21 kB comprimidos), así que funciona sin conexión.
+
+Para revisarlas todas: **Ajustes → Galería de animaciones** (`/vista-previa/animaciones`), por patrón o por nombre.
 
 ## Pasar de la PWA a la app Android (una sola vez)
 
@@ -71,6 +76,8 @@ La web de Vercel (https://ferro-kappa-rosy.vercel.app) se queda en la versión 0
 2. Toca el archivo descargado. La primera vez Android pide permiso para **instalar apps desconocidas** desde Chrome (o desde *Archivos*): actívalo y vuelve atrás.
 3. HyperOS muestra sus avisos de seguridad ("app no verificada", "no viene de Google Play"). Pulsa **Continuar / Instalar de todos modos**. Si aparece el análisis de seguridad de Xiaomi, espera a que termine y acepta. Si HyperOS sigue bloqueándola, desactiva un momento la protección de instalación en **Ajustes → Privacidad y seguridad → Protección** (el nombre exacto cambia entre versiones) y vuelve a activarla después.
 4. Abre Ferro y acepta las **notificaciones** (son para el aviso de fin de descanso).
+
+Ferro necesita Android 8 o posterior (lo exige Health Connect).
 
 ### Ajustes de HyperOS que necesita Ferro
 
@@ -244,5 +251,5 @@ Si llevas más de 2 semanas sin hacer copia, Hoy muestra un recordatorio discret
 ## Calidad
 
 - `npm run build`: comprobación de tipos estricta + build sin avisos.
-- `npm test`: tests de la lógica pura de la web (progresión, ciclo de rutinas, entradas y eventos de la detección, cierre automático, semanas, **objetivo mensual**, **calorías**, estadísticas, récords, prerrellenado, superseries, copias de seguridad e importación con migración, actualizaciones, intensidad y mapa muscular, biblioteca y migraciones de la base de datos).
+- `npm test`: tests de la lógica pura de la web (progresión, ciclo de rutinas, entradas y eventos de la detección, cierre automático, semanas, **objetivo mensual**, **calorías**, **animaciones** (cinemática, todos los ejercicios con su patrón y escenas válidas), estadísticas, récords, prerrellenado, superseries, copias de seguridad e importación con migración, actualizaciones, intensidad y mapa muscular, biblioteca y migraciones de la base de datos).
 - `cd android && ./gradlew testDebugUnitTest`: tests nativos de la decisión de entrada y salida (distancia, precisión, deduplicación, confirmación de la salida y hora del aviso). GitHub Actions los pasa antes de publicar cada APK.

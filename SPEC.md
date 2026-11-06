@@ -36,7 +36,7 @@ Tengo datos reales (rutinas, entrenos, notas, peso). **Cualquier cambio en la ba
 - **Dexie.js** (IndexedDB) con `dexie-react-hooks`. Todos los datos en el móvil (local-first, sin backend).
 - **Health Connect** con la librería oficial de Google (`androidx.health.connect:connect-client`, Apache 2.0, gratuita) desde un plugin propio en Kotlin que solo lee pasos y peso. Se valoró `@capgo/capacitor-health` (MPL-2.0, gratuito), pero declara unos 50 permisos de salud y la app solo debe pedir dos. Por Health Connect, la app necesita Android 8 (minSdk 26).
 - **GitHub Actions** compila el APK de release firmado y lo publica en **GitHub Releases** (repositorio público; solo código).
-- Solo en desarrollo: **sharp** y **resvg** (iconos e imágenes).
+- Solo en desarrollo: **sharp** y **resvg** (iconos).
 - La web sigue compilando con vite-plugin-pwa para desarrollar en el navegador; la PWA publicada se queda en 0.2.0.
 
 ---
@@ -117,6 +117,12 @@ El método es exactamente este: **la entrada se registra cuando abro la app S3 F
 - Todos los ejercicios se muestran con **la misma representación: una ilustración animada**, en el estilo del avatar. Primero se busca un conjunto con licencia válida que lo cubra todo en un único estilo; si no existe, **sistema propio**: figura vectorial con esqueleto articulado y sin rostro realista, material dibujado (barra con discos, mancuernas, polea con cable y anclaje, multipower con guías, banco con su inclinación), poses clave de inicio y fin animadas en bucle de 2–3 s, construidas con patrones de movimiento reutilizables y parametrizados (press, remo, curl, extensión, aperturas, elevaciones, sentadilla, bisagra, zancada, jalón, encogimientos…), vista lateral o frontal según convenga y biomecánicamente correcta.
 - Los músculos principales se resaltan con el color de acento sobre la figura animada. Ligero y sin conexión.
 - Antes de darlo por terminado, se genera una galería con todas las animaciones para revisarla.
+- **Cómo está hecho** (no había ningún conjunto libre en un solo estilo que cubriera la biblioteca): `src/animacion/`.
+  - `esqueleto.ts`: la pose se describe con un *control* (cadera, inclinación del tronco y a dónde van manos y pies) y se resuelve con cinemática inversa de dos segmentos; así los pies apoyados no resbalan y la barra sigue su recorrido (vertical en el multipower). Vista lateral, frontal, dorsal o cenital (tumbado visto desde arriba, para las aperturas).
+  - `patrones.ts`: patrones parametrizados (press, remo, curl, muñeca, extensión, aperturas, elevaciones, rotaciones, encogimientos, sentadilla, bisagra, puente, zancada, jalón y pullover, gemelos, abdominales y giros, halterofilia…) con parámetros como banco, inclinación, agarre, carga o unilateral.
+  - `asignacion.ts`: reglas por nombre que dan a cada ejercicio su patrón; los ejercicios propios sin regla usan el patrón típico de su músculo principal. Un test comprueba que ningún ejercicio de la biblioteca usa el genérico.
+  - `fotogramas.ts`: 40 fotogramas por bucle de 2,6 s (ida, pausa, vuelta), animados con SVG nativo; las miniaturas usan una sola pose. Con "reducir movimiento" no se anima.
+- Galería de revisión en `/vista-previa/animaciones` (enlace al pie de Ajustes).
 
 ### Ficha del ejercicio
 

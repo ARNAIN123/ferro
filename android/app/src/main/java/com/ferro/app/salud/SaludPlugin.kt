@@ -1,7 +1,7 @@
 package com.ferro.app.salud
 
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.activity.result.ActivityResult
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
@@ -144,12 +144,12 @@ class SaludPlugin : Plugin() {
         val intent = if (HealthConnectClient.getSdkStatus(context) == HealthConnectClient.SDK_AVAILABLE) {
             Intent(HealthConnectClient.ACTION_HEALTH_CONNECT_SETTINGS)
         } else {
-            Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$PAQUETE_HC")).setPackage("com.android.vending")
+            Intent(Intent.ACTION_VIEW, "market://details?id=$PAQUETE_HC".toUri()).setPackage("com.android.vending")
         }
         try {
             activity.startActivity(intent)
         } catch (_: Exception) {
-            activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$PAQUETE_HC")))
+            activity.startActivity(Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$PAQUETE_HC".toUri()))
         }
         call.resolve()
     }
