@@ -20,6 +20,10 @@ export default defineConfig({
       registerType: 'prompt',
       // La web de Vercel pide contraseña: el manifiesto también tiene que pedirse con ella.
       useCredentials: true,
+      // En Vercel no se guarda copia sin conexión: si no, el navegador abriría la copia guardada y
+      // no pediría la contraseña. Este service worker borra el antiguo y su caché. (VERCEL=1 solo
+      // al compilar en Vercel; la app Android lleva la web dentro y no usa service worker.)
+      selfDestroying: process.env.VERCEL === '1',
       manifest: {
         id: '/',
         name: 'Ferro',

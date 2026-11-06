@@ -37,7 +37,7 @@ Tengo datos reales (rutinas, entrenos, notas, peso). **Cualquier cambio en la ba
 - **Health Connect** con la librería oficial de Google (`androidx.health.connect:connect-client`, Apache 2.0, gratuita) desde un plugin propio en Kotlin que solo lee pasos y peso. Se valoró `@capgo/capacitor-health` (MPL-2.0, gratuito), pero declara unos 50 permisos de salud y la app solo debe pedir dos. Por Health Connect, la app necesita Android 8 (minSdk 26).
 - **GitHub Actions** compila el APK de release firmado y lo publica en **GitHub Releases** (repositorio público; solo código).
 - Solo en desarrollo: **sharp** y **resvg** (iconos).
-- La web sigue compilando con vite-plugin-pwa y se publica en Vercel con la misma versión que el APK, sin las funciones nativas. Está protegida con contraseña (autenticación básica en `middleware.ts`, contraseña en la variable secreta `FERRO_CLAVE` de Vercel; gratis, sin la protección de pago).
+- La web sigue compilando con vite-plugin-pwa y se publica en Vercel con la misma versión que el APK, sin las funciones nativas. Está protegida con contraseña (autenticación básica en `middleware.ts`, contraseña en la variable secreta `FERRO_CLAVE` de Vercel; gratis, sin la protección de pago). Por eso la web de Vercel no funciona sin conexión: su service worker se autodestruye para que siempre se pida la contraseña.
 
 ---
 

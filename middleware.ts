@@ -3,7 +3,9 @@
 // entorno FERRO_CLAVE del proyecto en Vercel (no está en el código, que es público).
 // Es gratis: no usa la "Password Protection" de pago de Vercel.
 
-export const config = { matcher: '/:path*' }
+// Todo menos /sw.js: los navegadores que tenían la web guardada lo descargan sin contraseña y
+// así reciben el service worker que borra esa copia (ver selfDestroying en vite.config.ts).
+export const config = { matcher: '/((?!sw\\.js$).*)' }
 
 /** Respuesta que deja seguir la petición hacia la web (lo mismo que `next()` de @vercel/functions). */
 const seguir = () => new Response(null, { headers: { 'x-middleware-next': '1' } })

@@ -80,6 +80,8 @@ vercel deploy --prod
 
 Si la variable falta, la web no se abre a nadie. La app Android no se ve afectada: lleva la web dentro.
 
+Para que la contraseña se pida siempre, la web de Vercel **no guarda copia sin conexión**: al compilar en Vercel se genera un service worker que borra el antiguo y su caché (`selfDestroying` en `vite.config.ts`), y `/sw.js` es lo único que se sirve sin contraseña. En un navegador o un móvil que ya tenía la web guardada, la primera vez puede abrirse la copia antigua; se borra sola y, al recargar, pide la contraseña.
+
 ## Instalar el APK en el Xiaomi (HyperOS)
 
 1. En el móvil, abre la página de **Releases** del repositorio en GitHub y descarga `ferro-X.Y.Z.apk` de la última versión (o, ya con Ferro instalada, **Ajustes → Actualizaciones → Buscar actualizaciones**).
