@@ -84,7 +84,7 @@ Para que la contraseña se pida siempre, la web de Vercel **no guarda copia sin 
 
 ## Instalar el APK en el Xiaomi (HyperOS)
 
-1. En el móvil, abre la página de **Releases** del repositorio en GitHub y descarga `ferro-X.Y.Z.apk` de la última versión (o, ya con Ferro instalada, **Ajustes → Actualizaciones → Buscar actualizaciones**).
+1. En el móvil, abre la página de **Releases** del repositorio (https://github.com/ARNAIN123/ferro/releases) y descarga `ferro-X.Y.Z.apk` de la última versión (o, ya con Ferro instalada, **Ajustes → Actualizaciones → Buscar actualizaciones**).
 2. Toca el archivo descargado. La primera vez Android pide permiso para **instalar apps desconocidas** desde Chrome (o desde *Archivos*): actívalo y vuelve atrás.
 3. HyperOS muestra sus avisos de seguridad ("app no verificada", "no viene de Google Play"). Pulsa **Continuar / Instalar de todos modos**. Si aparece el análisis de seguridad de Xiaomi, espera a que termine y acepta. Si HyperOS sigue bloqueándola, desactiva un momento la protección de instalación en **Ajustes → Privacidad y seguridad → Protección** (el nombre exacto cambia entre versiones) y vuelve a activarla después.
 4. Abre Ferro y acepta las **notificaciones** (son para el aviso de fin de descanso).
@@ -110,6 +110,8 @@ Solo se puede instalar encima un APK firmado con **la misma clave**. Si Android 
 
 ## Publicar una versión (GitHub Actions)
 
+Repositorio: https://github.com/ARNAIN123/ferro (público). Está conectado con Vercel: cada push a `main` publica también la web automáticamente.
+
 El workflow `.github/workflows/apk.yml` compila la web, pasa los tests (web y nativos), genera el APK de release **firmado** y lo publica en **GitHub Releases** con la etiqueta `vX.Y.Z`. Se ejecuta en cada push a `main`, pero solo publica si la versión de `package.json` todavía no tiene release:
 
 ```bash
@@ -121,6 +123,8 @@ git push
 El `versionCode` de Android se calcula de la versión (`0.3.1` → 301), así que siempre sube.
 
 ### Clave de firma (una sola vez)
+
+**Ya está hecho (6 de noviembre de 2026):** la clave está en `android/ferro.jks` y su contraseña en `android/keystore.properties`, solo en este ordenador (la carpeta se sincroniza con OneDrive). Git los ignora, así que nunca se suben. Los cuatro secretos de abajo ya están en GitHub. **Haz una copia de esos dos archivos en otro sitio** (un pendrive o tu gestor de contraseñas): si se pierden, las versiones nuevas no se podrán instalar encima. Lo que sigue explica cómo se hizo, por si alguna vez hay que repetirlo.
 
 Android solo deja instalar una actualización encima si está firmada con la misma clave que la versión instalada. Crea la clave **una vez** y guárdala bien: si la pierdes, la siguiente versión no se podrá instalar encima.
 
