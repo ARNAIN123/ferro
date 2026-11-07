@@ -1,6 +1,9 @@
+import { lazy, Suspense } from 'react'
 import type { Musculo } from '../../domain/tipos'
 import { Avatar } from '../avatar/Avatar'
-import { Avatar3D } from '../avatar3d/Avatar3D'
+
+// El cuerpo 3D (three.js) se carga aparte: así las pantallas aparecen al momento y el cuerpo llega después.
+const Cuerpo3D = lazy(() => import('../cuerpo3d/Cuerpo3D').then((m) => ({ default: m.Cuerpo3D })))
 
 /** Opacidad del acento para cada nivel (0 = sin trabajar). Igual que en el avatar. */
 const OPACIDAD = [0, 0.32, 0.5, 0.68, 0.85, 1]
@@ -18,11 +21,17 @@ interface Props {
 }
 
 /**
- * El avatar muscular de la app: en 3D (se gira con el dedo) en todas las pantallas y en 2D en las
- * miniaturas. Misma figura, mismos colores y mismos niveles en todas partes.
+ * El mapa muscular de la app: el cuerpo 3D (se gira con el dedo, se acerca pellizcando y se toca un
+ * músculo) en todas las pantallas. Si el móvil no tiene WebGL, el mapa 2D con los mismos niveles.
  */
 export function MapaMuscular({ soloFrente, ...props }: Props) {
-  return soloFrente ? <Avatar {...props} soloFrente /> : <Avatar3D {...props} />
+  if (soloFrente) return <Avatar {...props} soloFrente />
+  const plano = <Avatar {...props} />
+  return (
+    <Suspense fallback={<div className={`aspect-[4/5] w-full ${props.className ?? ''}`} aria-hidden />}>
+      <Cuerpo3D {...props} sinWebgl={plano} />
+    </Suspense>
+  )
 }
 
 /** Leyenda pequeña: gris sin trabajar y la escala de 5 niveles. */

@@ -63,7 +63,7 @@ export function SelectorEjercicios({ abierto, titulo, multiple = true, musculo, 
               musculo={elegido}
               onMusculo={setElegido}
               excluir={excluir}
-              altoMapa="h-64"
+              altoMapa="h-80"
               fila={(e, contenido) => {
                 const marcado = elegidos.includes(e.id)
                 return (

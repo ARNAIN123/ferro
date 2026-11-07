@@ -21,7 +21,7 @@ interface Props {
  * El único buscador de ejercicios: la figura → toco un músculo → dos listas, "Principal" (su músculo
  * principal es ese) y "También lo trabajan" (lo tienen como secundario). Primero los que más uso.
  */
-export function BuscadorPorMapa({ musculo, onMusculo, excluir = [], fila, altoMapa = 'h-72' }: Props) {
+export function BuscadorPorMapa({ musculo, onMusculo, excluir = [], fila, altoMapa = 'h-[26rem]' }: Props) {
   const datos = useLiveQuery(async () => {
     const [ejercicios, enEntrenos, enRutinas] = await Promise.all([db.ejercicios.toArray(), db.sesionEjercicios.toArray(), db.rutinaEjercicios.toArray()])
     return { ejercicios, usos: contarUsos(enEntrenos, enRutinas) }

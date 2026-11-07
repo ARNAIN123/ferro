@@ -287,7 +287,7 @@ Pestaña propia en la navegación. Como pollo, carne, huevos, pasta, arroz y lá
 - **Regiones**: cada cara pertenece a una de las 23 regiones de Ferro (mismo orden que `MUSCULOS`) o a ninguna; se elige con un rayo hacia dentro (el primer músculo que se encuentra), con ventajas para los músculos bajo aponeurosis (recto abdominal, lumbares) y límites de altura (lumbares). En Z-Anatomy las piezas del trapecio «Ascending» y «Descending» están intercambiadas respecto a su posición: se asignan por posición. `COLOR_0.r` = id/255 y `COLOR_0.g` = oclusión ambiental horneada (Cycles). Licencia del modelo resultante: CC BY-SA 4.0, con créditos en Ajustes → Créditos.
 - **Visor** (`src/components/cuerpo3d/Cuerpo3D.tsx`, three.js + react-three-fiber): arcilla mate (`--cuerpo-arcilla`), luces de estudio (principal, relleno y dos de contorno) y entorno suave generado en el momento, oclusión ambiental horneada y sombra de contacto. Los músculos trabajados se tiñen del acento según los 5 niveles (`src/domain/cuerpo3d.ts`) con un brillo sutil en los niveles altos. Gira 360° con inercia, zoom con pellizco (1–2,4×; con zoom, arrastrar en vertical recorre el cuerpo), doble toque para volver de frente, botones Frente/Espalda y toque en un músculo para elegirlo. Solo dibuja cuando algo se mueve. Si no hay WebGL, el mapa 2D.
 - **Rig**: la misma malla (soldada, antes de exportar) acepta pesos automáticos con un esqueleto colocado sobre ella (probado: todos los huesos con pesos y ningún vértice sin peso), así que las animaciones de la fase 4 usarán este mismo cuerpo.
-- **Revisión**: Ajustes → Vista previa del cuerpo 3D (`/vista-previa/avatar`). Cuando se apruebe, sustituirá a todas las vistas del mapa muscular (Hoy, buscador por mapa, ficha del ejercicio, creación de rutinas y resumen del entreno).
+- **En toda la app** (aprobado el 7 de noviembre de 2026): `MapaMuscular` muestra el cuerpo 3D en Hoy, el buscador por mapa (y el selector de ejercicios), la ficha del ejercicio, la creación de ejercicios y de rutinas, el resumen del entreno y Progreso. Se carga aparte (las pantallas aparecen al momento) y sin WebGL se ve el mapa 2D. La vista previa sigue en Ajustes → Vista previa del cuerpo 3D.
 
 ---
 
@@ -367,7 +367,7 @@ Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, p
 
 1. **Registro de peso rápido** y acceso directo del icono. *(Hecha, v0.5.0.)*
 2. *(Hecha, v0.6.0.)* **Nutrición:** asistente, objetivos adaptativos, registro rápido, escáner, Open Food Facts, base genérica, mis platos, "Cerrar el día", reto de fruta y verdura, revisión semanal y tarjeta en Hoy.
-3. **Modelo 3D y avatar:** flujo con Blender, vista previa para revisión *(hecho, pendiente de aprobación)* y sustitución de todas las vistas del mapa.
+3. *(Hecha, v0.7.0.)* **Modelo 3D y avatar:** flujo con Blender, vista previa para revisión y sustitución de todas las vistas del mapa.
 4. **Animaciones 3D:** piloto de 10 ejercicios con galería; el resto de la biblioteca solo tras aprobarlo.
 
 **Ronda 2 (detalle):**
