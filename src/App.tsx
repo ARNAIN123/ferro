@@ -36,6 +36,7 @@ const PerfilNutricionPage = perezosa(() => import('./features/nutricion/PerfilNu
 const ResumenPage = perezosa(() => import('./features/entreno/ResumenPage'), 'ResumenPage')
 const VistaPreviaAvatar = perezosa(() => import('./features/vista-previa/VistaPreviaAvatar'), 'VistaPreviaAvatar')
 const GaleriaAnimaciones = perezosa(() => import('./features/vista-previa/GaleriaAnimaciones'), 'GaleriaAnimaciones')
+const GaleriaAnimaciones3D = perezosa(() => import('./features/vista-previa/GaleriaAnimaciones3D'), 'GaleriaAnimaciones3D')
 
 export function App() {
   const ajustes = useAjustes()
@@ -70,6 +71,7 @@ export function App() {
             <Route path="nutricion/perfil" element={<PerfilNutricionPage />} />
             <Route path="vista-previa/avatar" element={<VistaPreviaAvatar />} />
             <Route path="vista-previa/animaciones" element={<GaleriaAnimaciones />} />
+            <Route path="vista-previa/animaciones-3d" element={<GaleriaAnimaciones3D />} />
             <Route path="*" element={<HoyPage />} />
           </Route>
           <Route path="empezar" element={<EmpezarPage />} />

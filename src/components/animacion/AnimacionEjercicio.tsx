@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { definicion3D } from '../../animacion3d/ejercicios'
+import type { Musculo } from '../../domain/tipos'
+import { useMovimientoReducido } from '../../hooks/useMovimientoReducido'
+import { MiniaturaAnimada } from '../animacion3d/MiniaturaAnimada'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { asignarAnimacion, type EjercicioAnimable } from '../../animacion/asignacion'
 import { DURACION_S, generarEscena, type Escena, type FormaAnimada } from '../../animacion/fotogramas'
 
@@ -14,12 +18,7 @@ function escenaDe(e: EjercicioAnimable, soloFijo: boolean): Escena {
   return escena
 }
 
-const consulta = typeof matchMedia === 'undefined' ? null : matchMedia('(prefers-reduced-motion: reduce)')
-const suscribir = (aviso: () => void) => {
-  consulta?.addEventListener('change', aviso)
-  return () => consulta?.removeEventListener('change', aviso)
-}
-const useMovimientoReducido = () => useSyncExternalStore(suscribir, () => consulta?.matches ?? false)
+
 
 function Forma({ f, cuadro }: { f: FormaAnimada; cuadro: number | null }) {
   const clase = `an-${f.clase}`
@@ -72,7 +71,10 @@ export function AnimacionEjercicio({ ejercicio, className = '', animar = true }:
 }
 
 /** Miniatura para las listas: la pose representativa, sin animar. */
-export function MiniaturaEjercicio({ ejercicio, className = 'size-14' }: { ejercicio: EjercicioAnimable; className?: string }) {
+export function MiniaturaEjercicio({ ejercicio, className = 'size-14' }: { ejercicio: EjercicioAnimable & { musculosSecundarios?: Musculo[] }; className?: string }) {
+  // Piloto 3D: los ejercicios que ya tienen animación 3D enseñan su miniatura animada.
+  if (definicion3D(ejercicio.id))
+    return <MiniaturaAnimada ejercicioId={ejercicio.id} musculos={{ principales: ejercicio.musculosPrincipales, secundarios: ejercicio.musculosSecundarios ?? [] }} className={className} />
   return (
     <span className={`${className} grid shrink-0 place-items-center overflow-hidden rounded-xl bg-surface-2`} aria-hidden="true">
       <AnimacionEjercicio ejercicio={ejercicio} animar={false} className="size-full" />

@@ -3,12 +3,11 @@ import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
 import { forwardRef, Suspense, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
-import { DRACO_GLTF_CONFIG, DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { conDraco, leerColores } from '../../animacion3d/estudio'
 import {
   anguloCercano,
   aspectoDeNivel,
-  colorCss,
   factorOclusion,
   FRENADO_GIRO,
   GIRO_POR_PIXEL,
@@ -27,12 +26,6 @@ const MODELO = `${BASE}modelos/cuerpo.glb`
 const ALTO = 1.71
 const DISTANCIA = 3.75
 
-// El decodificador Draco va empaquetado con la app (el de three.js): nada se descarga de fuera.
-let draco: DRACOLoader | null = null
-const conDraco = (l: GLTFLoader) => {
-  draco ??= new DRACOLoader().setDecoderPath(DRACO_GLTF_CONFIG)
-  l.setDRACOLoader(draco)
-}
 
 export interface Cuerpo3DControl {
   /** Gira el cuerpo hasta un ángulo (0 = de frente, π = de espaldas). */
@@ -64,10 +57,6 @@ interface Vista {
   alturaObjetivo: number | null
 }
 
-const leerColores = () => {
-  const css = getComputedStyle(document.documentElement)
-  return { arcilla: colorCss(css.getPropertyValue('--cuerpo-arcilla') || '#8c8884'), acento: colorCss(css.getPropertyValue('--accent') || '#ff6b1f') }
-}
 
 /**
  * El cuerpo 3D de Ferro: arcilla mate con los músculos trabajados teñidos del acento según su nivel.

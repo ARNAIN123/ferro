@@ -146,6 +146,16 @@
   }
 }
 
+/* Miniaturas 3D: tira de fotogramas animada. */
+@keyframes tira-3d {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
 @keyframes aparecer {
   from {
     opacity: 0;

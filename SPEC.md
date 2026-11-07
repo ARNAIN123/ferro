@@ -291,6 +291,18 @@ Pestaña propia en la navegación. Como pollo, carne, huevos, pasta, arroz y lá
 
 ---
 
+## Animaciones 3D (ronda 3, fase 4: piloto)
+
+- **Mismo cuerpo**: `public/modelos/cuerpo-rig.glb` (0,52 MB) es el cuerpo del avatar con esqueleto (24 huesos: pelvis, lumbar, dorsal, pecho, cuello, cabeza, y por lado clavícula, brazo, antebrazo, mano, dedos, muslo, pierna, pie y punta), con las articulaciones colocadas en los huesos de Z-Anatomy (cabeza del fémur, cóndilos, astrágalo, cabeza del húmero, radio y cúbito, vértebras L5…C1) y pesos automáticos. Lo genera el mismo script de Blender con `FERRO_RIG=public/modelos/cuerpo-rig.glb` (y `cuerpo-rig.json` con las articulaciones).
+- **Motor** (`src/animacion3d/`): `ik.ts` (cinemática inversa de dos huesos con polo, giros entre bases, interpolación cúbica monótona entre poses), `rig.ts` (tronco primero —pelvis, columna repartida, cabeza, clavículas y una respiración sutil— y después brazos y piernas hacia manos y pies, con el antebrazo repartiendo la pronación), `ejercicios.ts` (los datos: poses clave por repetición, nunca vídeos), `material.ts` (barra olímpica con discos bumper y cierres, mancuernas, banco ajustable con inclinación real, torre de polea con pila de discos que sube lo que se alarga el cable, cuerda, barra recta, triángulo, estribo, máquina de jalón y multipower con guías y ganchos), `escena.ts` (escena en three.js puro: cuerpo, material, colores por región en la GPU) y `miniaturas.ts`.
+- **Movimiento**: 7–9 poses clave por repetición, tempo real (bajada ~2 s, subida 1 s, pausas cortas), trayectorias de barra (J en el press de banca, vertical sobre el medio del pie en sentadilla y peso muerto, la cabeza que se aparta en el press militar), 3 repeticiones y una pausa en bucle. Los músculos principales del ejercicio en acento, más vivos y con brillo en la fase concéntrica; los secundarios, suaves.
+- **Visor** (`Animacion3D`): escena 3D en vivo con las mismas luces, sombra de contacto, cámara de ¾ que se gira arrastrando (con inercia) y botones ¾ / Lado / Frente. Solo se anima mientras se ve.
+- **Listas**: miniaturas animadas (16 fotogramas en una tira WebP generada una vez en el móvil con un renderizador sin pantalla, guardada y animada con CSS).
+- **Piloto**: press de banca, sentadilla, peso muerto, remo con barra, press militar, curl con mancuernas, tríceps con cuerda en polea, jalón al pecho, elevaciones laterales e hip thrust. Su ficha y sus miniaturas ya usan el 3D; el resto de la biblioteca sigue con la animación 2D **hasta que se apruebe el piloto**. Galería en Ajustes → Animaciones 3D (piloto) (`/vista-previa/animaciones-3d`, con `?revision=1` para ver 6 fotogramas de cada uno).
+- Tests: cinemática inversa, interpolación, rig con las articulaciones reales y, para los 10 ejercicios, que en cada instante manos y pies llegan a su sitio con codos y rodillas en ángulos posibles y sobre el suelo.
+
+---
+
 ## Ajustes y datos
 
 - Objetivo mensual, objetivo de pasos, altura y edad, descanso por defecto, horas mínimas entre entradas, ubicación y radio del gimnasio, margen de salida, notificación de entrada, **registro de detección**, tema (oscuro por defecto / claro / sistema), pantalla encendida y vibración.
@@ -368,7 +380,7 @@ Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, p
 1. **Registro de peso rápido** y acceso directo del icono. *(Hecha, v0.5.0.)*
 2. *(Hecha, v0.6.0.)* **Nutrición:** asistente, objetivos adaptativos, registro rápido, escáner, Open Food Facts, base genérica, mis platos, "Cerrar el día", reto de fruta y verdura, revisión semanal y tarjeta en Hoy.
 3. *(Hecha, v0.7.0.)* **Modelo 3D y avatar:** flujo con Blender, vista previa para revisión y sustitución de todas las vistas del mapa.
-4. **Animaciones 3D:** piloto de 10 ejercicios con galería; el resto de la biblioteca solo tras aprobarlo.
+4. **Animaciones 3D:** piloto de 10 ejercicios con galería *(hecho, v0.8.0, pendiente de aprobación)*; el resto de la biblioteca solo tras aprobarlo.
 
 **Ronda 2 (detalle):**
 

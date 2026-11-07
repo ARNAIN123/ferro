@@ -90,6 +90,9 @@ export function AjustesPage() {
           <Link to="/vista-previa/animaciones" className="flex min-h-12 items-center justify-center rounded-2xl font-semibold text-accent active:bg-surface-2">
             Galería de animaciones
           </Link>
+          <Link to="/vista-previa/animaciones-3d" className="col-span-2 flex min-h-12 items-center justify-center rounded-2xl font-semibold text-accent active:bg-surface-2">
+            Animaciones 3D (piloto)
+          </Link>
         </div>
 
         <p className="pt-2 text-center text-xs text-muted">

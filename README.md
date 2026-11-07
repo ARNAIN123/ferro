@@ -67,6 +67,10 @@ blender --background --factory-startup --disable-autoexec Startup.blend --python
 
 Tarda unos 5 minutos. Con `FERRO_CACHE=algo.blend` guarda el cuerpo ya simplificado y las siguientes veces solo repite las regiones y la exportación. El modelo resultante se distribuye con la misma licencia CC BY-SA 4.0 (créditos en **Ajustes → Créditos y licencias**). El visor está en `src/components/cuerpo3d` (three.js + react-three-fiber) y se revisa en **Ajustes → Vista previa del cuerpo 3D**.
 
+### Animaciones 3D (piloto)
+
+Diez ejercicios tienen ya animación 3D sobre el mismo cuerpo del avatar (con esqueleto: `public/modelos/cuerpo-rig.glb`, que se genera con el mismo comando añadiendo `FERRO_RIG=public/modelos/cuerpo-rig.glb`). Cada ejercicio son datos —poses clave de una repetición con su tempo— en `src/animacion3d/ejercicios.ts`; la cinemática inversa coloca brazos y piernas, y el material de gimnasio está modelado en `src/animacion3d/material.ts`. Se ven en su ficha (escena en vivo) y en las listas (miniatura animada), y todos en **Ajustes → Animaciones 3D (piloto)**. El resto de la biblioteca seguirá con la animación 2D hasta aprobar el piloto.
+
 ### Animaciones de los ejercicios
 
 No hay ninguna foto: cada ejercicio se dibuja con un sistema de animación propio (`src/animacion/`), en el mismo gris que el avatar y con los músculos principales en naranja. Una figura vectorial articulada (sin cara) se mueve con cinemática inversa entre poses clave que generan unos patrones reutilizables (press, remo, curl, sentadilla, bisagra, zancada, jalón…), con el material dibujado: barra con discos, mancuernas, polea con su cable, multipower con sus guías, landmine y bancos con su inclinación. Las reglas de `asignacion.ts` eligen el patrón y sus parámetros para cada ejercicio; si un ejercicio sale raro, se corrige ahí o en `patrones.ts`. Todo va en el código (unos 21 kB comprimidos), así que funciona sin conexión.

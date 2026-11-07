@@ -537,6 +537,100 @@ with open(os.path.splitext(os.path.abspath(SALIDA))[0] + '.json', 'w', encoding=
     json.dump(info, f, ensure_ascii=False, indent=2)
 paso(f'hecho: {SALIDA} ({os.path.getsize(SALIDA) / 1e6:.2f} MB)')
 
+# ── 6. Rig (opcional, FERRO_RIG=ruta.glb): el mismo cuerpo con esqueleto para las animaciones ──
+RIG = os.environ.get('FERRO_RIG')
+if RIG:
+    paso('rig: articulaciones de los huesos de Z-Anatomy')
+    traslado = Vector((-cx, -cy, -minz))
+
+    def vertices_de(nombre):
+        o = bpy.data.objects[nombre]
+        return [o.matrix_world @ v.co for v in o.data.vertices]
+
+    def media(puntos):
+        return sum(puntos, Vector()) / len(puntos)
+
+    def extremo(nombre, eje, lado, margen):
+        # Media de los vértices del extremo de un hueso (p. ej. la cabeza del húmero: los de más arriba).
+        pts = vertices_de(nombre)
+        valores = [getattr(q, eje) for q in pts]
+        corte = (max(valores) - margen) if lado == 'max' else (min(valores) + margen)
+        return media([q for q in pts if (getattr(q, eje) >= corte if lado == 'max' else getattr(q, eje) <= corte)])
+
+    def centro(nombre):
+        return media(vertices_de(nombre))
+
+    fem = vertices_de('Femur.l')
+    zf = max(q.z for q in fem); xf = min(q.x for q in fem)
+    cabeza_femur = media([q for q in fem if q.z > zf - 0.045 and q.x < xf + 0.06])
+    rodilla = (extremo('Femur.l', 'z', 'min', 0.03) + extremo('Tibia.l', 'z', 'max', 0.03)) / 2
+    tobillo = centro('Talus.l')
+    base_dedos_pie = extremo('Second metatarsal bone.l', 'y', 'min', 0.015)
+    punta_pie = centro('Distal phalanx of third finger of foot.l')
+    hombro = extremo('Humerus.l', 'z', 'max', 0.05)
+    codo = extremo('Humerus.l', 'z', 'min', 0.03)
+    muneca = (extremo('Radius.l', 'z', 'min', 0.02) + extremo('Ulna.l', 'z', 'min', 0.02)) / 2
+    nudillo = extremo('Third metacarpal bone.l', 'z', 'min', 0.012)
+    yema = centro('Distal phalanx of third finger of hand.l')
+    clav_esternal = extremo('Clavicle.l', 'x', 'min', 0.02)
+    clav_acromial = extremo('Clavicle.l', 'x', 'max', 0.02)
+    eje = lambda nombre: Vector((0.0, centro(nombre).y, centro(nombre).z))
+    l5, l3, t12, t6, c7, c1 = (eje(n) for n in ('Vertebra L5', 'Vertebra L3', 'Vertebra T12', 'Vertebra T6', 'Vertebra C7', 'Atlas (C1)'))
+    coronilla = Vector((0.0, c1.y - 0.01, max(v.co.z for v in cuerpo.data.vertices) - traslado.z))
+    pelvis = Vector((0.0, l5.y, (cabeza_femur.z + l5.z) / 2))
+
+    espejo = lambda v: Vector((-v.x, v.y, v.z))
+    huesos = [
+        ('cadera', pelvis, l3, None), ('lumbar', l3, t12, 'cadera'), ('dorsal', t12, t6, 'lumbar'),
+        ('pecho', t6, c7, 'dorsal'), ('cuello', c7, c1, 'pecho'), ('cabeza', c1, coronilla, 'cuello'),
+    ]
+    for lado, f in (('L', lambda v: v), ('R', espejo)):
+        huesos += [
+            (f'clavicula.{lado}', f(clav_esternal), f(clav_acromial), 'pecho'),
+            (f'brazo.{lado}', f(hombro), f(codo), f'clavicula.{lado}'),
+            (f'antebrazo.{lado}', f(codo), f(muneca), f'brazo.{lado}'),
+            (f'mano.{lado}', f(muneca), f(nudillo), f'antebrazo.{lado}'),
+            (f'dedos.{lado}', f(nudillo), f(yema), f'mano.{lado}'),
+            (f'muslo.{lado}', f(cabeza_femur), f(rodilla), 'cadera'),
+            (f'pierna.{lado}', f(rodilla), f(tobillo), f'muslo.{lado}'),
+            (f'pie.{lado}', f(tobillo), f(base_dedos_pie), f'pierna.{lado}'),
+            (f'punta.{lado}', f(base_dedos_pie), f(punta_pie), f'pie.{lado}'),
+        ]
+    arm = bpy.data.armatures.new('esqueleto')
+    esqueleto = bpy.data.objects.new('esqueleto', arm)
+    bpy.context.scene.collection.objects.link(esqueleto)
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.context.view_layer.objects.active = esqueleto; esqueleto.select_set(True)
+    bpy.ops.object.mode_set(mode='EDIT')
+    for nombre, cabeza, cola, padre in huesos:
+        h = arm.edit_bones.new(nombre)
+        h.head = cabeza + traslado
+        h.tail = cola + traslado
+        h.roll = 0.0
+        if padre:
+            h.parent = arm.edit_bones[padre]
+    bpy.ops.object.mode_set(mode='OBJECT')
+    articulaciones = {n: [round(c, 4) for c in (cab + traslado)] for n, cab, _, _ in huesos}
+
+    paso('rig: pesos automáticos')
+    bpy.ops.object.select_all(action='DESELECT')
+    cuerpo.select_set(True); esqueleto.select_set(True); bpy.context.view_layer.objects.active = esqueleto
+    bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+    usados = {g.group for v in cuerpo.data.vertices for g in v.groups if g.weight > 0.01}
+    sin_pesos = [g.name for g in cuerpo.vertex_groups if g.index not in usados]
+    huerfanos = sum(1 for v in cuerpo.data.vertices if not v.groups)
+    print(f'  huesos sin pesos: {sin_pesos}; vértices sin hueso: {huerfanos}')
+
+    paso('rig: exportar')
+    bpy.ops.object.select_all(action='DESELECT')
+    cuerpo.select_set(True); esqueleto.select_set(True); bpy.context.view_layer.objects.active = esqueleto
+    opciones_rig = dict(opciones, filepath=os.path.abspath(RIG), export_skins=True, export_animations=False, export_def_bones=False)
+    opciones_rig = {k: v for k, v in opciones_rig.items() if k in props}
+    bpy.ops.export_scene.gltf(**opciones_rig)
+    with open(os.path.splitext(os.path.abspath(RIG))[0] + '.json', 'w', encoding='utf-8') as f:
+        json.dump({'huesos': [h[0] for h in huesos], 'articulaciones': articulaciones}, f, ensure_ascii=False, indent=2)
+    paso(f'hecho: {RIG} ({os.path.getsize(RIG) / 1e6:.2f} MB)')
+
 # ── Capturas de control (opcional) ─────────────────────────────────────────────────────────
 if CAPTURAS:
     paleta = ['#b3b3b3', '#e6194b', '#f58231', '#ffe119', '#bfef45', '#3cb44b', '#42d4f4', '#4363d8', '#911eb4',
