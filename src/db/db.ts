@@ -14,6 +14,7 @@ import {
   type Sesion,
   type SesionEjercicio,
 } from '../domain/tipos'
+import type { AguaDia, Alimento, PerfilNutricion, Plato, RegistroComida } from '../domain/tiposNutricion'
 
 export class FerroDB extends Dexie {
   ejercicios!: EntityTable<Ejercicio, 'id'>
@@ -26,9 +27,15 @@ export class FerroDB extends Dexie {
   molestias!: EntityTable<Molestia, 'id'>
   pesosCorporales!: EntityTable<PesoCorporal, 'id'>
   ajustes!: EntityTable<Ajustes, 'id'>
+  // Nutrición (v4)
+  alimentos!: EntityTable<Alimento, 'id'>
+  comidas!: EntityTable<RegistroComida, 'id'>
+  platos!: EntityTable<Plato, 'id'>
+  agua!: EntityTable<AguaDia, 'id'>
+  nutricion!: EntityTable<PerfilNutricion, 'id'>
 
-  constructor() {
-    super('ferro')
+  constructor(nombre = 'ferro') {
+    super(nombre)
     this.version(1).stores({
       ejercicios: 'id, musculoPrincipal',
       rutinas: 'id, posicionCiclo',
@@ -81,6 +88,16 @@ export class FerroDB extends Dexie {
           delete a.versionCatalogo
         })
       })
+
+    // v4 (ronda 3): la sección de nutrición. Solo se añaden tablas nuevas y vacías; no se toca nada
+    // de lo que ya había.
+    this.version(4).stores({
+      alimentos: 'id, codigo, nombre',
+      comidas: 'id, fecha, alimentoId, [fecha+comida]',
+      platos: 'id, nombre',
+      agua: 'id',
+      nutricion: 'id',
+    })
 
     this.on('populate', (tx) => {
       tx.table('ajustes').add(AJUSTES_POR_DEFECTO)

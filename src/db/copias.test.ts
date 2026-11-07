@@ -96,6 +96,11 @@ const DATOS: Record<NombreTabla, Fila[]> = {
   molestias: [{ id: 'm1', sesionId: 's1', ejercicioId: 'Barbell_Bench_Press_-_Medium_Grip', nota: 'Hombro derecho', hora: 1_730_001_000_000 }],
   pesosCorporales: [{ id: 'p1', fecha: '2026-10-30', kg: 78.4 }],
   ajustes: [{ ...AJUSTES_POR_DEFECTO, gimnasioLat: 40.4, gimnasioLng: -3.7, ultimaCopia: 5, versionCatalogo: 'x' }],
+  alimentos: [{ id: 'off-8410000', nombre: 'Yogur', codigo: '8410000', origen: 'off', estado: null, por100: { kcal: 60, proteina: 10, carbohidratos: 4, grasa: 0 }, raciones: [], creado: 1 }],
+  comidas: [{ id: 'c1', fecha: '2026-10-30', comida: 'comida', alimentoId: 'g-pasta', nombre: 'Pasta', gramos: 80, racion: '1 plato', valores: { kcal: 297, proteina: 10.4, carbohidratos: 59.8, grasa: 1.2 }, hora: 1 }],
+  platos: [{ id: 'pl1', nombre: 'Pasta con pollo', items: [{ alimentoId: 'g-pasta', nombre: 'Pasta', gramos: 80 }], creado: 1, usos: 3 }],
+  agua: [{ id: '2026-10-30', ml: 1500 }],
+  nutricion: [{ id: 'perfil', sexo: 'hombre', objetivo: 'perder', ritmo: 'moderado', proteinaGkg: 2, inicio: '2026-10-01', basal: 1780, gastoInicial: 2500, objetivoKcal: 2060, ajustes: [], retoActivo: true, retos: [] }],
 }
 
 const porId = (filas: Fila[]) => [...filas].sort((a, b) => a.id.localeCompare(b.id))
@@ -129,5 +134,17 @@ describe('exportar e importar la copia JSON (de la PWA a la app Android)', () =>
     await restaurarCopia(leida.copia)
 
     for (const t of TABLAS) expect(porId(await db.table(t).toArray()), t).toEqual(porId(DATOS[t]))
+  })
+
+  it('una copia anterior a la nutrición se importa entera y con la nutrición vacía', async () => {
+    const vieja = { app: 'ferro', version: 1, esquema: 3, exportado: '2026-10-30', datos: { ...DATOS, alimentos: undefined, comidas: undefined, platos: undefined, agua: undefined, nutricion: undefined } }
+    const leida = await leerCopia(new File([JSON.stringify(vieja)], 'vieja.json', { type: 'application/json' }))
+    expect(leida.ok).toBe(true)
+    if (!leida.ok) return
+    await restaurarCopia(leida.copia)
+    expect(await db.sesiones.count()).toBe(1)
+    expect(await db.series.count()).toBe(2)
+    expect(await db.comidas.count()).toBe(0)
+    expect(await db.nutricion.count()).toBe(0)
   })
 })

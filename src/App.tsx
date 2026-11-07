@@ -30,6 +30,9 @@ const SesionPage = perezosa(() => import('./features/historial/SesionPage'), 'Se
 const PesoPage = perezosa(() => import('./features/peso/PesoPage'), 'PesoPage')
 const AjustesPage = perezosa(() => import('./features/ajustes/AjustesPage'), 'AjustesPage')
 const RegistroDeteccionPage = perezosa(() => import('./features/ajustes/RegistroDeteccionPage'), 'RegistroDeteccionPage')
+const CreditosPage = perezosa(() => import('./features/ajustes/CreditosPage'), 'CreditosPage')
+const NutricionPage = perezosa(() => import('./features/nutricion/NutricionPage'), 'NutricionPage')
+const PerfilNutricionPage = perezosa(() => import('./features/nutricion/PerfilNutricionPage'), 'PerfilNutricionPage')
 const ResumenPage = perezosa(() => import('./features/entreno/ResumenPage'), 'ResumenPage')
 const VistaPreviaAvatar = perezosa(() => import('./features/vista-previa/VistaPreviaAvatar'), 'VistaPreviaAvatar')
 const GaleriaAnimaciones = perezosa(() => import('./features/vista-previa/GaleriaAnimaciones'), 'GaleriaAnimaciones')
@@ -62,6 +65,9 @@ export function App() {
             <Route path="peso" element={<PesoPage />} />
             <Route path="ajustes" element={<AjustesPage />} />
             <Route path="ajustes/deteccion" element={<RegistroDeteccionPage />} />
+            <Route path="ajustes/creditos" element={<CreditosPage />} />
+            <Route path="nutricion" element={<NutricionPage />} />
+            <Route path="nutricion/perfil" element={<PerfilNutricionPage />} />
             <Route path="vista-previa/avatar" element={<VistaPreviaAvatar />} />
             <Route path="vista-previa/animaciones" element={<GaleriaAnimaciones />} />
             <Route path="*" element={<HoyPage />} />

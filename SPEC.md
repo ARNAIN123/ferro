@@ -243,18 +243,58 @@ Además, cuando toca: "En el gimnasio desde las 18:05", resumen del último entr
 
 ---
 
+## Nutrición
+
+Pestaña propia en la navegación. Como pollo, carne, huevos, pasta, arroz y lácteos; no como pescado, verdura ni fruta (dispuesto a ir probando). Objetivo por defecto: **perder grasa manteniendo el músculo**. Cálculos puros con tests en `src/domain/nutricion.ts`.
+
+### Asistente (1 minuto)
+
+- Sexo, edad, altura y peso (los tres últimos ya los tiene la app), objetivo (perder / mantener / ganar) y ritmo: suave 0,25 %, moderado 0,5 %, rápido 0,75 % del peso por semana.
+- **Gasto**: metabolismo basal de **Mifflin-St Jeor** + actividad real (pasos medios de 7 días de Health Connect —5.000 supuestos si no hay— y entrenos de las últimas 4 semanas) + efecto térmico de los alimentos (10 %).
+- **Seguridad**: ningún objetivo diario baja nunca del metabolismo basal (tampoco los días de descanso ni al redondear) y el ritmo nunca pasa del 1 % del peso por semana. Rehacer el cálculo conserva retos e historial.
+
+### Objetivo adaptativo
+
+- Las **2 primeras semanas** se usa la estimación.
+- Después, **cada lunes** (al abrir Nutrición): gasto real = ingesta media registrada − cambio de la tendencia del peso (media móvil de 7 días, 7.700 kcal por kg), con al menos 10 días registrados de los últimos 14 y 3 pesos por semana; si faltan datos, se mantiene el objetivo y se explica por qué. El objetivo se mueve **como mucho ±150 kcal por semana** y nunca por debajo del basal.
+- **Días de entreno y descanso**: el total semanal se mantiene, pero los días de entreno llevan un 8 % más (en hidratos) y los de descanso lo compensan, sin bajar del basal. Un día es de entreno si entrené o se detectó la entrada al gimnasio; se puede marcar a mano.
+- **Macros**: proteína primero, 2 g/kg por defecto (editable 1,6–2,2), grasa al menos 0,7 g/kg (o el 25 % de las kcal), el resto hidratos. La proteína siempre destacada.
+
+### Registro rápido
+
+- Comidas: desayuno, comida, merienda y cena; los días de entreno, también **Antes de entrenar** y **Después de entrenar**.
+- Al añadir: primero **mis recientes y frecuentes** para esa comida y esa hora (con "+" se añade igual que la última vez), **Mis platos** y "Repetir … de ayer"; después, búsqueda por texto (aquí sí se permite).
+- **Escáner de códigos de barras** (`@capacitor-mlkit/barcode-scanning`, escáner de Google sin permiso de cámara) → **Open Food Facts**. Si no está, se crea con los valores de la etiqueta.
+- **Base genérica en español**: 109 alimentos de USDA FoodData Central SR Legacy (dominio público), con nombres en español, raciones habituales y **crudo o cocinado** bien indicado (`catalogo/alimentos`, `scripts/generar-alimentos.mjs`).
+- Cantidad con la **regla** o con raciones predefinidas. **Mis platos**: guardar una comida entera y añadirla con un toque. **Repetir**: copiar una comida de otro día.
+- **IA opcional**: con mi clave de la API de Anthropic (Ajustes; solo en el dispositivo y fuera de las copias) escribo «200 g de pollo con 80 g de arroz» y la app propone los alimentos, que reviso antes de guardar. Modelo `claude-opus-5-5` con salida estructurada y respaldo automático del servidor si el modelo no está disponible. Sin clave, todo lo demás funciona igual.
+
+### Pantalla del día
+
+- Anillo de **calorías que me quedan**, barras de proteína (destacada), hidratos y grasa, lista de comidas, agua (+250 ml) y día de entreno o descanso.
+- **"Cerrar el día"**: combinaciones de uno o dos de mis alimentos habituales que encajan con lo que me queda (p. ej. 45 g de proteína y 500 kcal). Algoritmo simple, sin IA.
+- **Reto de fruta y verdura** (opcional, desactivable): una propuesta suave a la semana con una forma fácil de tomarla; marco "lo he probado", "me gusta" o "no me gusta". Lo que me gusta queda a mano al añadir comida; lo que no, no vuelve a salir. Sin presión, rachas ni culpa.
+- **Revisión de los lunes**: media de kcal y proteína frente al objetivo, tendencia del peso, gasto recalculado y ajuste aplicado. Historial en "Tu objetivo".
+- **Tono**: nada de rojo de "fracaso", rachas de dieta ni alimentos "prohibidos". Si llevo varios días por debajo del 70 % del objetivo, un mensaje amable recomendando comer más (nunca se celebra).
+- En **Hoy**, debajo de pasos y calorías: «Te quedan 640 kcal · 52 g de proteína».
+- Escribir las comidas en Health Connect: no se hace por ahora (opcional en MEJORAS-3).
+
+---
+
 ## Ajustes y datos
 
 - Objetivo mensual, objetivo de pasos, altura y edad, descanso por defecto, horas mínimas entre entradas, ubicación y radio del gimnasio, margen de salida, notificación de entrada, **registro de detección**, tema (oscuro por defecto / claro / sistema), pantalla encendida y vibración.
 - **Actualizaciones**: versión instalada y "Buscar actualizaciones".
 - **Copias de seguridad**: exportar e importar todo en JSON (con migración de copias antiguas) y exportar las series en CSV. Recordatorio discreto en Hoy si llevo más de 2 semanas sin copia.
+- **Nutrición**: enlace a "Tu objetivo" y clave opcional de Anthropic.
+- **Créditos**: pantalla con cada fuente de datos, modelo o librería y su licencia (`/ajustes/creditos`), y los textos completos en `licencias.txt`.
 
 ---
 
 ## Diseño
 
 - Interfaz cuidada y con personalidad: oscura por defecto, un color de acento fuerte y números grandes (`tabular-nums`).
-- Navegación inferior con 4 pestañas: **Hoy, Rutinas, Progreso, Ajustes**. La biblioteca está dentro de Rutinas. El modo entreno ocupa toda la pantalla.
+- Navegación inferior con 5 pestañas: **Hoy, Rutinas, Nutrición, Progreso, Ajustes**. La biblioteca está dentro de Rutinas. El modo entreno ocupa toda la pantalla.
 - Animaciones cortas y sutiles que respeten `prefers-reduced-motion`.
 
 ---
@@ -276,7 +316,15 @@ Molestia         id, sesionId, ejercicioId, nota, hora
 PesoCorporal     id, fecha, kg, origen? (manual|salud)
 Ajustes          objetivoMensual, objetivoPasos, alturaCm, edad, descansoDefecto, horasEntreCheckins, gimnasioLat,
                  gimnasioLng, radioM, margenSalidaM, notificarEntrada, tema, wakeLock, vibracion, ultimaCopia, versionCatalogo?
+Alimento         id, nombre, marca?, codigo?, origen (off|propio|ia), estado (crudo|cocinado|null), por100, raciones[], creado
+RegistroComida   id, fecha, comida, alimentoId, nombre, gramos, racion, valores (copia), hora
+Plato            id, nombre, items[{alimentoId, nombre, gramos}], creado, usos
+AguaDia          id (fecha), ml
+PerfilNutricion  id 'perfil', sexo, objetivo, ritmo, proteinaGkg, inicio, basal, gastoInicial, objetivoKcal,
+                 ajustes[], retoActivo, retos[], revisionVista?, entrenoManual?
 ```
+
+- **v3 → v4** (ronda 3): solo se añaden las tablas de nutrición; todo lo anterior se conserva (test en `src/db/actualizacion.test.ts`). Las copias JSON incluyen la nutrición y las copias antiguas se importan con la nutrición vacía.
 
 - **v1 → v2** (ronda 1): los ejercicios pasan a los id de Free Exercise DB; se cambian todas sus referencias y se conservan notas y ejercicios propios.
 - Los cambios de la ronda 2 (biblioteca nueva, objetivo mensual, salida) llegan con nuevas versiones y sus migraciones. Los ejercicios que salen de la biblioteca se conservan para el historial, ocultos en la biblioteca y el selector.
@@ -293,7 +341,7 @@ Ajustes          objetivoMensual, objetivoPasos, alturaCm, edad, descansoDefecto
 - Fotos o personas reales en los ejercicios, o mezclar estilos de ilustración.
 - Buscador por texto, chips, categorías o filtros para encontrar ejercicios.
 - Máquinas guiadas, peso corporal, kettlebell, bandas, balones, cardio o estiramientos en la biblioteca.
-- Imágenes o datos cargados de servidores externos en tiempo de ejecución.
+- Imágenes o datos cargados de servidores externos en tiempo de ejecución. Únicas excepciones: Open Food Facts al escanear o buscar un producto, y la API de Anthropic solo si pongo mi clave.
 - Cambios de base de datos sin migración que conserve los datos, o cambiar el origen de la WebView.
 - Un APK firmado con otra clave.
 
@@ -307,8 +355,8 @@ Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, p
 
 **Ronda 3** (`MEJORAS-3.md`):
 
-1. **Registro de peso rápido** y acceso directo del icono.
-2. **Nutrición:** asistente, objetivos adaptativos, registro rápido, escáner, Open Food Facts, base genérica, mis platos, "Cerrar el día", reto de fruta y verdura, revisión semanal y tarjeta en Hoy.
+1. **Registro de peso rápido** y acceso directo del icono. *(Hecha, v0.5.0.)*
+2. *(Hecha, v0.6.0.)* **Nutrición:** asistente, objetivos adaptativos, registro rápido, escáner, Open Food Facts, base genérica, mis platos, "Cerrar el día", reto de fruta y verdura, revisión semanal y tarjeta en Hoy.
 3. **Modelo 3D y avatar:** flujo con Blender, vista previa para revisión y sustitución de todas las vistas del mapa.
 4. **Animaciones 3D:** piloto de 10 ejercicios con galería; el resto de la biblioteca solo tras aprobarlo.
 
@@ -332,4 +380,5 @@ Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, p
 - La biblioteca solo tiene peso libre, poleas y multipower, y solo se busca con el mapa.
 - No queda ninguna racha ni objetivo semanal.
 - Registrar una serie lleva un solo toque.
+- Nutrición: tests de gasto inicial, recalibración semanal (también contra la base de datos), reparto de macros, límites de seguridad (basal y 1 %/semana), sugerencias de "Cerrar el día", registro de comidas y validación de lo que devuelve la IA.
 - `SPEC.md` y README actualizados.

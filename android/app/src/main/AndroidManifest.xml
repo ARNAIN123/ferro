@@ -76,6 +76,11 @@
             </intent-filter>
         </receiver>
 
+        <!-- Escáner de códigos de barras: Google descarga su lector al instalar Ferro. -->
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="barcode_ui" />
+
         <!-- Health Connect: explica qué datos de salud lee Ferro (obligatorio para pedir los permisos). -->
         <activity
             android:name=".salud.PrivacidadSaludActivity"

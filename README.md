@@ -6,17 +6,17 @@ Mi app personal de gimnasio para Android. Es una app nativa hecha con **Capacito
 
 ## Stack
 
-Vite + React + TypeScript estricto · Tailwind CSS 4 · Capacitor 8 (Android) · Dexie (IndexedDB) · React Router · Recharts · @dnd-kit · three.js (avatar 3D) · Vitest. En desarrollo, sharp para los iconos. La versión web (vite-plugin-pwa) también se publica en Vercel, sin las funciones nativas.
+Vite + React + TypeScript estricto · Tailwind CSS 4 · Capacitor 8 (Android) · Dexie (IndexedDB) · React Router · Recharts · @dnd-kit · three.js (avatar 3D) · ML Kit (códigos de barras) · SDK de Anthropic (opcional) · Vitest. En desarrollo, sharp para los iconos. La versión web (vite-plugin-pwa) también se publica en Vercel, sin las funciones nativas.
 
 ```
-catalogo/          fuente de la biblioteca (Free Exercise DB fijada) y traducciones al español
+catalogo/          fuente de la biblioteca (Free Exercise DB fijada), traducciones y lista de alimentos genéricos
 scripts/           generación del catálogo, del mapa muscular y de los iconos (web y Android)
 android/           proyecto Android de Capacitor (Gradle); la web compilada se copia dentro con `npx cap sync`
 .github/workflows/ APK firmado y publicado en GitHub Releases
 src/
 ├─ domain/     lógica de negocio pura y sus tests (progresión, ciclo, entradas, mapa muscular, migraciones…)
 ├─ db/         esquema Dexie y migraciones, sincronización del catálogo, plantillas y operaciones de datos
-├─ catalogo/   ejercicios.json generado (407 ejercicios) y su versión
+├─ catalogo/   ejercicios.json generado (407 ejercicios) y alimentos.json (109 alimentos genéricos)
 ├─ animacion/  figura articulada, patrones de movimiento y animación de cada ejercicio
 ├─ features/   pantallas: hoy, rutinas, ejercicios, entreno, progreso, ajustes…
 ├─ components/ piezas de interfaz reutilizables (incluido el mapa muscular)
@@ -51,7 +51,7 @@ La biblioteca sale de [Free Exercise DB](https://github.com/yuhonas/free-exercis
 npm run catalogo    # regenera src/catalogo/ejercicios.json y el listado
 ```
 
-Al arrancar, la app compara la versión del catálogo con la guardada y, si cambió, actualiza los ejercicios de la biblioteca sin tocar tus notas ni tus ejercicios propios. El **avatar muscular** nuevo parte de la figura de [Open Muscle Map](https://github.com/PerspicaciousGuy/Open-Muscle-Map) (MIT, fijada en `catalogo/fuente/avatar/`); `node scripts/generar-avatar.mjs` la convierte en `src/components/avatar/trazados.ts`, divide el pectoral en porción superior e inferior y calcula las fibras de cada músculo. El **avatar 3D** (`src/components/avatar3d`) se genera en el móvil a partir de esa misma figura: se rasteriza la silueta, se infla según la distancia a su borde (miembros redondos, tronco más plano), cada músculo sobresale con un surco en su contorno y la espalda lleva los músculos de la vista trasera. Se dibuja con three.js, se gira arrastrando con el dedo y un toque elige el músculo. Vista previa para revisarlo en `/vista-previa/avatar`. Créditos completos en `/licencias.txt` (enlazado al pie de Ajustes).
+Al arrancar, la app compara la versión del catálogo con la guardada y, si cambió, actualiza los ejercicios de la biblioteca sin tocar tus notas ni tus ejercicios propios. El **avatar muscular** nuevo parte de la figura de [Open Muscle Map](https://github.com/PerspicaciousGuy/Open-Muscle-Map) (MIT, fijada en `catalogo/fuente/avatar/`); `node scripts/generar-avatar.mjs` la convierte en `src/components/avatar/trazados.ts`, divide el pectoral en porción superior e inferior y calcula las fibras de cada músculo. El **avatar 3D** (`src/components/avatar3d`) se genera en el móvil a partir de esa misma figura: se rasteriza la silueta, se infla según la distancia a su borde (miembros redondos, tronco más plano), cada músculo sobresale con un surco en su contorno y la espalda lleva los músculos de la vista trasera. Se dibuja con three.js, se gira arrastrando con el dedo y un toque elige el músculo. Vista previa para revisarlo en `/vista-previa/avatar`. Créditos completos en **Ajustes → Créditos y licencias** (`/ajustes/creditos`, con los textos en `/licencias.txt`).
 
 ### Animaciones de los ejercicios
 
@@ -255,11 +255,26 @@ La pantalla principal tiene, por este orden: el **objetivo del mes**, tu **seman
 - **Báscula**: si tu báscula (por ejemplo con Mi Fitness o Zepp Life) escribe el peso en Health Connect y Ferro tiene permiso de **Peso**, al abrir la app se importan solas las mediciones de los últimos 30 días, una por día. Lo que apuntes a mano nunca se sobrescribe; en el historial lo importado lleva la etiqueta *Báscula*.
 - En la web (navegador) no hay Health Connect: el anillo de pasos sale vacío y las calorías solo cuentan el entreno.
 
+## Nutrición
+
+Pestaña **Nutrición**. La primera vez, un asistente de un minuto (sexo, edad, altura, peso, objetivo y ritmo) calcula tu gasto con **Mifflin-St Jeor + tus pasos y entrenos reales + la digestión** y te da un objetivo de calorías y macros (proteína 2 g/kg por defecto, editable entre 1,6 y 2,2). Nunca baja de tu metabolismo basal y el ritmo nunca pasa del 1 % del peso por semana.
+
+- **Cada lunes** se recalcula solo: con lo que registraste y la tendencia de tu peso (media de 7 días) calcula tu gasto real y mueve el objetivo como mucho 150 kcal. Las dos primeras semanas se usa la estimación. Para que funcione hacen falta al menos 10 días con comidas registradas de los últimos 14 y unos 3 pesos por semana. La revisión sale arriba en Nutrición y el historial en **Tu objetivo** (icono de ajustes).
+- **Días de entreno**: algo más de hidratos y algo menos los de descanso (la semana suma lo mismo). Cuenta como día de entreno si entrenaste o se detectó tu entrada al gimnasio; si no, toca el chip *Día de descanso* para cambiarlo.
+- **Añadir comida**: toca **+** en la comida. Arriba salen tus recientes para esa comida y esa hora (el **+** de la derecha la añade igual que la última vez), *Repetir … de ayer* y **Mis platos**. Si no está, busca por texto (base genérica en español, con **crudo** o **cocinado** indicado) o pulsa el icono del **código de barras** para escanearlo (Open Food Facts; la primera vez Android descarga el escáner de Google). Ajusta los gramos con la regla o con las raciones.
+- Los **tres puntos** de cada comida: guardarla como plato o copiarla de otro día.
+- **Cerrar el día**: combinaciones de tus alimentos habituales que encajan con lo que te queda.
+- **Reto de fruta y verdura** (desactivable en Tu objetivo): una propuesta a la semana con una forma fácil de tomarla. "Me gusta" la deja a mano al añadir comida; "No me gusta" no vuelve a salir.
+- **IA opcional**: en Ajustes → Nutrición puedes poner tu clave de la API de Anthropic (console.anthropic.com → API Keys; cada uso lo cobra Anthropic). Entonces aparece el botón ✦ al añadir comida: escribe «200 g de pollo con 80 g de arroz», revisa lo que propone y añádelo. La clave solo se guarda en el móvil y no va en las copias de seguridad. Usa el modelo Claude Opus 5.5 con respaldo automático del servidor (si ese modelo no estuviera disponible, la API responde con otro equivalente).
+- En **Hoy** verás «Te quedan … kcal · … g de proteína».
+
+Los alimentos genéricos salen de USDA FoodData Central (dominio público): la lista con nombres, estado y raciones está en `catalogo/alimentos/lista.json` y se regenera con `node scripts/generar-alimentos.mjs <ruta al JSON de SR Legacy>` (el listado para revisar queda en `catalogo/alimentos/LISTADO-ALIMENTOS.md`). Créditos y licencias de todo en **Ajustes → Créditos y licencias**.
+
 ## Copias de seguridad
 
 Los datos viven solo en el móvil, así que conviene sacar copias. En **Ajustes → Datos y copias de seguridad**:
 
-- **Exportar copia (JSON)**: todo (ejercicios, rutinas, entrenos, series, entradas, peso y ajustes). En la app Android se guarda en **Documentos/Ferro** (en la PWA, en *Descargas*). Con **Enviar copia a Drive, correo…** la mandas a otra app.
+- **Exportar copia (JSON)**: todo (ejercicios, rutinas, entrenos, series, entradas, peso, ajustes y nutrición: alimentos, comidas, platos, agua y objetivo). En la app Android se guarda en **Documentos/Ferro** (en la PWA, en *Descargas*). Con **Enviar copia a Drive, correo…** la mandas a otra app.
 - **Exportar series (CSV)**: una fila por serie (fecha, rutina, ejercicio, músculo, tipo, peso, reps, RIR, molestia), separado por punto y coma y con coma decimal para abrirlo en Excel o Google Sheets.
 - **Importar copia**: valida el archivo y te pide confirmación antes de **sustituir** todos los datos del móvil. Las copias de versiones anteriores se migran al formato actual al importarlas.
 - Desinstalar la app borra sus datos; actualizarla con un APK nuevo, no.
@@ -269,5 +284,5 @@ Si llevas más de 2 semanas sin hacer copia, Hoy muestra un recordatorio discret
 ## Calidad
 
 - `npm run build`: comprobación de tipos estricta + build sin avisos.
-- `npm test`: tests de la lógica pura de la web (progresión, ciclo de rutinas, entradas y eventos de la detección, cierre automático, semanas, **objetivo mensual**, **calorías**, **animaciones** (cinemática, todos los ejercicios con su patrón y escenas válidas), estadísticas, récords, prerrellenado, superseries, copias de seguridad e importación con migración, actualizaciones, intensidad y mapa muscular, biblioteca y migraciones de la base de datos).
+- `npm test`: tests de la lógica pura de la web (progresión, ciclo de rutinas, entradas y eventos de la detección, cierre automático, semanas, **objetivo mensual**, **calorías**, **animaciones** (cinemática, todos los ejercicios con su patrón y escenas válidas), estadísticas, récords, prerrellenado, superseries, copias de seguridad e importación con migración, actualizaciones, intensidad y mapa muscular, biblioteca y migraciones de la base de datos, **nutrición**: gasto inicial, recalibración semanal, macros, límites de seguridad, "Cerrar el día", registro de comidas y validación de la IA).
 - `cd android && ./gradlew testDebugUnitTest`: tests nativos de la decisión de entrada y salida (distancia, precisión, deduplicación, confirmación de la salida y hora del aviso). GitHub Actions los pasa antes de publicar cada APK.

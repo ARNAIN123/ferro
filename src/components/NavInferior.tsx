@@ -4,6 +4,7 @@ import { Icono, type NombreIcono } from './Icono'
 const PESTANAS: { a: string; texto: string; icono: NombreIcono }[] = [
   { a: '/', texto: 'Hoy', icono: 'hoy' },
   { a: '/rutinas', texto: 'Rutinas', icono: 'rutinas' },
+  { a: '/nutricion', texto: 'Nutrición', icono: 'nutricion' },
   { a: '/progreso', texto: 'Progreso', icono: 'progreso' },
   { a: '/ajustes', texto: 'Ajustes', icono: 'ajustes' },
 ]
@@ -14,7 +15,7 @@ export function NavInferior() {
       aria-label="Navegación principal"
       className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/95 pb-safe backdrop-blur"
     >
-      <ul className="mx-auto grid max-w-lg grid-cols-4">
+      <ul className="mx-auto grid max-w-lg grid-cols-5">
         {PESTANAS.map((p) => (
           <li key={p.a}>
             <NavLink

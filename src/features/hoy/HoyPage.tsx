@@ -20,6 +20,7 @@ import { useAhora } from '../../hooks/useAhora'
 import { useAjustes } from '../../hooks/useAjustes'
 import { usePasosHoy } from '../../hooks/usePasosHoy'
 import { fmtCrono, fmtFechaLarga, fmtHace, fmtHora, fmtKg } from '../../lib/formato'
+import { TarjetaNutricionHoy } from '../nutricion/TarjetaNutricionHoy'
 import { HojaPeso } from '../peso/HojaPeso'
 import { ElegirRutina } from './ElegirRutina'
 import { ObjetivoMes } from './ObjetivoMes'
@@ -178,6 +179,8 @@ export function HoyPage() {
           alturaCm={ajustes.alturaCm}
           nombresEntrenos={medidas.map((m) => m.nombre)}
         />
+
+        <TarjetaNutricionHoy fecha={hoy} />
 
         <button
           type="button"

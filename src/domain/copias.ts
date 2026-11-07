@@ -5,7 +5,7 @@ import { claveDia } from './semanas'
 export const VERSION_COPIA = 1
 
 /** Versión actual de la base de datos (Dexie). Súbela junto con cada `db.version(n)` nueva. */
-export const ESQUEMA_ACTUAL = 3
+export const ESQUEMA_ACTUAL = 4
 
 export const TABLAS = [
   'ejercicios',
@@ -18,6 +18,12 @@ export const TABLAS = [
   'molestias',
   'pesosCorporales',
   'ajustes',
+  // Nutrición (esquema 4). Las copias anteriores no las traen y se importan vacías.
+  'alimentos',
+  'comidas',
+  'platos',
+  'agua',
+  'nutricion',
 ] as const
 export type NombreTabla = (typeof TABLAS)[number]
 

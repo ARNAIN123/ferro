@@ -112,6 +112,15 @@ const TRAZOS = {
   subir: <path d="M12 20V9M7 14l5-5 5 5M5 4h14" />,
   cadena: <path d="M9 7H7a5 5 0 0 0 0 10h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8" />,
   bandera: <path d="M5 21V4M5 4h11l-2 4 2 4H5" />,
+  nutricion: (
+    <>
+      <path d="M12 7.5c-1.5-1.3-3.4-1.6-5-.8C4.6 8 4 11.2 5.2 14.6 6.3 17.8 8.6 20.6 10.4 20c.7-.2 1-.6 1.6-.6s.9.4 1.6.6c1.8.6 4.1-2.2 5.2-5.4 1.2-3.4.6-6.6-1.8-7.9-1.6-.8-3.5-.5-5 .8z" />
+      <path d="M12 7.5c0-2 .8-3.6 2.5-4.5" />
+    </>
+  ),
+  codigo: <path d="M4 6v12M7 6v12M10 6v12M13 6v12M17 6v12M20 6v12M3 4h3M18 4h3M3 20h3M18 20h3" />,
+  agua: <path d="M12 3.5c3.4 4.3 6 7.6 6 10.9a6 6 0 0 1-12 0c0-3.3 2.6-6.6 6-10.9z" />,
+  chispa: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" />,
 } satisfies Record<string, ReactNode>
 
 export type NombreIcono = keyof typeof TRAZOS

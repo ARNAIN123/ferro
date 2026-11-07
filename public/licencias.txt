@@ -40,3 +40,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Alimentos genéricos
+-------------------
+USDA FoodData Central, SR Legacy (abril de 2018), U.S. Department of Agriculture, Agricultural Research Service.
+https://fdc.nal.usda.gov · Dominio público (CC0 1.0). Selección de 109 alimentos con nombres en español, estado
+(crudo o cocinado) y raciones habituales añadidos para Ferro (catalogo/alimentos).
+
+Productos con código de barras
+------------------------------
+Datos de Open Food Facts (https://world.openfoodfacts.org), disponibles bajo la Open Database License (ODbL 1.0,
+https://opendatacommons.org/licenses/odbl/1-0/); el contenido de cada producto, bajo la Database Contents License
+(DbCL 1.0). Ferro solo consulta el producto escaneado o buscado y guarda una copia en el móvil. No usa sus fotos.
+
+Escáner de códigos de barras
+----------------------------
+@capacitor-mlkit/barcode-scanning (https://github.com/capawesome-team/capacitor-mlkit), Apache License 2.0.
+Usa el escáner de Google ML Kit (Google code scanner), sujeto a las condiciones de Google.
+
+Vibración
+---------
+@capacitor/haptics (https://github.com/ionic-team/capacitor-plugins), MIT License.
+
+Interpretación opcional de comidas
+----------------------------------
+SDK oficial de Anthropic para TypeScript (@anthropic-ai/sdk, https://github.com/anthropics/anthropic-sdk-typescript),
+Apache License 2.0. Solo se usa si pones tu propia clave de la API de Anthropic en Ajustes.
+
+Cálculos de nutrición
+---------------------
+Metabolismo basal con la ecuación de Mifflin-St Jeor (Mifflin MD, St Jeor ST et al., Am J Clin Nutr 1990;51:241-247).

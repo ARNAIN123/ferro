@@ -10,6 +10,7 @@ import { SeccionActualizaciones } from './SeccionActualizaciones'
 import { SeccionCuerpo } from './SeccionCuerpo'
 import { SeccionDatos } from './SeccionDatos'
 import { SeccionGimnasio } from './SeccionGimnasio'
+import { SeccionNutricion } from './SeccionNutricion'
 
 export function AjustesPage() {
   const a = useAjustes()
@@ -61,6 +62,8 @@ export function AjustesPage() {
 
         <SeccionGimnasio a={a} />
 
+        <SeccionNutricion />
+
         <Tarjeta>
           <h2 className="mb-3 font-bold">Apariencia</h2>
           <Segmentado<Tema>
@@ -91,9 +94,9 @@ export function AjustesPage() {
 
         <p className="pt-2 text-center text-xs text-muted">
           Ferro v{__APP_VERSION__} ·{' '}
-          <a href="/licencias.txt" target="_blank" rel="noreferrer" className="underline underline-offset-2">
+          <Link to="/ajustes/creditos" className="underline underline-offset-2">
             Créditos y licencias
-          </a>
+          </Link>
         </p>
       </div>
     </>
