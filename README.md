@@ -6,7 +6,7 @@ Mi app personal de gimnasio para Android. Es una app nativa hecha con **Capacito
 
 ## Stack
 
-Vite + React + TypeScript estricto · Tailwind CSS 4 · Capacitor 8 (Android) · Dexie (IndexedDB) · React Router · Recharts · @dnd-kit · three.js (avatar 3D) · ML Kit (códigos de barras) · SDK de Anthropic (opcional) · Vitest. En desarrollo, sharp para los iconos. La versión web (vite-plugin-pwa) también se publica en Vercel, sin las funciones nativas.
+Vite + React + TypeScript estricto · Tailwind CSS 4 · Capacitor 8 (Android) · Dexie (IndexedDB) · React Router · Recharts · @dnd-kit · three.js y react-three-fiber (cuerpo 3D) · ML Kit (códigos de barras) · SDK de Anthropic (opcional) · Vitest. En desarrollo, sharp para los iconos. La versión web (vite-plugin-pwa) también se publica en Vercel, sin las funciones nativas.
 
 ```
 catalogo/          fuente de la biblioteca (Free Exercise DB fijada), traducciones y lista de alimentos genéricos
@@ -52,6 +52,20 @@ npm run catalogo    # regenera src/catalogo/ejercicios.json y el listado
 ```
 
 Al arrancar, la app compara la versión del catálogo con la guardada y, si cambió, actualiza los ejercicios de la biblioteca sin tocar tus notas ni tus ejercicios propios. El **avatar muscular** nuevo parte de la figura de [Open Muscle Map](https://github.com/PerspicaciousGuy/Open-Muscle-Map) (MIT, fijada en `catalogo/fuente/avatar/`); `node scripts/generar-avatar.mjs` la convierte en `src/components/avatar/trazados.ts`, divide el pectoral en porción superior e inferior y calcula las fibras de cada músculo. El **avatar 3D** (`src/components/avatar3d`) se genera en el móvil a partir de esa misma figura: se rasteriza la silueta, se infla según la distancia a su borde (miembros redondos, tronco más plano), cada músculo sobresale con un surco en su contorno y la espalda lleva los músculos de la vista trasera. Se dibuja con three.js, se gira arrastrando con el dedo y un toque elige el músculo. Vista previa para revisarlo en `/vista-previa/avatar`. Créditos completos en **Ajustes → Créditos y licencias** (`/ajustes/creditos`, con los textos en `/licencias.txt`).
+
+### Cuerpo 3D (ronda 3)
+
+El cuerpo 3D (`public/modelos/cuerpo.glb`) sale de [Z-Anatomy](https://github.com/Z-Anatomy/The-blend) (CC BY-SA 4.0, basado en BodyParts3D) con un script de Blender. Para regenerarlo:
+
+1. Descarga **Blender 4.5 LTS** portable (zip) de https://www.blender.org/download/lts/ y descomprímelo.
+2. Descarga `Z-Anatomy.zip` del repositorio Z-Anatomy/The-blend y saca `Z-Anatomy/Startup.blend` (unos 300 MB).
+3. Ejecuta (no hace falta abrir Blender; `--disable-autoexec` evita los scripts que trae el .blend):
+
+```bash
+blender --background --factory-startup --disable-autoexec Startup.blend --python scripts/blender/generar-cuerpo.py -- public/modelos/cuerpo.glb
+```
+
+Tarda unos 5 minutos. Con `FERRO_CACHE=algo.blend` guarda el cuerpo ya simplificado y las siguientes veces solo repite las regiones y la exportación. El modelo resultante se distribuye con la misma licencia CC BY-SA 4.0 (créditos en **Ajustes → Créditos y licencias**). El visor está en `src/components/cuerpo3d` (three.js + react-three-fiber) y se revisa en **Ajustes → Vista previa del cuerpo 3D**.
 
 ### Animaciones de los ejercicios
 

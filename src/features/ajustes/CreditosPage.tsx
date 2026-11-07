@@ -11,9 +11,22 @@ const SECCIONES: { titulo: string; creditos: Credito[] }[] = [
   {
     titulo: 'Ejercicios y cuerpo',
     creditos: [
+      {
+        nombre: 'Z-Anatomy',
+        uso: 'Cuerpo 3D: piel y músculos superficiales, adaptados para Ferro (unidos, simplificados y divididos en regiones). El modelo adaptado se comparte con la misma licencia.',
+        licencia: 'CC BY-SA 4.0 · Gauthier Kervyn, Marcin Zielinski y colaboradores',
+        enlace: 'https://github.com/Z-Anatomy/The-blend',
+      },
+      {
+        nombre: 'BodyParts3D',
+        uso: 'Modelo anatómico original en el que se basa Z-Anatomy.',
+        licencia: 'CC BY-SA 2.1 Japón · © The Database Center for Life Science',
+        enlace: 'https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html',
+      },
       { nombre: 'Free Exercise DB', uso: 'Lista de ejercicios e instrucciones (traducidas). Sin sus fotos.', licencia: 'Dominio público (The Unlicense)', enlace: 'https://github.com/yuhonas/free-exercise-db' },
       { nombre: 'Open Muscle Map', uso: 'Base de la figura del avatar muscular.', licencia: 'MIT', enlace: 'https://github.com/PerspicaciousGuy/Open-Muscle-Map' },
-      { nombre: 'three.js', uso: 'Visor 3D del avatar.', licencia: 'MIT', enlace: 'https://threejs.org' },
+      { nombre: 'three.js', uso: 'Visor 3D del cuerpo (y el decodificador Draco, Apache 2.0).', licencia: 'MIT', enlace: 'https://threejs.org' },
+      { nombre: 'React Three Fiber y Drei', uso: 'Escena 3D del cuerpo y sombra de contacto.', licencia: 'MIT · Poimandres', enlace: 'https://github.com/pmndrs/react-three-fiber' },
     ],
   },
   {

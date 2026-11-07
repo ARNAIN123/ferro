@@ -8,3 +8,6 @@ dev-dist
 
 .vercel
 .env*
+
+# Capturas para revisar (no se versionan)
+revision/

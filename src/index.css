@@ -42,6 +42,8 @@
   --mapa-pelo: #4a4846;
   --avatar-piel: #7a7672;
   --avatar-musculo: #b4b0ab;
+  /* Arcilla del cuerpo 3D (gris medio: las luces la aclaran). */
+  --cuerpo-arcilla: #8c8884;
   --avatar-tendon: #8f8b87;
   --avatar-surco: #151312;
   --avatar-fibra: #1d1b1a;
@@ -67,6 +69,7 @@
   --mapa-pelo: #6e6b67;
   --avatar-piel: #a9a5a0;
   --avatar-musculo: #e2ded9;
+  --cuerpo-arcilla: #9f9b96;
   --avatar-tendon: #c4c0bb;
   --avatar-surco: #4a4642;
   --avatar-fibra: #3a3633;

@@ -9,3 +9,5 @@ android
 *.jks
 *.keystore
 keystore.properties
+revision
+scripts/blender

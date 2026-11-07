@@ -63,7 +63,10 @@ export default defineConfig({
       },
       workbox: {
         // Sin fotos: las animaciones de los ejercicios se dibujan en el propio código (SVG).
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest,txt}'],
+        // El cuerpo 3D (glb) y su decodificador (wasm) también: funcionan sin conexión.
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest,txt,glb,wasm}'],
+        // Decodificador Draco en asm.js: solo para navegadores sin WebAssembly (no se usa).
+        globIgnores: ['**/draco_decoder-*.js'],
         navigateFallback: '/index.html',
         // /licencias.txt se abre como texto, no como la app.
         navigateFallbackDenylist: [/\.txt$/],

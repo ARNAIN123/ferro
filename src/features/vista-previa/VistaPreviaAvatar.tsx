@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import { Avatar3D } from '../../components/avatar3d/Avatar3D'
+import { useRef, useState } from 'react'
+import { Avatar } from '../../components/avatar/Avatar'
+import { Cuerpo3D, type Cuerpo3DControl } from '../../components/cuerpo3d/Cuerpo3D'
 import { Cabecera } from '../../components/Cabecera'
 import { LeyendaMapa } from '../../components/mapa/MapaMuscular'
 import { Segmentado, Tarjeta } from '../../components/ui'
 import { ESCALA_SEMANA_AVATAR } from '../../domain/avatar'
 import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { nivelesDeEjercicio, nivelesDeTrabajo, rotulosEscala, trabajoMuscular } from '../../domain/mapaMuscular'
-import type { Musculo, Tema } from '../../domain/tipos'
+import { MUSCULOS, type Musculo, type Tema } from '../../domain/tipos'
 import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
 import { fmtKg, plural } from '../../lib/formato'
 
-// Página de revisión del avatar (fase 3 de la ronda 2). No está enlazada desde la app: /vista-previa/avatar.
+// Página de revisión del cuerpo 3D (ronda 3, fase 3): /vista-previa/avatar, enlazada desde Ajustes.
 
 type Def = { nombre: string; principales: Musculo[]; secundarios: Musculo[] }
 const EJERCICIOS: Record<string, Def> = {
@@ -30,9 +31,14 @@ const EJERCICIOS: Record<string, Def> = {
   crunch: { nombre: 'Crunch en polea', principales: ['abdomen'], secundarios: [] },
 }
 
-type Estado = 'vacia' | 'media' | 'completa' | 'ficha'
+type Estado = 'vacia' | 'media' | 'completa' | 'ficha' | 'niveles'
+type Angulo = 'frente' | 'tres_cuartos' | 'perfil' | 'espalda'
+const ANGULOS: Record<Angulo, number> = { frente: 0, tres_cuartos: -Math.PI / 4, perfil: -Math.PI / 2, espalda: Math.PI }
 
-const SEMANAS: Record<Exclude<Estado, 'ficha'>, [string, number][]> = {
+/** Todos los niveles a la vez: cada músculo con un nivel del 1 al 5, repartidos por el cuerpo. */
+const TODOS_LOS_NIVELES = new Map<Musculo, number>(MUSCULOS.map((m, i) => [m, (i % 5) + 1]))
+
+const SEMANAS: Record<Exclude<Estado, 'ficha' | 'niveles'>, [string, number][]> = {
   vacia: [],
   // Lunes torso y miércoles pierna.
   media: [
@@ -69,13 +75,16 @@ export function VistaPreviaAvatar() {
   const ajustes = useAjustes()
   const [estado, setEstado] = useState<Estado>('media')
   const [sel, setSel] = useState<Musculo | null>(null)
-  const trabajo = trabajoDe(estado === 'ficha' ? [] : SEMANAS[estado])
-  const niveles = estado === 'ficha' ? nivelesDeEjercicio(fichas.get('banca')!) : nivelesDeTrabajo(trabajo, ESCALA_SEMANA_AVATAR)
+  const [angulo, setAngulo] = useState<Angulo>('frente')
+  const cuerpo = useRef<Cuerpo3DControl>(null)
+  const trabajo = trabajoDe(estado === 'ficha' || estado === 'niveles' ? [] : SEMANAS[estado])
+  const niveles =
+    estado === 'ficha' ? nivelesDeEjercicio(fichas.get('banca')!) : estado === 'niveles' ? TODOS_LOS_NIVELES : nivelesDeTrabajo(trabajo, ESCALA_SEMANA_AVATAR)
   const t = sel ? trabajo.get(sel) : undefined
 
   return (
     <>
-      <Cabecera titulo="Vista previa del avatar" subtitulo="Para revisar antes de usarlo en toda la app" atras="/" />
+      <Cabecera titulo="Vista previa del cuerpo 3D" subtitulo="Para revisar antes de usarlo en toda la app" atras="/ajustes" />
       <Tarjeta className="mt-2 space-y-3">
         <Segmentado<Estado>
           etiqueta="Ejemplo"
@@ -86,6 +95,21 @@ export function VistaPreviaAvatar() {
             { valor: 'media', texto: 'Media' },
             { valor: 'completa', texto: 'Completa' },
             { valor: 'ficha', texto: 'Ficha' },
+            { valor: 'niveles', texto: 'Niveles' },
+          ]}
+        />
+        <Segmentado<Angulo>
+          etiqueta="Ángulo"
+          valor={angulo}
+          onCambio={(a) => {
+            setAngulo(a)
+            cuerpo.current?.girarA(ANGULOS[a], false)
+          }}
+          opciones={[
+            { valor: 'frente', texto: 'Frente' },
+            { valor: 'tres_cuartos', texto: '¾' },
+            { valor: 'perfil', texto: 'Perfil' },
+            { valor: 'espalda', texto: 'Espalda' },
           ]}
         />
         <Segmentado<Tema>
@@ -102,8 +126,15 @@ export function VistaPreviaAvatar() {
       <Tarjeta className="mt-4">
         <p className="text-xs font-semibold tracking-wide text-muted uppercase">Semana del 2 al 8 nov</p>
         <h2 className="font-bold">{TITULOS[estado]}</h2>
-        <p className="mt-0.5 text-sm text-muted">Arrastra en horizontal para girarlo. Toca un músculo para ver sus series.</p>
-        <Avatar3D niveles={niveles} seleccionado={sel} onTocar={(m) => setSel(sel === m ? null : m)} className="mt-3" />
+        <p className="mt-0.5 text-sm text-muted">Arrastra para girarlo, pellizca para acercarlo y toca dos veces para volver de frente. Toca un músculo para ver sus series.</p>
+        <Cuerpo3D
+          ref={cuerpo}
+          niveles={niveles}
+          seleccionado={sel}
+          onTocar={(m) => setSel(sel === m ? null : m)}
+          className="mt-3"
+          sinWebgl={<Avatar niveles={niveles} seleccionado={sel} onTocar={(m) => setSel(sel === m ? null : m)} />}
+        />
         <div className="mt-2">
           <LeyendaMapa rotulos={rotulosEscala(ESCALA_SEMANA_AVATAR)} unidad="series" />
         </div>
@@ -139,4 +170,5 @@ const TITULOS: Record<Estado, string> = {
   media: 'Semana media: torso el lunes y pierna el miércoles',
   completa: 'Semana completa: cuatro días',
   ficha: 'Ficha del press de banca: principal a tope, secundarios suaves',
+  niveles: 'Los cinco niveles a la vez (del 1 al 5 repartidos por el cuerpo)',
 }

@@ -82,10 +82,10 @@ export function AjustesPage() {
 
         {esNativa() && <SeccionActualizaciones />}
 
-        {/* Provisional: páginas para revisar el avatar y las animaciones (ronda 2). */}
+        {/* Provisional: páginas para revisar el cuerpo 3D y las animaciones. */}
         <div className="grid grid-cols-2 gap-2">
           <Link to="/vista-previa/avatar" className="flex min-h-12 items-center justify-center rounded-2xl font-semibold text-accent active:bg-surface-2">
-            Vista previa del avatar
+            Vista previa del cuerpo 3D
           </Link>
           <Link to="/vista-previa/animaciones" className="flex min-h-12 items-center justify-center rounded-2xl font-semibold text-accent active:bg-surface-2">
             Galería de animaciones

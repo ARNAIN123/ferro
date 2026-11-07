@@ -70,3 +70,21 @@ Apache License 2.0. Solo se usa si pones tu propia clave de la API de Anthropic 
 Cálculos de nutrición
 ---------------------
 Metabolismo basal con la ecuación de Mifflin-St Jeor (Mifflin MD, St Jeor ST et al., Am J Clin Nutr 1990;51:241-247).
+
+Cuerpo 3D
+---------
+El modelo public/modelos/cuerpo.glb es una obra derivada de:
+  - Z-Anatomy, el atlas libre de anatomía en 3D (https://github.com/Z-Anatomy/The-blend), de Gauthier Kervyn,
+    Marcin Zielinski y colaboradores. Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional
+    (CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/).
+  - BodyParts3D, © The Database Center for Life Science (Kousaku Okubo), CC BY-SA 2.1 Japón
+    (https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html).
+Cambios hechos para Ferro (scripts/blender/generar-cuerpo.py): piel de las regiones del cuerpo sin pelo ni
+genitales, unida con los músculos superficiales para marcar la musculatura, suavizada, simplificada, dividida
+en las regiones musculares de Ferro, con oclusión ambiental horneada y comprimida con Draco.
+El modelo resultante se distribuye con la misma licencia, CC BY-SA 4.0.
+
+Visor 3D
+--------
+@react-three/fiber y @react-three/drei (https://github.com/pmndrs), MIT License, Copyright (c) Poimandres.
+Decodificador Draco (https://github.com/google/draco), incluido en three.js, Apache License 2.0.
