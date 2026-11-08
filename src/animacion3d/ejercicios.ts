@@ -10,6 +10,8 @@ export type Parametros = Record<string, number>
 export interface EstadoMaterial {
   /** Centro de la barra (a lo largo de X). */
   barra?: Vector3
+  /** Eje de la barra si no va a lo largo de X (de la mano derecha a la izquierda). */
+  ejeBarra?: Vector3
   mancuernas?: Partial<Record<Lado, { centro: Vector3; eje: Vector3 }>>
   /** Punto donde el cable engancha el agarre (la pila sube lo que se alarga el cable). */
   cable?: Vector3
@@ -38,8 +40,10 @@ export type Pieza =
   | { tipo: 'landmine'; pivote: V3 }
   | { tipo: 'caja'; centro: V3; tam: V3 }
   | { tipo: 'rodillo' }
-  | { tipo: 'banco'; pos: V3; giroY?: number; inclinacion?: number }
-  | { tipo: 'bancoLibre'; asiento: [V3, V3]; respaldo?: [V3, V3]; patas: boolean }
+  /** `alto`: altura del centro del tapizado (m). */
+  | { tipo: 'banco'; pos: V3; giroY?: number; inclinacion?: number; alto?: number }
+  /** `arriba`: hacia dónde queda el cuerpo (el tapizado va al otro lado de la línea). */
+  | { tipo: 'bancoLibre'; asiento: [V3, V3]; respaldo?: [V3, V3]; patas: boolean; arriba?: V3; arribaRespaldo?: V3; ancho?: number }
   | { tipo: 'polea'; pos: V3; alturaPolea: number; giroY?: number; agarre: 'cuerda' | 'recta' | 'triangulo' | 'estribo' }
   | { tipo: 'torre'; salida: V3 }
   | { tipo: 'agarrePolea'; agarre: AgarrePolea }
@@ -57,6 +61,11 @@ export interface Definicion3D {
   /** Cámara inicial: ángulo en grados desde el frente (+Z) hacia la izquierda del cuerpo (+X). */
   camara: { azimut: number; altura: number; distancia: number; objetivo: V3 }
   colocar: (p: Parametros, rig: Rig) => EstadoMaterial
+  /**
+   * Se llama una vez con el rig antes de montar el material: ajusta bancos y cajones al cuerpo real
+   * (que lo toquen sin atravesarlo).
+   */
+  preparar?: (rig: Rig) => void
 }
 
 // ── Ayudas ─────────────────────────────────────────────────────────────────────────────────
@@ -110,7 +119,7 @@ const concentricaPrimero = (n: string, pausaArriba = 0.45): Clave<Parametros>[] 
 const pressBanca: Definicion3D = {
   id: 'Barbell_Bench_Press_-_Medium_Grip',
   nombre: 'Press de banca con barra',
-  material: [{ tipo: 'banco', pos: [0, 0, -0.1] }, { tipo: 'barra' }],
+  material: [{ tipo: 'banco', pos: [0, 0, -0.1], alto: 0.393 }, { tipo: 'barra' }],
   // Empieza arriba: baja en 2 s describiendo una J hasta el pecho, pausa y sube en 1 s.
   claves: [
     { t: 0, p: { y: 1.045, z: -0.31 } },
@@ -374,7 +383,7 @@ const elevacionesLaterales: Definicion3D = {
 const hipThrust: Definicion3D = {
   id: 'Barbell_Hip_Thrust',
   nombre: 'Hip thrust con barra',
-  material: [{ tipo: 'banco', pos: [0, 0, -0.44], giroY: Math.PI / 2 }, { tipo: 'barra', almohadilla: true }],
+  material: [{ tipo: 'banco', pos: [0, 0, -0.44], giroY: Math.PI / 2, alto: 0.376 }, { tipo: 'barra', almohadilla: true }],
   claves: concentricaPrimero('h', 0.5),
   concentrica: [[0, 1.0]],
   camara: { azimut: 70, altura: 1.35, distancia: 3.5, objetivo: [0, 0.45, 0.12] },

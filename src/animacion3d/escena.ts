@@ -125,6 +125,7 @@ export class EscenaEjercicio {
     })
     this.raiz.add(cuerpo)
     this.rig = new Rig(cuerpo)
+    this.def.preparar?.(this.rig)
     this.montarMaterial()
     // Largo del cable al empezar: la pila sube lo que se alargue desde ahí.
     const estado = this.def.colocar(interpolar(this.def.claves, 0), this.rig)
@@ -150,7 +151,7 @@ export class EscenaEjercicio {
           break
         }
         case 'banco': {
-          const banco = crearBanco({ inclinacion: pieza.inclinacion ?? 0 })
+          const banco = crearBanco({ inclinacion: pieza.inclinacion ?? 0, alto: pieza.alto })
           banco.position.set(...pieza.pos)
           banco.rotation.y = pieza.giroY ?? 0
           this.raiz.add(banco)
@@ -199,7 +200,16 @@ export class EscenaEjercicio {
         }
         case 'bancoLibre': {
           const v = (q: readonly [number, number, number]) => new Vector3(...q)
-          this.raiz.add(crearBancoLibre([v(pieza.asiento[0]), v(pieza.asiento[1])], pieza.respaldo ? [v(pieza.respaldo[0]), v(pieza.respaldo[1])] : undefined, pieza.patas))
+          this.raiz.add(
+            crearBancoLibre(
+              [v(pieza.asiento[0]), v(pieza.asiento[1])],
+              pieza.respaldo ? [v(pieza.respaldo[0]), v(pieza.respaldo[1])] : undefined,
+              pieza.patas,
+              pieza.arriba ? v(pieza.arriba) : undefined,
+              pieza.arribaRespaldo ? v(pieza.arribaRespaldo) : undefined,
+              pieza.ancho,
+            ),
+          )
           break
         }
         case 'torre': {
@@ -273,7 +283,11 @@ export class EscenaEjercicio {
   }
 
   private colocarMaterial(e: EstadoMaterial): void {
-    if (this.barra && e.barra) this.barra.position.copy(e.barra)
+    if (this.barra && e.barra) {
+      this.barra.position.copy(e.barra)
+      // Si las manos no están a la misma altura, la barra se inclina con ellas.
+      if (e.ejeBarra) this.barra.quaternion.setFromUnitVectors(new Vector3(1, 0, 0), e.ejeBarra)
+    }
     if (this.barra && e.multipower) {
       // El multipower solo deja subir y bajar la barra por sus guías.
       this.barra.position.set(0, e.multipower.y, 0)
@@ -309,6 +323,10 @@ export class EscenaEjercicio {
         a.objeto.position.copy(sitio.centro)
         if (a.tipo === 'estribo' || a.tipo === 'triangulo') {
           a.objeto.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), c.salida.clone().sub(sitio.centro).normalize()))
+        } else if ((a.tipo === 'recta' || a.tipo === 'jalon') && sitio.manos) {
+          // La barra va de una mano a la otra.
+          const eje = sitio.manos[0].clone().sub(sitio.manos[1])
+          if (eje.lengthSq() > 1e-4) a.objeto.quaternion.setFromUnitVectors(new Vector3(1, 0, 0), eje.normalize())
         }
       }
     })

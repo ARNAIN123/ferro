@@ -32,6 +32,15 @@ export function GaleriaAnimaciones3D() {
 
   if (!ejercicios) return null
   if (params.get('revision') === 'patrones') return <Revision grupos={grupos} solo={params.get('solo')} cuantos={params.has('uno') ? 1 : 4} />
+  if (params.get('revision') === 'grande')
+    return (
+      <Grandes
+        ejercicios={ejercicios.filter((x) => (params.get('ver') ?? '').split(',').some((t) => t && (x.id === t || x.nombre.toLowerCase().includes(t.toLowerCase()))))}
+        giro={Number(params.get('giro') ?? 0)}
+        cerca={Number(params.get('cerca') ?? 1)}
+        cuadros={(params.get('cuadros') ?? '0,5,10').split(',').map(Number)}
+      />
+    )
   const e = ejercicios.find((x) => x.id === elegido) ?? ejercicios[0]
   if (!e) return null
 
@@ -115,4 +124,38 @@ function Fotogramas({ e }: { e: Ejercicio }) {
       ))}
     </div>
   )
+}
+
+let turno: Promise<unknown> = Promise.resolve()
+
+/** Revisión de cerca (?revision=grande&ver=nombre,otro&giro=90&cerca=2&cuadros=0,4,8): fotogramas grandes. */
+function Grandes({ ejercicios, giro, cerca, cuadros }: { ejercicios: Ejercicio[]; giro: number; cerca: number; cuadros: number[] }) {
+  return (
+    <div className="flex flex-col gap-3 py-3">
+      {ejercicios.slice(0, 16).map((e) => (
+        <section key={e.id}>
+          <h2 className="truncate text-xs font-bold">{e.nombre}</h2>
+          <Grande e={e} giro={giro} cerca={cerca} cuadros={cuadros} />
+        </section>
+      ))}
+    </div>
+  )
+}
+
+function Grande({ e, giro, cerca, cuadros }: { e: Ejercicio; giro: number; cerca: number; cuadros: number[] }) {
+  const [img, setImg] = useState<string | null>(null)
+  const clave = cuadros.join(',')
+  useEffect(() => {
+    let vivo = true
+    // De una en una: cada una crea su propio contexto WebGL.
+    turno = turno
+      .then(() => import('../../animacion3d/miniaturas'))
+      .then((m) => m.fotogramasRevision(e, musculosDe(e), { lado: 420, cuadros: clave.split(',').map(Number), giro, cerca }))
+      .then((url) => vivo && setImg(url))
+      .catch(() => undefined)
+    return () => {
+      vivo = false
+    }
+  }, [e, giro, cerca, clave])
+  return img ? <img src={img} alt="" className="w-full rounded bg-surface-2" /> : <div className="aspect-[2/1] rounded bg-surface-2" />
 }

@@ -1,8 +1,11 @@
 // El esqueleto del cuerpo 3D (public/modelos/cuerpo-rig.glb) y cómo ponerlo en una pose.
 // Primero el tronco (pelvis, columna, cabeza, clavículas); después, con los hombros y caderas ya
 // colocados, brazos y piernas por cinemática inversa hacia manos y pies.
-import { Euler, Object3D, Quaternion, Vector3 } from 'three'
+import { Euler, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
 import { dosHuesos, giroEntreBases, perpendicular, v, type V3 } from './ik'
+// Puntos de la superficie del cuerpo (cada 3 cm), por hueso, en reposo y en coordenadas de three.js.
+// Los genera scripts/blender/generar-cuerpo.py (FERRO_PUNTOS) junto con el rig.
+import SUPERFICIE from './superficie.json'
 
 const LADOS = ['L', 'R'] as const
 export type Lado = (typeof LADOS)[number]
@@ -241,6 +244,28 @@ export class Rig {
     }
     this.ultimo = r
     return r
+  }
+
+  private superficieLocal: { nombre: string; hueso: Object3D; puntos: Vector3[] }[] | null = null
+
+  /**
+   * Recorre los puntos de la superficie del cuerpo en la pose actual (cada uno se mueve con el hueso
+   * que más lo mueve). Sirve para comprobar que el cuerpo no atraviesa bancos, cajones ni el suelo.
+   */
+  recorrerSuperficie(f: (p: Vector3, hueso: string) => void, filtro?: (hueso: string) => boolean): void {
+    this.superficieLocal ??= Object.entries(SUPERFICIE as Record<string, number[]>).flatMap(([nombre, xs]) => {
+      const r = this.reposo.get(nombre)
+      if (!r) return []
+      const inversa = new Matrix4().compose(r.posMundo, r.quatMundo, new Vector3(1, 1, 1)).invert()
+      const puntos: Vector3[] = []
+      for (let i = 0; i + 2 < xs.length; i += 3) puntos.push(new Vector3(xs[i], xs[i + 1], xs[i + 2]).applyMatrix4(inversa))
+      return [{ nombre, hueso: this.hueso(nombre), puntos }]
+    })
+    const p = new Vector3()
+    for (const g of this.superficieLocal) {
+      if (filtro && !filtro(g.nombre)) continue
+      for (const q of g.puntos) f(p.copy(q).applyMatrix4(g.hueso.matrixWorld), g.nombre)
+    }
   }
 
   private dirReposo(desde: string, hasta: string): Vector3 {

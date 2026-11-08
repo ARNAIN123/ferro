@@ -12,7 +12,7 @@ import { BASE, conDraco, crearEntorno, leerColores, lucesEstudio } from './estud
 
 const LADO = 140
 /** Cambia si cambian el modelo, el material o las animaciones: las miniaturas guardadas se rehacen. */
-const VERSION = 'v8'
+const VERSION = 'v9'
 
 class Miniaturas extends Dexie {
   tiras!: EntityTable<{ clave: string; tira: Blob; creada: number }, 'clave'>
@@ -84,6 +84,43 @@ export function miniatura(e: EjercicioAnimable, musculos: MusculosEjercicio, tem
   enMemoria.set(clave, p)
   p.catch(() => enMemoria.delete(clave))
   return p
+}
+
+/**
+ * Solo para revisar (galería con `?revision`): fotogramas grandes de los cuadros `cuadros` (de 16),
+ * con la cámara girada `giro` grados y acercada `cerca` veces. No se guardan.
+ */
+export async function fotogramasRevision(e: EjercicioAnimable, musculos: MusculosEjercicio, o: { lado: number; cuadros: number[]; giro?: number; cerca?: number }): Promise<string> {
+  const def = definicion3D(e)
+  const m = await cargarModelo()
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
+  renderer.setPixelRatio(1)
+  renderer.setSize(o.lado, o.lado, false)
+  renderer.toneMapping = THREE.NeutralToneMapping
+  const escena = new THREE.Scene()
+  escena.environment = crearEntorno(renderer).textura
+  for (const luz of lucesEstudio()) escena.add(luz)
+  const ejercicio = new EscenaEjercicio(m, def, musculos, leerColores())
+  escena.add(ejercicio.raiz)
+  const camara = new THREE.PerspectiveCamera(30 / (o.cerca ?? 1), 1, 0.1, 30)
+  const az = ((def.camara.azimut + (o.giro ?? 0)) * Math.PI) / 180
+  const [ox, oy, oz] = def.camara.objetivo
+  camara.position.set(ox + Math.sin(az) * def.camara.distancia, def.camara.altura, oz + Math.cos(az) * def.camara.distancia)
+  camara.lookAt(ox, oy, oz)
+  const tira = document.createElement('canvas')
+  // De dos en dos por fila.
+  const columnas = Math.min(2, o.cuadros.length)
+  tira.width = o.lado * columnas
+  tira.height = o.lado * Math.ceil(o.cuadros.length / columnas)
+  const ctx = tira.getContext('2d')!
+  const rep = duracionRep(def)
+  o.cuadros.forEach((c, i) => {
+    ejercicio.actualizar((c * rep) / CUADROS)
+    renderer.render(escena, camara)
+    ctx.drawImage(renderer.domElement, (i % columnas) * o.lado, Math.floor(i / columnas) * o.lado)
+  })
+  renderer.dispose()
+  return tira.toDataURL('image/webp', 0.85)
 }
 
 async function generar(e: EjercicioAnimable, musculos: MusculosEjercicio): Promise<Blob> {

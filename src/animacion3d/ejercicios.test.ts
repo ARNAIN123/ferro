@@ -1,9 +1,11 @@
 import { readFileSync } from 'node:fs'
+import type { Box3, Mesh } from 'three'
 import { describe, expect, it } from 'vitest'
 import catalogo from '../catalogo/ejercicios.json'
 import { duracionRep, EJERCICIOS_3D, enConcentrica, momento, REPETICIONES } from './ejercicios'
 import { esqueletoDePrueba } from './esqueletoDePrueba'
 import { anguloArticulacion, interpolar } from './ik'
+import { crearBanco, crearMaquinaJalon } from './material'
 import { Rig } from './rig'
 
 const articulaciones = (JSON.parse(readFileSync(new URL('../../public/modelos/cuerpo-rig.json', import.meta.url), 'utf-8')) as { articulaciones: Record<string, number[]> }).articulaciones
@@ -58,5 +60,42 @@ describe('animaciones 3D: piloto', () => {
       }
     }
     expect([...new Set(fallos)].slice(0, 15)).toEqual([])
-  })
+  }, 60_000)
+
+  it('el cuerpo no se mete en los bancos ni en la máquina de jalón (como mucho 1,5 cm de contacto)', () => {
+    const rig = new Rig(esqueletoDePrueba(articulaciones))
+    const fallos: string[] = []
+    for (const d of EJERCICIOS_3D) {
+      const piezas: { malla: Mesh; caja: Box3 }[] = []
+      for (const p of d.material) {
+        const g = p.tipo === 'banco' ? crearBanco({ inclinacion: p.inclinacion ?? 0, alto: p.alto }) : p.tipo === 'jalon' ? crearMaquinaJalon().grupo : null
+        if (!g) continue
+        if (p.tipo === 'banco') {
+          g.position.set(...p.pos)
+          g.rotation.y = p.giroY ?? 0
+        }
+        g.updateMatrixWorld(true)
+        g.traverse((o) => {
+          const m = o as Mesh
+          if (!m.isMesh) return
+          m.geometry.computeBoundingBox()
+          piezas.push({ malla: m, caja: m.geometry.boundingBox!.clone() })
+        })
+      }
+      if (!piezas.length) continue
+      const rep = duracionRep(d)
+      let peor = 0
+      for (let i = 0; i < 16; i++) {
+        d.colocar(interpolar(d.claves, (rep * i) / 16), rig)
+        rig.recorrerSuperficie((q) => {
+          for (const { malla, caja } of piezas) {
+            const l = malla.worldToLocal(q.clone())
+            if (caja.containsPoint(l)) peor = Math.max(peor, Math.min(l.x - caja.min.x, caja.max.x - l.x, l.y - caja.min.y, caja.max.y - l.y, l.z - caja.min.z, caja.max.z - l.z))
+          }
+        })
+      }
+      if (peor > 0.015) fallos.push(`${d.id}: ${(peor * 100).toFixed(1)} cm`)
+    }
+    expect(fallos).toEqual([])
+  }, 60_000)
 })

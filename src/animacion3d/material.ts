@@ -106,10 +106,9 @@ export function crearMancuerna(): Group {
  * Banco ajustable: asiento y respaldo de verdad, con la inclinación del respaldo en grados (0 =
  * plano). A lo largo del eje Z: el respaldo hacia −Z, el asiento hacia +Z. Altura del tapizado: 45 cm.
  */
-export function crearBanco({ inclinacion = 0, largoRespaldo = 0.82 } = {}): Group {
+export function crearBanco({ inclinacion = 0, largoRespaldo = 0.82, alto = 0.43 } = {}): Group {
   const g = new Group()
   g.name = 'banco'
-  const alto = 0.43
   const asiento = malla(new RoundedBoxGeometry(0.28, 0.07, 0.38, 3, 0.02), MATERIALES.tapizado)
   asiento.position.set(0, alto, 0.21)
   g.add(asiento)
@@ -306,7 +305,7 @@ export function crearAgarre(tipo: 'triangulo' | 'estribo'): Group {
 // ── Máquina de jalón ───────────────────────────────────────────────────────────────────────
 
 /** Máquina de jalón: asiento, rodilleros, estructura y polea alta que sale por encima del usuario. */
-export function crearMaquinaJalon({ alturaAsiento = 0.47, rodilleros = new Vector3(0, 0.66, 0.3) } = {}): { grupo: Group; polea: Polea } {
+export function crearMaquinaJalon({ alturaAsiento = 0.405, rodilleros = new Vector3(0, 0.66, 0.3) } = {}): { grupo: Group; polea: Polea } {
   const g = new Group()
   g.name = 'maquinaJalon'
   const asiento = malla(new RoundedBoxGeometry(0.38, 0.08, 0.36, 3, 0.02), MATERIALES.tapizado)
@@ -325,8 +324,9 @@ export function crearMaquinaJalon({ alturaAsiento = 0.47, rodilleros = new Vecto
   const brazoRodillero = malla(new BoxGeometry(0.05, 0.05, 0.9 - rodilleros.z), MATERIALES.estructura)
   brazoRodillero.position.set(0, rodilleros.y + 0.06, (0.9 + rodilleros.z) / 2)
   g.add(brazoRodillero)
-  const base = malla(new BoxGeometry(0.5, 0.05, 1.25), MATERIALES.estructura)
-  base.position.set(0, 0.025, 0.4)
+  // Plataforma baja: los pies se apoyan encima.
+  const base = malla(new BoxGeometry(0.5, 0.02, 1.25), MATERIALES.estructura)
+  base.position.set(0, 0.01, 0.4)
   g.add(base)
   // La torre con la pila está delante del usuario (la mira de frente) y la viga alta vuelve hacia
   // atrás por encima de él hasta la polea, justo sobre la barra.
@@ -466,16 +466,17 @@ function perpendicular3(a: Vector3, eje: Vector3): Vector3 {
  * Banco de cualquier forma a partir de los segmentos de su tapizado (asiento y respaldo opcional):
  * la cara de arriba del tapizado queda en el segmento y las patas bajan al suelo.
  */
-export function crearBancoLibre(asiento: [Vector3, Vector3], respaldo: [Vector3, Vector3] | undefined, patas: boolean): Group {
+export function crearBancoLibre(asiento: [Vector3, Vector3], respaldo: [Vector3, Vector3] | undefined, patas: boolean, arriba?: Vector3, arribaRespaldo?: Vector3, ancho = 0.28): Group {
   const g = new Group()
   g.name = 'banco'
-  const almohadilla = (a: Vector3, b: Vector3) => {
+  // La línea es la cara del tapizado que toca el cuerpo; el tapizado va hacia el otro lado.
+  const almohadilla = (a: Vector3, b: Vector3, haciaCuerpo?: Vector3, anchura = 0.28) => {
     const d = b.clone().sub(a)
     const largo = Math.max(0.2, d.length())
     const dir = d.clone().normalize()
-    const abajo = perpendicular3(new Vector3(0, -1, 0), dir)
+    const abajo = haciaCuerpo ? perpendicular3(haciaCuerpo.clone().negate(), dir) : perpendicular3(new Vector3(0, -1, 0), dir)
     const lado = new Vector3().crossVectors(dir, abajo).normalize()
-    const pad = malla(new RoundedBoxGeometry(0.28, 0.07, largo, 3, 0.02), MATERIALES.tapizado)
+    const pad = malla(new RoundedBoxGeometry(anchura, 0.07, largo, 3, 0.02), MATERIALES.tapizado)
     // Base del tapizado: X = a lo ancho, Y = hacia arriba (contrario a "abajo"), Z = a lo largo.
     const m = new Matrix4().makeBasis(lado, abajo.clone().negate(), dir)
     pad.quaternion.setFromRotationMatrix(m)
@@ -494,8 +495,8 @@ export function crearBancoLibre(asiento: [Vector3, Vector3], respaldo: [Vector3,
       }
     }
   }
-  almohadilla(asiento[0], asiento[1])
-  if (respaldo) almohadilla(respaldo[0], respaldo[1])
+  almohadilla(asiento[0], asiento[1], arriba, ancho)
+  if (respaldo) almohadilla(respaldo[0], respaldo[1], arribaRespaldo)
   return g
 }
 

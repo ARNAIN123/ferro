@@ -12,7 +12,8 @@
 #   1. Piel: las regiones de la piel (sin pelo ni genitales: es un maniquí) se unen y se convierten en un
 #      volumen cerrado con un remallado por vóxeles.
 #   2. Definición: donde hay músculo debajo, la piel se hunde hasta él (se quita la grasa del modelo
-#      original) y se une con los músculos superficiales, un poco inflados. Así se marcan los músculos.
+#      original) y se une con los músculos superficiales, inflados (más en brazos, hombros, pecho,
+#      glúteos y piernas). Así se marcan los músculos y el cuerpo tiene volumen.
 #   3. Se suaviza (acabado de arcilla), se simplifica para el móvil y cada cara se asigna a la región de
 #      Ferro del músculo más cercano (pectoral superior, bíceps, cuádriceps…).
 #   4. Se hornea la oclusión ambiental en los vértices y se exporta un GLB comprimido con Draco.
@@ -33,14 +34,25 @@ VOXEL = 0.003            # remallado final (m)
 CERCA = 0.035            # la piel a menos de esto de un músculo se hunde hasta él (se quita la grasa)
 LEJOS = 0.055            # a partir de aquí la piel no se toca
 HUNDIR_MAX = 0.03        # como mucho se hunde esto
-INFLAR = 0.003           # los músculos, un poco más gruesos: redondea los surcos (aspecto atlético)
+# Cuánto se inflan los músculos de cada región antes de unirlos a la piel (m): da volumen y redondea
+# los surcos entre músculos (sin esto parece un modelo anatómico sin grasa).
+INFLAR_REGION = {
+    'pectoral_superior': 0.015, 'pectoral_inferior': 0.015, 'deltoides_anterior': 0.015,
+    'deltoides_lateral': 0.015, 'deltoides_posterior': 0.014, 'biceps': 0.014, 'braquial': 0.013,
+    'triceps': 0.014, 'antebrazos': 0.009, 'trapecio': 0.012, 'espalda_media': 0.012, 'dorsales': 0.012,
+    'lumbares': 0.010, 'abdomen': 0.009, 'oblicuos': 0.010, 'gluteo_mayor': 0.014, 'gluteo_medio': 0.012,
+    'cuadriceps': 0.014, 'isquiotibiales': 0.014, 'aductores': 0.012, 'gemelos': 0.010, 'soleo': 0.010,
+    'cuello': 0.010,
+}
+INFLAR_SIN_REGION = 0.009 # músculos que solo dan forma (serratos, intercostales…)
 HUNDIR_EXTRA = 0.001     # la piel queda justo por debajo de los músculos inflados
 SUAVIZADO = (1.0, 10)    # (factor, repeticiones) del suavizado final
 SUAVIZAR_HUNDIDO = 10    # pasadas de suavizado del hundimiento (evita hoyos y picos)
 SUAVIZAR_PROTECCION = 30 # pasadas para que las zonas protegidas pasen a las demás sin escalón
 CIERRE = 0.0025          # cierre morfológico: tapa grietas y hoyos de menos de 2 × esto
 CARAS_OBJETIVO = 110_000 # triángulos del modelo final
-PROFUNDIDAD_REGION = 0.035 # se busca el músculo hacia dentro hasta esta profundidad
+PUNTOS_REJILLA = 0.03        # separación de los puntos de la superficie para los choques (m)
+PROFUNDIDAD_REGION = 0.05 # se busca el músculo hacia dentro hasta esta profundidad
 # Algunos músculos quedan bajo la aponeurosis de otro (el recto bajo la del oblicuo externo, los
 # lumbares bajo la del dorsal ancho): para elegir la región se les da esta ventaja (m).
 VENTAJA_REGION = {'abdomen': 0.012, 'lumbares': 0.025, 'gluteo_mayor': 0.006, 'aductores': 0.003, 'soleo': 0.010}
@@ -303,6 +315,7 @@ if CACHE and os.path.exists(CACHE):
     bpy.data.objects.remove(piel)
 else:
     paso('hundir la piel sobre los músculos')
+    inflar_cara = [INFLAR_REGION.get(REGIONES[r], INFLAR_SIN_REGION) if r else INFLAR_SIN_REGION for r in region_de_cara]
     from mathutils.kdtree import KDTree
     bm = bmesh.new(); bm.from_mesh(piel.data)
     bm.verts.ensure_lookup_table(); bm.normal_update()
@@ -327,7 +340,7 @@ else:
         t = 1.0 if d <= CERCA else 1.0 - (d - CERCA) / (LEJOS - CERCA)
         t = t * t * (3 - 2 * t)
         profundidad = (v.co - loc).dot(v.normal)
-        hundir.append(t * min(HUNDIR_MAX, max(0.0, profundidad - INFLAR + HUNDIR_EXTRA)))
+        hundir.append(t * min(HUNDIR_MAX, max(0.0, profundidad - inflar_cara[i] + HUNDIR_EXTRA)))
     hundir = suavizar(hundir, SUAVIZAR_HUNDIDO)
     for v in bm.verts:
         v.co -= v.normal * hundir[v.index] * (1.0 - min(1.0, proteccion[v.index]))
@@ -340,10 +353,12 @@ else:
     paso('unir piel y músculos')
     bm_inflado = bm_m.copy()
     bm_inflado.normal_update()
+    bm_inflado.faces.ensure_lookup_table()
     for v in bm_inflado.verts:
         # Dentro de manos, pies, rodillas… los tendones no se inflan: así no asoman por la piel.
         co, j, _ = arbol_proteccion.find(v.co)
-        v.co += v.normal * INFLAR * (1.0 - min(1.0, proteccion[j]))
+        inflar = sum(inflar_cara[f.index] for f in v.link_faces) / max(1, len(v.link_faces))
+        v.co += v.normal * inflar * (1.0 - min(1.0, proteccion[j]))
     bm_union = bmesh.new(); bm_union.from_mesh(piel.data)
     me = bpy.data.meshes.new('tmp'); bm_inflado.to_mesh(me); bm_union.from_mesh(me); bpy.data.meshes.remove(me)
     bm_inflado.free()
@@ -418,7 +433,7 @@ for f in bm.faces:
         if loc is not None:
             puntos = t - ventaja
         else:
-            loc, nor, i, d = arbol.find_nearest(c, 0.012)
+            loc, nor, i, d = arbol.find_nearest(c, 0.025)
             if loc is None:
                 continue
             puntos = d + 0.015 - ventaja
@@ -538,6 +553,9 @@ with open(os.path.splitext(os.path.abspath(SALIDA))[0] + '.json', 'w', encoding=
 paso(f'hecho: {SALIDA} ({os.path.getsize(SALIDA) / 1e6:.2f} MB)')
 
 # ── 6. Rig (opcional, FERRO_RIG=ruta.glb): el mismo cuerpo con esqueleto para las animaciones ──
+# Con FERRO_PUNTOS=ruta.json guarda también puntos de la superficie (cada PUNTOS_REJILLA m) agrupados
+# por el hueso que más los mueve, en coordenadas de three.js: con ellos las animaciones comprueban
+# que el cuerpo no atraviesa bancos, cajones ni el suelo.
 RIG = os.environ.get('FERRO_RIG')
 if RIG:
     paso('rig: articulaciones de los huesos de Z-Anatomy')
@@ -620,6 +638,24 @@ if RIG:
     sin_pesos = [g.name for g in cuerpo.vertex_groups if g.index not in usados]
     huerfanos = sum(1 for v in cuerpo.data.vertices if not v.groups)
     print(f'  huesos sin pesos: {sin_pesos}; vértices sin hueso: {huerfanos}')
+
+    PUNTOS = os.environ.get('FERRO_PUNTOS')
+    if PUNTOS:
+        nombre_grupo = {g.index: g.name for g in cuerpo.vertex_groups}
+        celdas, puntos = set(), {}
+        for v in cuerpo.data.vertices:
+            if not v.groups:
+                continue
+            g = max(v.groups, key=lambda x: x.weight)
+            hueso = nombre_grupo[g.group]
+            celda = (hueso,) + tuple(math.floor(c / PUNTOS_REJILLA) for c in v.co)
+            if celda in celdas:
+                continue
+            celdas.add(celda)
+            puntos.setdefault(hueso, []).extend([round(v.co.x, 3), round(v.co.z, 3), round(-v.co.y, 3)])
+        with open(os.path.abspath(PUNTOS), 'w', encoding='utf-8') as f:
+            json.dump(puntos, f, separators=(',', ':'))
+        print(f'  puntos de la superficie: {sum(len(p) for p in puntos.values()) // 3}')
 
     paso('rig: exportar')
     bpy.ops.object.select_all(action='DESELECT')
