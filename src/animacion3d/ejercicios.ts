@@ -10,19 +10,39 @@ export type Parametros = Record<string, number>
 export interface EstadoMaterial {
   /** Centro de la barra (a lo largo de X). */
   barra?: Vector3
-  mancuernas?: Record<Lado, { centro: Vector3; eje: Vector3 }>
+  mancuernas?: Partial<Record<Lado, { centro: Vector3; eje: Vector3 }>>
   /** Punto donde el cable engancha el agarre (la pila sube lo que se alarga el cable). */
   cable?: Vector3
   cuerda?: { enganche: Vector3; manos: [Vector3, Vector3] }
   /** Centro de la barra de jalón. */
   barraPolea?: Vector3
+  /** Centro de la barra del multipower. */
+  multipower?: Vector3
+  disco?: { centro: Vector3; eje: Vector3 }
+  landmine?: { pivote: Vector3; mano: Vector3 }
+  rodillo?: Vector3
+  /** Cables de las torres (`torre`), en orden: de la salida de la polea al agarre. */
+  cables?: { salida: Vector3; enganche: Vector3 }[]
+  /** Agarre de cada cable: dónde está y, si es para dos manos, dónde van las manos. */
+  agarresPolea?: { centro: Vector3; manos?: [Vector3, Vector3] }[]
 }
+
+export type AgarrePolea = 'cuerda' | 'recta' | 'triangulo' | 'estribo' | 'jalon' | 'tobillera'
 
 export type Pieza =
   | { tipo: 'barra'; radioDisco?: number; discos?: number; almohadilla?: boolean }
-  | { tipo: 'mancuernas' }
+  | { tipo: 'hexagonal' }
+  | { tipo: 'mancuernas'; manos?: Lado[] }
+  | { tipo: 'disco' }
+  | { tipo: 'multipower' }
+  | { tipo: 'landmine'; pivote: V3 }
+  | { tipo: 'caja'; centro: V3; tam: V3 }
+  | { tipo: 'rodillo' }
   | { tipo: 'banco'; pos: V3; giroY?: number; inclinacion?: number }
+  | { tipo: 'bancoLibre'; asiento: [V3, V3]; respaldo?: [V3, V3]; patas: boolean }
   | { tipo: 'polea'; pos: V3; alturaPolea: number; giroY?: number; agarre: 'cuerda' | 'recta' | 'triangulo' | 'estribo' }
+  | { tipo: 'torre'; salida: V3 }
+  | { tipo: 'agarrePolea'; agarre: AgarrePolea }
   | { tipo: 'jalon' }
 
 export interface Definicion3D {
@@ -388,7 +408,7 @@ export const EJERCICIOS_3D: readonly Definicion3D[] = [
   hipThrust,
 ]
 
-export const definicion3D = (id: string): Definicion3D | undefined => EJERCICIOS_3D.find((d) => d.id === id)
+export const definicionPiloto = (id: string): Definicion3D | undefined => EJERCICIOS_3D.find((d) => d.id === id)
 
 // ── Tiempo ─────────────────────────────────────────────────────────────────────────────────
 

@@ -5,6 +5,7 @@ import {
   BoxGeometry,
   CylinderGeometry,
   Group,
+  Matrix4,
   Mesh,
   MeshStandardMaterial,
   Object3D,
@@ -376,4 +377,135 @@ export function crearMultipower(): { grupo: Group; barra: Group } {
   }
   g.add(barra)
   return { grupo: g, barra }
+}
+
+// ── Más material (para toda la biblioteca) ─────────────────────────────────────────────────
+
+/** Barra hexagonal (trap bar): marco de seis lados con las asas dentro y manguitos con discos. Eje X. */
+export function crearHexagonal(): Group {
+  const g = new Group()
+  g.name = 'hexagonal'
+  const r = 0.33
+  const puntos = Array.from({ length: 6 }, (_, i) => {
+    const a = (i / 6) * Math.PI * 2
+    return new Vector3(Math.cos(a) * r, 0, Math.sin(a) * r * 0.75)
+  })
+  for (let i = 0; i < 6; i++) {
+    const t = crearTramo(0.016, MATERIALES.acero)
+    tender(t, puntos[i]!, puntos[(i + 1) % 6]!)
+    g.add(t)
+  }
+  for (const s of [1, -1]) {
+    const asa = malla(new CylinderGeometry(0.017, 0.017, 0.2, 16), MATERIALES.acero)
+    asa.rotation.x = Math.PI / 2
+    asa.position.set(s * 0.29, 0, 0)
+    g.add(asa)
+    g.add(cilindroX(0.025, 0.36, MATERIALES.acero, s * (r + 0.18)))
+    g.add(cilindroX(0.225, 0.055, MATERIALES.goma, s * (r + 0.12), 56), cilindroX(0.218, 0.059, MATERIALES.gomaBorde, s * (r + 0.12), 56))
+  }
+  return g
+}
+
+/** Disco suelto de 20 kg, para sujetarlo con las manos. Eje X. */
+export function crearDisco(): Group {
+  const g = new Group()
+  g.name = 'disco'
+  g.add(cilindroX(0.225, 0.045, MATERIALES.goma, 0, 56), cilindroX(0.218, 0.049, MATERIALES.gomaBorde, 0, 56), cilindroX(0.06, 0.052, MATERIALES.aceroOscuro))
+  return g
+}
+
+/** Landmine: la barra va del anclaje en el suelo a las manos, con un disco cerca del extremo. */
+export function crearLandmine(): { grupo: Group; actualizar: (pivote: Vector3, mano: Vector3) => void } {
+  const g = new Group()
+  g.name = 'landmine'
+  const base = malla(new CylinderGeometry(0.07, 0.09, 0.08, 20), MATERIALES.estructura)
+  const barra = crearTramo(0.025, MATERIALES.acero)
+  const disco = new Group()
+  disco.add(cilindroX(0.225, 0.055, MATERIALES.goma, 0, 56))
+  g.add(base, barra, disco)
+  return {
+    grupo: g,
+    actualizar: (pivote, mano) => {
+      base.position.copy(pivote).setY(0.04)
+      const dir = mano.clone().sub(pivote).normalize()
+      tender(barra, pivote, mano.clone().add(dir.clone().multiplyScalar(0.12)))
+      disco.position.copy(mano).sub(dir.clone().multiplyScalar(0.3))
+      disco.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(1, 0, 0), dir))
+    },
+  }
+}
+
+export function crearCaja(tam: Vector3): Mesh {
+  const c = malla(new RoundedBoxGeometry(Math.max(0.1, tam.x), Math.max(0.05, tam.y), Math.max(0.1, tam.z), 2, 0.015), MATERIALES.tapizado)
+  c.name = 'caja'
+  return c
+}
+
+/** Rueda abdominal (rodillo). Eje X. */
+export function crearRodillo(): Group {
+  const g = new Group()
+  g.name = 'rodillo'
+  g.add(cilindroX(0.09, 0.07, MATERIALES.goma, 0, 32), cilindroX(0.012, 0.36, MATERIALES.acero))
+  return g
+}
+
+/** Tobillera para la polea. */
+export function crearTobillera(): Mesh {
+  const t = malla(new TorusGeometry(0.06, 0.02, 10, 24), MATERIALES.tapizado)
+  t.name = 'tobillera'
+  t.rotation.x = Math.PI / 2
+  return t
+}
+
+function perpendicular3(a: Vector3, eje: Vector3): Vector3 {
+  const r = a.clone().sub(eje.clone().multiplyScalar(a.dot(eje)))
+  return r.lengthSq() > 1e-8 ? r.normalize() : new Vector3(0, -1, 0)
+}
+
+/**
+ * Banco de cualquier forma a partir de los segmentos de su tapizado (asiento y respaldo opcional):
+ * la cara de arriba del tapizado queda en el segmento y las patas bajan al suelo.
+ */
+export function crearBancoLibre(asiento: [Vector3, Vector3], respaldo: [Vector3, Vector3] | undefined, patas: boolean): Group {
+  const g = new Group()
+  g.name = 'banco'
+  const almohadilla = (a: Vector3, b: Vector3) => {
+    const d = b.clone().sub(a)
+    const largo = Math.max(0.2, d.length())
+    const dir = d.clone().normalize()
+    const abajo = perpendicular3(new Vector3(0, -1, 0), dir)
+    const lado = new Vector3().crossVectors(dir, abajo).normalize()
+    const pad = malla(new RoundedBoxGeometry(0.28, 0.07, largo, 3, 0.02), MATERIALES.tapizado)
+    // Base del tapizado: X = a lo ancho, Y = hacia arriba (contrario a "abajo"), Z = a lo largo.
+    const m = new Matrix4().makeBasis(lado, abajo.clone().negate(), dir)
+    pad.quaternion.setFromRotationMatrix(m)
+    pad.position.copy(a.clone().add(b).multiplyScalar(0.5)).add(abajo.clone().multiplyScalar(0.035))
+    g.add(pad)
+    if (patas) {
+      for (const f of [0.15, 0.85]) {
+        const p = a.clone().lerp(b, f).add(abajo.clone().multiplyScalar(0.07))
+        if (p.y > 0.05) {
+          const pata = malla(new BoxGeometry(0.05, p.y, 0.05), MATERIALES.estructura)
+          pata.position.set(p.x, p.y / 2, p.z)
+          const pie = malla(new BoxGeometry(0.42, 0.04, 0.06), MATERIALES.estructura)
+          pie.position.set(p.x, 0.02, p.z)
+          g.add(pata, pie)
+        }
+      }
+    }
+  }
+  almohadilla(asiento[0], asiento[1])
+  if (respaldo) almohadilla(respaldo[0], respaldo[1])
+  return g
+}
+
+/** Torre de polea colocada para que su salida quede en `salida`, mirando hacia el usuario (el origen). */
+export function crearTorre(salida: Vector3): Polea {
+  const h = new Vector3(-salida.x, 0, -salida.z)
+  if (h.lengthSq() < 1e-4) h.set(0, 0, 1)
+  h.normalize()
+  const pos = salida.clone().sub(h.clone().multiplyScalar(0.06)).setY(0)
+  const polea = crearPolea({ pos, alturaPolea: Math.max(0.12, salida.y + 0.045), giroY: Math.atan2(h.x, h.z) })
+  polea.salida.copy(salida)
+  return polea
 }

@@ -1,4 +1,3 @@
-import { definicion3D } from '../../animacion3d/ejercicios'
 import type { Musculo } from '../../domain/tipos'
 import { useMovimientoReducido } from '../../hooks/useMovimientoReducido'
 import { MiniaturaAnimada } from '../animacion3d/MiniaturaAnimada'
@@ -72,9 +71,19 @@ export function AnimacionEjercicio({ ejercicio, className = '', animar = true }:
 
 /** Miniatura para las listas: la pose representativa, sin animar. */
 export function MiniaturaEjercicio({ ejercicio, className = 'size-14' }: { ejercicio: EjercicioAnimable & { musculosSecundarios?: Musculo[] }; className?: string }) {
-  // Piloto 3D: los ejercicios que ya tienen animación 3D enseñan su miniatura animada.
-  if (definicion3D(ejercicio.id))
-    return <MiniaturaAnimada ejercicioId={ejercicio.id} musculos={{ principales: ejercicio.musculosPrincipales, secundarios: ejercicio.musculosSecundarios ?? [] }} className={className} />
+  // La miniatura 3D animada; mientras se genera (o sin WebGL), la 2D.
+  return (
+    <MiniaturaAnimada
+      ejercicio={ejercicio}
+      musculos={{ principales: ejercicio.musculosPrincipales, secundarios: ejercicio.musculosSecundarios ?? [] }}
+      className={className}
+      respaldo={<Miniatura2D ejercicio={ejercicio} />}
+    />
+  )
+}
+
+function Miniatura2D({ ejercicio }: { ejercicio: EjercicioAnimable }) {
+  const className = 'size-full'
   return (
     <span className={`${className} grid shrink-0 place-items-center overflow-hidden rounded-xl bg-surface-2`} aria-hidden="true">
       <AnimacionEjercicio ejercicio={ejercicio} animar={false} className="size-full" />

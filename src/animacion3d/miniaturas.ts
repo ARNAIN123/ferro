@@ -1,14 +1,52 @@
-// Miniaturas animadas para las listas: un único renderizador sin pantalla dibuja 16 fotogramas de una
-// repetición en una tira (WebP) que se anima con CSS. Se generan una vez y se guardan en el móvil.
+// Miniaturas animadas para las listas: un único renderizador sin pantalla dibuja los fotogramas de
+// una repetición en una tira (WebP) que se anima con CSS. Se generan una vez, cuando hace falta, y
+// se guardan en una base de datos aparte (no entra en las copias de seguridad ni toca los datos).
+import Dexie, { type EntityTable } from 'dexie'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { BASE, conDraco, crearEntorno, leerColores, lucesEstudio } from './estudio'
-import { CUADROS_MINIATURA as CUADROS, definicion3D, duracionRep } from './ejercicios'
+import type { EjercicioAnimable } from '../animacion/asignacion'
+import { definicion3D } from './biblioteca'
+import { CUADROS_MINIATURA as CUADROS, duracionRep } from './ejercicios'
 import { EscenaEjercicio, type MusculosEjercicio } from './escena'
+import { BASE, conDraco, crearEntorno, leerColores, lucesEstudio } from './estudio'
 
-const LADO = 160
+const LADO = 140
 /** Cambia si cambian el modelo, el material o las animaciones: las miniaturas guardadas se rehacen. */
-const VERSION = 'v3'
+const VERSION = 'v8'
+
+class Miniaturas extends Dexie {
+  tiras!: EntityTable<{ clave: string; tira: Blob; creada: number }, 'clave'>
+  constructor() {
+    super('ferro-miniaturas')
+    this.version(1).stores({ tiras: 'clave' })
+  }
+}
+let base: Miniaturas | null = null
+const baseDeDatos = () => {
+  if (!base) {
+    base = new Miniaturas()
+    limpiarAntiguas(base)
+  }
+  return base
+}
+
+/**
+ * Borra las miniaturas que ya no sirven: las de versiones anteriores y las del piloto (que iban en
+ * localStorage con la clave `ferro.mini3d.…`). Son solo caché: los datos no se tocan.
+ */
+function limpiarAntiguas(db: Miniaturas) {
+  void db.tiras
+    .filter((t) => !t.clave.startsWith(`${VERSION}|`))
+    .delete()
+    .catch(() => undefined)
+  try {
+    // Primero las claves y después se borran (al borrar, el orden de las claves puede cambiar).
+    const viejas = Object.keys(localStorage).filter((k) => k.startsWith('ferro.mini3d.'))
+    for (const k of viejas) localStorage.removeItem(k)
+  } catch {
+    // Sin localStorage: no hay nada que limpiar.
+  }
+}
 
 let modelo: Promise<THREE.Object3D> | null = null
 const cargarModelo = () =>
@@ -22,44 +60,34 @@ let motor: { renderer: THREE.WebGLRenderer; entorno: THREE.Texture } | null = nu
 const enMemoria = new Map<string, Promise<string>>()
 let cola: Promise<unknown> = Promise.resolve()
 
-const leerGuardada = (clave: string) => {
-  try {
-    return localStorage.getItem(clave)
-  } catch {
-    return null
-  }
-}
-const guardar = (clave: string, valor: string) => {
-  try {
-    localStorage.setItem(clave, valor)
-  } catch {
-    // Sin sitio: se volverá a generar la próxima vez.
-  }
-}
-
-/** Tira de fotogramas (data URL) de la animación de un ejercicio. */
-export function miniatura(id: string, musculos: MusculosEjercicio, tema: string): Promise<string> {
-  const clave = `ferro.mini3d.${VERSION}.${tema}.${id}.${musculos.principales.join('+')}.${musculos.secundarios.join('+')}`
+/** Tira de fotogramas (URL de un Blob) de la animación de un ejercicio. */
+export function miniatura(e: EjercicioAnimable, musculos: MusculosEjercicio, tema: string): Promise<string> {
+  const clave = `${VERSION}|${tema}|${e.id}|${e.material}|${musculos.principales.join('+')}|${musculos.secundarios.join('+')}`
   const previa = enMemoria.get(clave)
   if (previa) return previa
-  const guardada = leerGuardada(clave)
-  if (guardada) {
-    const p = Promise.resolve(guardada)
-    enMemoria.set(clave, p)
-    return p
-  }
-  // De una en una, para no atascar el móvil.
-  const p = (cola = cola.then(() => generar(id, musculos))).then((url) => {
-    guardar(clave, url as string)
-    return url as string
-  })
+  const p = (async () => {
+    try {
+      const guardada = await baseDeDatos().tiras.get(clave)
+      if (guardada) return URL.createObjectURL(guardada.tira)
+    } catch {
+      // Sin base de datos: se genera igual.
+    }
+    // De una en una, para no atascar el móvil.
+    const tira = (await (cola = cola.then(() => generar(e, musculos), () => generar(e, musculos)))) as Blob
+    try {
+      await baseDeDatos().tiras.put({ clave, tira, creada: Date.now() })
+    } catch {
+      // Sin sitio: se volverá a generar otra vez.
+    }
+    return URL.createObjectURL(tira)
+  })()
   enMemoria.set(clave, p)
+  p.catch(() => enMemoria.delete(clave))
   return p
 }
 
-async function generar(id: string, musculos: MusculosEjercicio): Promise<string> {
-  const def = definicion3D(id)
-  if (!def) throw new Error(`Sin animación 3D: ${id}`)
+async function generar(e: EjercicioAnimable, musculos: MusculosEjercicio): Promise<Blob> {
+  const def = definicion3D(e)
   const m = await cargarModelo()
   if (!motor) {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true })
@@ -91,6 +119,11 @@ async function generar(id: string, musculos: MusculosEjercicio): Promise<string>
     // Cede el hilo entre fotogramas: la app sigue respondiendo.
     await new Promise((r) => setTimeout(r, 0))
   }
+  // Libera el material de esta escena (el cuerpo se comparte).
+  ejercicio.raiz.traverse((o) => {
+    const malla = o as THREE.Mesh
+    if (malla.isMesh && !(malla as THREE.SkinnedMesh).isSkinnedMesh) malla.geometry.dispose()
+  })
   renderer.renderLists.dispose()
-  return tira.toDataURL('image/webp', 0.82)
+  return new Promise((ok, mal) => tira.toBlob((b) => (b ? ok(b) : mal(new Error('Sin imagen'))), 'image/webp', 0.8))
 }

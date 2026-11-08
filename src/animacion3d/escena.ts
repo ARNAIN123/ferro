@@ -3,9 +3,29 @@ import { BufferAttribute, Color, Group, MeshStandardMaterial, Object3D, Quaterni
 import { clone as clonarConEsqueleto } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { aspectoDeNivel, idDeCanal, type RGB } from '../domain/cuerpo3d'
 import { MUSCULOS, type Musculo } from '../domain/tipos'
-import { enConcentrica, momento, type Definicion3D, type EstadoMaterial } from './ejercicios'
+import { enConcentrica, momento, type AgarrePolea, type Definicion3D, type EstadoMaterial } from './ejercicios'
 import { interpolar } from './ik'
-import { crearAgarre, crearBanco, crearBarra, crearBarraPolea, crearCuerda, crearMancuerna, crearMaquinaJalon, crearPolea, type Cuerda, type Polea } from './material'
+import {
+  crearAgarre,
+  crearBanco,
+  crearBancoLibre,
+  crearBarra,
+  crearBarraPolea,
+  crearCaja,
+  crearCuerda,
+  crearDisco,
+  crearHexagonal,
+  crearLandmine,
+  crearMancuerna,
+  crearMaquinaJalon,
+  crearMultipower,
+  crearPolea,
+  crearRodillo,
+  crearTobillera,
+  crearTorre,
+  type Cuerda,
+  type Polea,
+} from './material'
 import { Rig } from './rig'
 
 /** Regiones y oclusión de cada vértice (del canal de color del modelo), una vez por geometría. */
@@ -71,11 +91,17 @@ export class EscenaEjercicio {
   readonly rig: Rig
   private readonly pintor: ReturnType<typeof materialPorRegiones>
   private barra?: Object3D
-  private mancuernas?: Record<'L' | 'R', Object3D>
+  private mancuernas?: Partial<Record<'L' | 'R', Object3D>>
   private polea?: Polea
   private cuerda?: Cuerda
   private barraPolea?: Object3D
   private cableInicial = 0
+  private multipower?: Object3D
+  private disco?: Object3D
+  private landmine?: ReturnType<typeof crearLandmine>
+  private rodillo?: Object3D
+  /** Torres de polea (pieza `torre`), con su cable y su agarre, en el mismo orden que los cables. */
+  private torres: { polea: Polea; inicial: number; agarre?: { tipo: AgarrePolea; objeto?: Object3D; cuerda?: Cuerda } }[] = []
   private ultimoConcentrico: boolean | null = null
 
   readonly def: Definicion3D
@@ -103,6 +129,10 @@ export class EscenaEjercicio {
     // Largo del cable al empezar: la pila sube lo que se alargue desde ahí.
     const estado = this.def.colocar(interpolar(this.def.claves, 0), this.rig)
     if (estado.cable && this.polea) this.cableInicial = this.polea.salida.distanceTo(estado.cable)
+    estado.cables?.forEach((c, i) => {
+      const t = this.torres[i]
+      if (t) t.inicial = c.salida.distanceTo(this.engancheDe(i, estado))
+    })
     this.pintar(false)
   }
 
@@ -113,10 +143,12 @@ export class EscenaEjercicio {
           this.barra = crearBarra({ radioDisco: pieza.radioDisco ?? 0.225, discos: pieza.discos ?? 1, almohadilla: pieza.almohadilla })
           this.raiz.add(this.barra)
           break
-        case 'mancuernas':
-          this.mancuernas = { L: crearMancuerna(), R: crearMancuerna() }
-          this.raiz.add(this.mancuernas.L, this.mancuernas.R)
+        case 'mancuernas': {
+          const lados = pieza.manos ?? (['L', 'R'] as const)
+          this.mancuernas = Object.fromEntries(lados.map((l) => [l, crearMancuerna()]))
+          for (const m of Object.values(this.mancuernas)) if (m) this.raiz.add(m)
           break
+        }
         case 'banco': {
           const banco = crearBanco({ inclinacion: pieza.inclinacion ?? 0 })
           banco.position.set(...pieza.pos)
@@ -133,6 +165,60 @@ export class EscenaEjercicio {
           } else {
             this.barraPolea = pieza.agarre === 'recta' ? crearBarraPolea('recta') : crearAgarre(pieza.agarre)
             this.raiz.add(this.barraPolea)
+          }
+          break
+        }
+        case 'hexagonal':
+          this.barra = crearHexagonal()
+          this.raiz.add(this.barra)
+          break
+        case 'disco':
+          this.disco = crearDisco()
+          this.raiz.add(this.disco)
+          break
+        case 'multipower': {
+          const m = crearMultipower()
+          this.multipower = m.grupo
+          this.barra = m.barra
+          this.raiz.add(m.grupo)
+          break
+        }
+        case 'landmine':
+          this.landmine = crearLandmine()
+          this.raiz.add(this.landmine.grupo)
+          break
+        case 'rodillo':
+          this.rodillo = crearRodillo()
+          this.raiz.add(this.rodillo)
+          break
+        case 'caja': {
+          const c = crearCaja(new Vector3(...pieza.tam))
+          c.position.set(...pieza.centro)
+          this.raiz.add(c)
+          break
+        }
+        case 'bancoLibre': {
+          const v = (q: readonly [number, number, number]) => new Vector3(...q)
+          this.raiz.add(crearBancoLibre([v(pieza.asiento[0]), v(pieza.asiento[1])], pieza.respaldo ? [v(pieza.respaldo[0]), v(pieza.respaldo[1])] : undefined, pieza.patas))
+          break
+        }
+        case 'torre': {
+          const polea = crearTorre(new Vector3(...pieza.salida))
+          this.raiz.add(polea.grupo)
+          this.torres.push({ polea, inicial: 0 })
+          break
+        }
+        case 'agarrePolea': {
+          const torre = this.torres.find((t) => !t.agarre)
+          if (!torre) break
+          if (pieza.agarre === 'cuerda') {
+            const cuerda = crearCuerda()
+            this.raiz.add(cuerda.grupo)
+            torre.agarre = { tipo: 'cuerda', cuerda }
+          } else {
+            const objeto = pieza.agarre === 'tobillera' ? crearTobillera() : pieza.agarre === 'recta' || pieza.agarre === 'jalon' ? crearBarraPolea(pieza.agarre) : crearAgarre(pieza.agarre)
+            this.raiz.add(objeto)
+            torre.agarre = { tipo: pieza.agarre, objeto }
           }
           break
         }
@@ -177,15 +263,55 @@ export class EscenaEjercicio {
     this.pintar(!m.enPausa && enConcentrica(this.def, m.t))
   }
 
+  /** Punto donde el cable `i` engancha su agarre (encima de las manos, hacia la polea). */
+  private engancheDe(i: number, e: EstadoMaterial): Vector3 {
+    const c = e.cables![i]!
+    const tipo = this.torres[i]?.agarre?.tipo
+    const hacia = c.salida.clone().sub(c.enganche).normalize()
+    const distancia = tipo === 'cuerda' ? 0.16 : tipo === 'triangulo' ? 0.17 : tipo === 'estribo' ? 0.07 : tipo === 'recta' || tipo === 'jalon' ? 0.03 : 0
+    return c.enganche.clone().add(hacia.multiplyScalar(distancia))
+  }
+
   private colocarMaterial(e: EstadoMaterial): void {
     if (this.barra && e.barra) this.barra.position.copy(e.barra)
+    if (this.barra && e.multipower) {
+      // El multipower solo deja subir y bajar la barra por sus guías.
+      this.barra.position.set(0, e.multipower.y, 0)
+      if (this.multipower) this.multipower.position.set(e.multipower.x, 0, e.multipower.z)
+    }
     if (this.mancuernas && e.mancuernas) {
       for (const lado of ['L', 'R'] as const) {
-        const { centro, eje } = e.mancuernas[lado]
-        this.mancuernas[lado].position.copy(centro)
-        this.mancuernas[lado].quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(1, 0, 0), eje))
+        const m = this.mancuernas[lado]
+        const d = e.mancuernas[lado]
+        if (!m || !d) continue
+        m.position.copy(d.centro)
+        m.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(1, 0, 0), d.eje))
       }
     }
+    if (this.disco && e.disco) {
+      this.disco.position.copy(e.disco.centro)
+      this.disco.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(1, 0, 0), e.disco.eje))
+    }
+    if (this.landmine && e.landmine) this.landmine.actualizar(e.landmine.pivote, e.landmine.mano)
+    if (this.rodillo && e.rodillo) this.rodillo.position.copy(e.rodillo).setY(0.09)
+    e.cables?.forEach((c, i) => {
+      const t = this.torres[i]
+      if (!t) return
+      const enganche = this.engancheDe(i, e)
+      t.polea.actualizar(enganche, c.salida.distanceTo(enganche) - t.inicial)
+      const a = t.agarre
+      const sitio = e.agarresPolea?.[i]
+      if (!a || !sitio) return
+      if (a.cuerda) {
+        const manos = sitio.manos ?? [sitio.centro.clone().add(new Vector3(0.06, 0, 0)), sitio.centro.clone().add(new Vector3(-0.06, 0, 0))]
+        a.cuerda.actualizar(enganche, manos[0], manos[1])
+      } else if (a.objeto) {
+        a.objeto.position.copy(sitio.centro)
+        if (a.tipo === 'estribo' || a.tipo === 'triangulo') {
+          a.objeto.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), c.salida.clone().sub(sitio.centro).normalize()))
+        }
+      }
+    })
     if (this.barraPolea && e.barraPolea) this.barraPolea.position.copy(e.barraPolea)
     if (this.cuerda && e.cuerda) this.cuerda.actualizar(e.cuerda.enganche, e.cuerda.manos[0], e.cuerda.manos[1])
     if (this.polea && e.cable) this.polea.actualizar(e.cable, this.polea.salida.distanceTo(e.cable) - this.cableInicial)

@@ -1,9 +1,11 @@
 import { ContactShadows } from '@react-three/drei'
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
-import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { definicion3D, type Definicion3D } from '../../animacion3d/ejercicios'
+import type { EjercicioAnimable } from '../../animacion/asignacion'
+import { definicion3D } from '../../animacion3d/biblioteca'
+import type { Definicion3D } from '../../animacion3d/ejercicios'
 import { EscenaEjercicio, type MusculosEjercicio } from '../../animacion3d/escena'
 import { FRENADO_GIRO, GIRO_POR_PIXEL } from '../../domain/cuerpo3d'
 import { useAjustes } from '../../hooks/useAjustes'
@@ -12,9 +14,11 @@ import { BASE, conDraco, leerColores, LucesEstudio, useEntornoEstudio } from '..
 export const MODELO_RIG = `${BASE}modelos/cuerpo-rig.glb`
 
 interface Props {
-  ejercicioId: string
+  ejercicio: EjercicioAnimable
   musculos: MusculosEjercicio
   className?: string
+  /** Lo que se ve si el móvil no tiene WebGL (la animación 2D). */
+  sinWebgl?: ReactNode
 }
 
 type Vista = 'tres_cuartos' | 'lado' | 'frente'
@@ -24,8 +28,8 @@ type Vista = 'tres_cuartos' | 'lado' | 'frente'
  * pausa, en bucle. Se gira arrastrando (con inercia) y tiene vistas de ¾, lado y frente. Solo se
  * anima mientras se ve en pantalla.
  */
-export function Animacion3D({ ejercicioId, musculos, className = '' }: Props) {
-  const def = definicion3D(ejercicioId)
+export function Animacion3D({ ejercicio, musculos, className = '', sinWebgl }: Props) {
+  const def = useMemo(() => definicion3D(ejercicio), [ejercicio])
   const contenedor = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(true)
   const [vista, setVista] = useState<Vista>('tres_cuartos')
@@ -80,8 +84,6 @@ export function Animacion3D({ ejercicioId, musculos, className = '' }: Props) {
     }
   }, [])
 
-  if (!def) return null
-
   const irA = (v: Vista) => {
     setVista(v)
     const base = (def.camara.azimut * Math.PI) / 180
@@ -99,6 +101,7 @@ export function Animacion3D({ ejercicioId, musculos, className = '' }: Props) {
           dpr={[1, 2]}
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance', toneMapping: THREE.NeutralToneMapping }}
           camera={{ fov: 30, near: 0.1, far: 30, position: [0, 1.2, 3] }}
+          fallback={sinWebgl}
         >
           <Suspense fallback={null}>
             <Escena def={def} musculos={musculos} giro={giro} />

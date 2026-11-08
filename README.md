@@ -67,9 +67,9 @@ blender --background --factory-startup --disable-autoexec Startup.blend --python
 
 Tarda unos 5 minutos. Con `FERRO_CACHE=algo.blend` guarda el cuerpo ya simplificado y las siguientes veces solo repite las regiones y la exportación. El modelo resultante se distribuye con la misma licencia CC BY-SA 4.0 (créditos en **Ajustes → Créditos y licencias**). El visor está en `src/components/cuerpo3d` (three.js + react-three-fiber) y se revisa en **Ajustes → Vista previa del cuerpo 3D**.
 
-### Animaciones 3D (piloto)
+### Animaciones 3D
 
-Diez ejercicios tienen ya animación 3D sobre el mismo cuerpo del avatar (con esqueleto: `public/modelos/cuerpo-rig.glb`, que se genera con el mismo comando añadiendo `FERRO_RIG=public/modelos/cuerpo-rig.glb`). Cada ejercicio son datos —poses clave de una repetición con su tempo— en `src/animacion3d/ejercicios.ts`; la cinemática inversa coloca brazos y piernas, y el material de gimnasio está modelado en `src/animacion3d/material.ts`. Se ven en su ficha (escena en vivo) y en las listas (miniatura animada), y todos en **Ajustes → Animaciones 3D (piloto)**. El resto de la biblioteca seguirá con la animación 2D hasta aprobar el piloto.
+Todos los ejercicios tienen animación 3D sobre el mismo cuerpo del avatar (con esqueleto: `public/modelos/cuerpo-rig.glb`, que se genera con el mismo comando añadiendo `FERRO_RIG=public/modelos/cuerpo-rig.glb`). Cada ejercicio son datos —poses clave de una repetición con su tempo—, nunca vídeos: los 10 del piloto están hechos a mano en `src/animacion3d/ejercicios.ts` y el resto salen de las poses 2D de cada ejercicio (`src/animacion3d/desde2d.ts`), así que si una animación 2D se corrige en `asignacion.ts` o `patrones.ts`, la 3D se corrige con ella. La cinemática inversa coloca brazos y piernas, y el material de gimnasio está modelado en `src/animacion3d/material.ts`. Se ven en su ficha (escena en vivo, que se gira) y en las listas (miniatura animada, generada una vez en el móvil y guardada aparte de los datos), y todos en **Ajustes → Animaciones 3D**, agrupados por patrón. Sin WebGL se ve la animación 2D.
 
 ### Animaciones de los ejercicios
 

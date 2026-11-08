@@ -5,7 +5,6 @@ import { Cabecera } from '../../components/Cabecera'
 import { Hoja } from '../../components/Hoja'
 import { Icono } from '../../components/Icono'
 import { AnimacionEjercicio } from '../../components/animacion/AnimacionEjercicio'
-import { definicion3D } from '../../animacion3d/ejercicios'
 import { Animacion3D } from '../../components/animacion3d/Animacion3D'
 import { MapaMuscular } from '../../components/mapa/MapaMuscular'
 import { Boton, claseInput, Etiqueta, Tarjeta, Vacio } from '../../components/ui'
@@ -43,11 +42,12 @@ export function EjercicioPage() {
 
       <div className="mt-3 space-y-4">
         <figure className="overflow-hidden rounded-3xl bg-surface-2">
-          {definicion3D(ejercicio.id) ? (
-            <Animacion3D ejercicioId={ejercicio.id} musculos={{ principales: ejercicio.musculosPrincipales, secundarios: ejercicio.musculosSecundarios }} className="mx-auto max-w-sm" />
-          ) : (
-            <AnimacionEjercicio ejercicio={ejercicio} className="mx-auto aspect-square w-full max-w-sm" />
-          )}
+          <Animacion3D
+            ejercicio={ejercicio}
+            musculos={{ principales: ejercicio.musculosPrincipales, secundarios: ejercicio.musculosSecundarios }}
+            className="mx-auto max-w-sm"
+            sinWebgl={<AnimacionEjercicio ejercicio={ejercicio} className="mx-auto aspect-square w-full max-w-sm" />}
+          />
         </figure>
 
         <div className="flex flex-wrap gap-2">
