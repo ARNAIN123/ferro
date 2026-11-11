@@ -11,9 +11,9 @@ import {
 import type { Musculo } from './tipos'
 
 const ejercicios = new Map<string, { musculosPrincipales: Musculo[]; musculosSecundarios: Musculo[] }>([
-  ['banca', { musculosPrincipales: ['pectoral_inferior'], musculosSecundarios: ['triceps', 'deltoides_anterior'] }],
-  ['hipthrust', { musculosPrincipales: ['gluteo_mayor'], musculosSecundarios: ['isquiotibiales'] }],
-  ['peso-muerto', { musculosPrincipales: ['lumbares', 'isquiotibiales'], musculosSecundarios: ['gluteo_mayor', 'isquiotibiales'] }],
+  ['banca', { musculosPrincipales: ['pectoral_esternal'], musculosSecundarios: ['triceps_lateral', 'deltoides_anterior'] }],
+  ['hipthrust', { musculosPrincipales: ['gluteo_mayor'], musculosSecundarios: ['biceps_femoral'] }],
+  ['peso-muerto', { musculosPrincipales: ['erectores_espinales', 'biceps_femoral'], musculosSecundarios: ['gluteo_mayor', 'biceps_femoral'] }],
 ])
 
 describe('intensidad muscular', () => {
@@ -26,8 +26,8 @@ describe('intensidad muscular', () => {
       ],
       ejercicios,
     )
-    expect(t.get('pectoral_inferior')?.series).toBe(3)
-    expect(t.get('triceps')?.series).toBe(1.5)
+    expect(t.get('pectoral_esternal')?.series).toBe(3)
+    expect(t.get('triceps_lateral')?.series).toBe(1.5)
     expect(t.get('deltoides_anterior')?.series).toBe(1.5)
   })
 
@@ -48,13 +48,13 @@ describe('intensidad muscular', () => {
     expect(t.get('gluteo_mayor')?.porEjercicio.get('hipthrust')).toBe(1)
     expect(t.get('gluteo_mayor')?.porEjercicio.get('peso-muerto')).toBe(0.5)
     // Un músculo que es principal y secundario a la vez solo cuenta como principal.
-    expect(t.get('isquiotibiales')?.porEjercicio.get('peso-muerto')).toBe(1)
+    expect(t.get('biceps_femoral')?.porEjercicio.get('peso-muerto')).toBe(1)
   })
 
   it('una rutina cuenta sus series previstas', () => {
     const t = trabajoMuscular([{ ejercicioId: 'banca', cantidad: 4 }], ejercicios)
-    expect(t.get('pectoral_inferior')?.series).toBe(4)
-    expect(t.get('triceps')?.series).toBe(2)
+    expect(t.get('pectoral_esternal')?.series).toBe(4)
+    expect(t.get('triceps_lateral')?.series).toBe(2)
   })
 })
 
@@ -66,13 +66,13 @@ describe('niveles de intensidad', () => {
 
   it('en periodos largos usa la media semanal', () => {
     const t = trabajoMuscular(Array.from({ length: 40 }, () => ({ ejercicioId: 'banca', tipo: 'normal' as const })), ejercicios)
-    expect(nivelesDeTrabajo(t, ESCALAS.semana, 30 / 7).get('pectoral_inferior')).toBe(3) // 40 series en 30 días ≈ 9,3/semana
+    expect(nivelesDeTrabajo(t, ESCALAS.semana, 30 / 7).get('pectoral_esternal')).toBe(3) // 40 series en 30 días ≈ 9,3/semana
   })
 
   it('el mapa de un ejercicio marca principales al máximo y secundarios suaves', () => {
     const n = nivelesDeEjercicio(ejercicios.get('banca')!)
-    expect(n.get('pectoral_inferior')).toBe(5)
-    expect(n.get('triceps')).toBe(2)
+    expect(n.get('pectoral_esternal')).toBe(5)
+    expect(n.get('triceps_lateral')).toBe(2)
   })
 
   it('rótulos de la leyenda', () => {

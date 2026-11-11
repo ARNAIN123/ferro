@@ -1,7 +1,67 @@
 // Modelo de datos de Ferro. Todas las fechas son milisegundos desde epoch (Date.now()).
 
-/** Músculos = regiones del avatar (ronda 2). Los ejercicios usan estos nombres para principales y secundarios. */
+/**
+ * Músculos (ronda 4): división completa, grupo → músculo → porción o cabeza (ver domain/musculos.ts).
+ * Los ejercicios usan estos nombres para principales y secundarios. El orden es el de las regiones
+ * del cuerpo 3D (id = índice + 1), así que solo se añaden al final.
+ */
 export const MUSCULOS = [
+  'esternocleidomastoideo',
+  'esplenio',
+  'deltoides_anterior',
+  'deltoides_lateral',
+  'deltoides_posterior',
+  'pectoral_clavicular',
+  'pectoral_esternal',
+  'pectoral_costal',
+  'serrato_anterior',
+  'trapecio_superior',
+  'trapecio_medio',
+  'trapecio_inferior',
+  'romboides',
+  'dorsal_ancho',
+  'redondo_mayor',
+  'infraespinoso',
+  'redondo_menor',
+  'supraespinoso',
+  'subescapular',
+  'erectores_espinales',
+  'biceps',
+  'braquial',
+  'braquiorradial',
+  'triceps_larga',
+  'triceps_lateral',
+  'triceps_medial',
+  'flexores_antebrazo',
+  'extensores_antebrazo',
+  'recto_abdominal',
+  'oblicuos',
+  'gluteo_mayor',
+  'gluteo_medio',
+  'gluteo_menor',
+  'tensor_fascia_lata',
+  'psoas_iliaco',
+  'recto_femoral',
+  'vasto_lateral',
+  'vasto_medial',
+  'sartorio',
+  'aductores',
+  'biceps_femoral',
+  'semitendinoso',
+  'semimembranoso',
+  'gemelo_medial',
+  'gemelo_lateral',
+  'soleo',
+  'tibial_anterior',
+  'peroneos',
+] as const
+export type Musculo = (typeof MUSCULOS)[number]
+
+/**
+ * Zonas del mapa y las animaciones 2D (las regiones de la ronda 2). Cada músculo pertenece a una
+ * (`zonaDe`); también son los nombres de los músculos antes de la ronda 4, que se migran.
+ */
+export const ZONAS = [
   'pectoral_superior',
   'pectoral_inferior',
   'deltoides_anterior',
@@ -26,7 +86,7 @@ export const MUSCULOS = [
   'soleo',
   'cuello',
 ] as const
-export type Musculo = (typeof MUSCULOS)[number]
+export type Zona = (typeof ZONAS)[number]
 
 /**
  * Materiales. La biblioteca solo usa los de peso libre, polea y multipower (MATERIALES_BIBLIOTECA);

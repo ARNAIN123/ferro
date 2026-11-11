@@ -10,9 +10,9 @@ import { MiniaturaAnimada } from '../../components/animacion3d/MiniaturaAnimada'
 import { Cabecera } from '../../components/Cabecera'
 import { Tarjeta } from '../../components/ui'
 import { db } from '../../db/db'
-import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import type { Ejercicio } from '../../domain/tipos'
 import { useAjustes } from '../../hooks/useAjustes'
+import { nombresDeMusculos } from '../../domain/musculos'
 
 const musculosDe = (e: Ejercicio) => ({ principales: e.musculosPrincipales, secundarios: e.musculosSecundarios })
 
@@ -52,8 +52,8 @@ export function GaleriaAnimaciones3D() {
         <p className="text-sm text-muted">Sube en 1 s y baja en unos 2 s. Arrastra para girarla.</p>
         <Animacion3D key={e.id} ejercicio={e} musculos={musculosDe(e)} className="mt-3" sinWebgl={<AnimacionEjercicio ejercicio={e} className="aspect-square w-full" />} />
         <p className="mt-2 text-sm">
-          <span className="font-semibold text-accent">{e.musculosPrincipales.map((x) => NOMBRE_MUSCULO[x]).join(', ')}</span>
-          {e.musculosSecundarios.length > 0 && <span className="text-muted"> · {e.musculosSecundarios.map((x) => NOMBRE_MUSCULO[x]).join(', ')}</span>}
+          <span className="font-semibold text-accent">{nombresDeMusculos(e.musculosPrincipales).join(', ')}</span>
+          {e.musculosSecundarios.length > 0 && <span className="text-muted"> · {nombresDeMusculos(e.musculosSecundarios).join(', ')}</span>}
         </p>
       </Tarjeta>
       {grupos.map(([patron, lista]) => (

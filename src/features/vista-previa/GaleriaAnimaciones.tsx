@@ -5,7 +5,8 @@ import { AnimacionVisible } from '../../components/animacion/AnimacionEjercicio'
 import { Cabecera } from '../../components/Cabecera'
 import { Segmentado } from '../../components/ui'
 import { db } from '../../db/db'
-import { NOMBRE_MATERIAL, NOMBRE_MUSCULO } from '../../domain/etiquetas'
+import { NOMBRE_MATERIAL } from '../../domain/etiquetas'
+import { nombresDeMusculos } from '../../domain/musculos'
 
 type Orden = 'patron' | 'nombre'
 
@@ -49,7 +50,7 @@ export function GaleriaAnimaciones() {
                 <div className="p-2.5">
                   <p className="line-clamp-2 text-sm leading-snug font-semibold">{e.nombre}</p>
                   <p className="mt-1 text-xs text-muted">
-                    {NOMBRE_MATERIAL[e.material]} · {e.musculosPrincipales.map((m) => NOMBRE_MUSCULO[m]).join(', ')}
+                    {NOMBRE_MATERIAL[e.material]} · {nombresDeMusculos(e.musculosPrincipales).join(', ')}
                   </p>
                   {a.regla === 'genérica' && <p className="mt-1 text-xs text-warn">Animación genérica</p>}
                 </div>

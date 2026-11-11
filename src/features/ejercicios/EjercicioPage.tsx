@@ -11,13 +11,14 @@ import { Boton, claseInput, Etiqueta, Tarjeta, Vacio } from '../../components/ui
 import { historialEjercicio } from '../../db/consultas'
 import { db } from '../../db/db'
 import { archivarEjercicio, guardarNotas } from '../../db/ejercicios'
-import { NOMBRE_CATEGORIA, NOMBRE_MATERIAL, NOMBRE_MECANICA, NOMBRE_MUSCULO, NOMBRE_NIVEL } from '../../domain/etiquetas'
+import { NOMBRE_CATEGORIA, NOMBRE_MATERIAL, NOMBRE_MECANICA, NOMBRE_NIVEL } from '../../domain/etiquetas'
 import { nivelesDeEjercicio } from '../../domain/mapaMuscular'
 import type { Musculo } from '../../domain/tipos'
 import { HistorialEjercicio } from './HistorialEjercicio'
 import { ProgresoEjercicio } from './ProgresoEjercicio'
+import { nombresDeMusculos } from '../../domain/musculos'
 
-const lista = (ms: readonly Musculo[]) => ms.map((m) => NOMBRE_MUSCULO[m]).join(', ')
+const lista = (ms: readonly Musculo[]) => nombresDeMusculos(ms).join(', ')
 
 /** Ficha del ejercicio. Músculos, material e instrucciones son de solo lectura: solo se editan mis notas. */
 export function EjercicioPage() {

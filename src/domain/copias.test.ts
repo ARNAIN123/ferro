@@ -31,14 +31,14 @@ describe('copias de versiones anteriores', () => {
     expect(validarCopia({ app: 'ferro', version: 1, esquema: ESQUEMA_ACTUAL + 1, datos: {} }).ok).toBe(false)
   })
 
-  it('una copia de la PWA 0.2.0 (sin esquema) se reconoce como esquema 2 y sus músculos pasan a los del avatar', () => {
+  it('una copia de la PWA 0.2.0 (sin esquema) se reconoce como esquema 2 y sus músculos pasan a la división completa', () => {
     const ejercicio = { id: 'Dumbbell_Flyes', musculosPrincipales: ['pecho'], musculosSecundarios: ['hombros'] } as { id: string }
     const copia: Copia = { app: 'ferro', version: 1, exportado: '', datos: { ...vacio(), ejercicios: [ejercicio] } }
     expect(esquemaDeCopia(copia)).toBe(2)
     const m = migrarCopia(copia)
-    expect(m.esquema).toBe(3)
+    expect(m.esquema).toBe(5)
     expect(m.datos.ejercicios).toEqual([
-      { id: 'Dumbbell_Flyes', musculosPrincipales: ['pectoral_inferior', 'pectoral_superior'], musculosSecundarios: ['deltoides_anterior', 'deltoides_lateral'] },
+      { id: 'Dumbbell_Flyes', musculosPrincipales: ['pectoral_esternal'], musculosSecundarios: ['pectoral_clavicular', 'pectoral_costal', 'deltoides_anterior'] },
     ])
   })
 
@@ -63,8 +63,8 @@ describe('copias de versiones anteriores', () => {
     }
     expect(esquemaDeCopia(copia)).toBe(1)
     const m = migrarCopia(copia)
-    expect(m.esquema).toBe(3)
-    expect(m.datos.ejercicios).toMatchObject([{ id: 'Barbell_Bench_Press_-_Medium_Grip', notasFijas: 'Banco 3', musculosPrincipales: ['pectoral_inferior', 'pectoral_superior'] }])
+    expect(m.esquema).toBe(5)
+    expect(m.datos.ejercicios).toMatchObject([{ id: 'Barbell_Bench_Press_-_Medium_Grip', notasFijas: 'Banco 3', musculosPrincipales: ['pectoral_esternal'] }])
     expect(m.datos.rutinaEjercicios).toEqual([{ id: 're', ejercicioId: 'Barbell_Bench_Press_-_Medium_Grip' }])
     expect(m.datos.series).toEqual([{ id: 'x', ejercicioId: 'Barbell_Bench_Press_-_Medium_Grip', peso: 80 }])
     expect(m.datos.pesosCorporales).toEqual([{ id: 'p', kg: 78 }])

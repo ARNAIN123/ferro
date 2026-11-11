@@ -62,15 +62,21 @@ export function equivalenteMasParecido<T extends Comparable>(retirado: Comparabl
 }
 
 const MUSCULOS_GRANDES: readonly Musculo[] = [
-  'pectoral_superior',
-  'pectoral_inferior',
-  'dorsales',
-  'espalda_media',
+  'pectoral_clavicular',
+  'pectoral_esternal',
+  'pectoral_costal',
+  'dorsal_ancho',
+  'romboides',
+  'trapecio_medio',
   'deltoides_anterior',
-  'cuadriceps',
-  'isquiotibiales',
+  'recto_femoral',
+  'vasto_lateral',
+  'vasto_medial',
+  'biceps_femoral',
+  'semitendinoso',
+  'semimembranoso',
   'gluteo_mayor',
-  'lumbares',
+  'erectores_espinales',
 ]
 const MATERIAL_PESADO: readonly Material[] = ['barra', 'barra_z', 'barra_hexagonal', 'landmine', 'mancuernas', 'multipower', 'maquina', 'kettlebell']
 

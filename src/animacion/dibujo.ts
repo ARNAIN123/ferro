@@ -1,6 +1,6 @@
 // Dibujo de la figura y del material a partir de una pose resuelta. Cada fotograma devuelve la
 // misma lista de formas con la misma estructura, para poder animarlas interpolando sus valores.
-import type { Musculo } from '../domain/tipos'
+import type { Zona as ZonaMuscular } from '../domain/tipos'
 import { angulo, desde, dir, lerp, mas, por, type P } from './geometria'
 import { anterior, L, SUELO, type PoseFrontal, type PoseLateral } from './esqueleto'
 
@@ -157,7 +157,7 @@ type SitioLateral =
   | { en: 'tronco'; lado: 1 | -1; f: readonly [number, number]; hondo: number; exterior?: number }
   | { en: 'cuello' }
 
-const SITIOS_LATERAL: Record<Musculo, SitioLateral[]> = {
+const SITIOS_LATERAL: Record<ZonaMuscular, SitioLateral[]> = {
   pectoral_superior: [{ en: 'tronco', lado: 1, f: [0.84, 1.0], hondo: 0.35 }],
   pectoral_inferior: [{ en: 'tronco', lado: 1, f: [0.63, 0.86], hondo: 0.3 }],
   deltoides_anterior: [{ en: 'brazo', lado: 1, f: [-0.14, 0.42], hondo: 0.05 }],
@@ -190,7 +190,7 @@ const SITIOS_LATERAL: Record<Musculo, SitioLateral[]> = {
 type Zona = { x: readonly [number, number]; f: readonly [number, number]; simetrica?: boolean }
 type SitioFrontal = { en: 'zona'; zona: Zona } | { en: Segmento; lado: 1 | -1; f: readonly [number, number]; hondo: number; exterior?: number } | { en: 'cuello' } | { en: 'trapecio' }
 
-const SITIOS_FRONTAL: Partial<Record<Musculo, SitioFrontal[]>> = {
+const SITIOS_FRONTAL: Partial<Record<ZonaMuscular, SitioFrontal[]>> = {
   pectoral_superior: [{ en: 'zona', zona: { x: [1.5, 15], f: [0.84, 0.98] } }],
   pectoral_inferior: [{ en: 'zona', zona: { x: [1.5, 15.5], f: [0.64, 0.85] } }],
   deltoides_anterior: [{ en: 'brazo', lado: -1, f: [-0.12, 0.36], hondo: -0.2 }],
@@ -217,7 +217,7 @@ const SITIOS_FRONTAL: Partial<Record<Musculo, SitioFrontal[]>> = {
   cuello: [{ en: 'cuello' }],
 }
 
-const SITIOS_DORSAL: Partial<Record<Musculo, SitioFrontal[]>> = {
+const SITIOS_DORSAL: Partial<Record<ZonaMuscular, SitioFrontal[]>> = {
   trapecio: [{ en: 'trapecio' }],
   espalda_media: [{ en: 'zona', zona: { x: [2, 9.5], f: [0.64, 0.9] } }],
   dorsales: [{ en: 'zona', zona: { x: [6, 15.5], f: [0.4, 0.78] } }],
@@ -245,7 +245,7 @@ const SITIOS_DORSAL: Partial<Record<Musculo, SitioFrontal[]>> = {
 
 const normalMiembro = (a: P, b: P): P => dir(angulo(a, b) + 90)
 
-function dibujarLateral(p: PoseLateral, resaltar: ReadonlySet<Musculo>, sufijo: string, capa: 'lejos' | 'cerca'): Forma[] {
+function dibujarLateral(p: PoseLateral, resaltar: ReadonlySet<ZonaMuscular>, sufijo: string, capa: 'lejos' | 'cerca'): Forma[] {
   const i = capa === 'lejos' ? 1 : 0
   const claseCuerpo: Clase = capa === 'lejos' ? 'lejos' : 'cuerpo'
   const claseMusculo: Clase = capa === 'lejos' ? 'musculoLejos' : 'musculo'
@@ -288,7 +288,7 @@ function mano(muneca: P, agarre: P): string {
   return cerrada([mas(muneca, por(n, 2.9)), desde(mas(agarre, por(n, 2.6)), d, 1.5), desde(agarre, d, 3.6), desde(mas(agarre, por(n, -2.6)), d, 1.5), mas(muneca, por(n, -2.9))])
 }
 
-function tronco(p: PoseLateral, resaltar: ReadonlySet<Musculo>): Forma[] {
+function tronco(p: PoseLateral, resaltar: ReadonlySet<ZonaMuscular>): Forma[] {
   const contorno = cerrada([
     ...TRONCO_DELANTE.map(([f, o]) => puntoTronco(p, f, o)),
     ...TRONCO_DETRAS.map(([f, o]) => puntoTronco(p, f, o)),
@@ -337,7 +337,7 @@ const ANCHO_TRONCO: readonly (readonly [number, number])[] = [
   [1.0, 17.6],
 ]
 
-function dibujarFrontal(p: PoseFrontal, resaltar: ReadonlySet<Musculo>, dorsal: boolean): Forma[] {
+function dibujarFrontal(p: PoseFrontal, resaltar: ReadonlySet<ZonaMuscular>, dorsal: boolean): Forma[] {
   const u = dir(p.tronco)
   const lat = dir(p.tronco - 90)
   const altura = Math.hypot(p.centroHombros[0] - p.cadera[0], p.centroHombros[1] - p.cadera[1])
@@ -617,7 +617,8 @@ export function dibujar(
   pose: PoseLateral | PoseFrontal,
   vista: Vista,
   equipo: readonly Equipo[],
-  resaltar: ReadonlySet<Musculo>,
+  /** Zonas que se pintan de acento (ver zonaDe). */
+  resaltar: ReadonlySet<ZonaMuscular>,
   fijo: { barraX: number | null },
 ): Forma[] {
   if (pose.vista === 'lateral') {

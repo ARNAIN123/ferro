@@ -270,6 +270,28 @@ if (repetidos.length) throw new Error(`Nombres repetidos: ${repetidos.join(', ')
 
 ejercicios.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
 retirados.sort((a, b) => a.id.localeCompare(b.id))
+
+// Listado por zona (las regiones de la ronda 2), antes de pasar a la división completa.
+const zonaPrincipal = new Map(ejercicios.map((e) => [e.id, e.principales[0]]))
+
+// Ronda 4: la división muscular completa, revisada (catalogo/musculos-r4.json, que genera
+// scripts/musculos/generar-revision.test.ts). Sustituye a las zonas en la biblioteca y los retirados.
+const R4 = (() => {
+  try {
+    return JSON.parse(readFileSync(dir('catalogo', 'musculos-r4.json'), 'utf8'))
+  } catch {
+    return null
+  }
+})()
+if (R4) {
+  for (const lista of [ejercicios, retirados])
+    for (const e of lista) {
+      const r = R4[e.id]
+      if (!r) throw new Error(`${e.id}: falta en catalogo/musculos-r4.json (vuelve a generarlo)`)
+      e.principales = r.principales
+      e.secundarios = r.secundarios
+    }
+}
 const cuerpo = JSON.stringify({ ejercicios, retirados })
 const version = createHash('sha1').update(cuerpo).digest('hex').slice(0, 12)
 mkdirSync(dir('src', 'catalogo'), { recursive: true })
@@ -285,13 +307,13 @@ export const VERSION_CATALOGO = '${version}'
 
 // Listado para revisar, agrupado por músculo principal (el primero).
 const grupos = new Map(Object.keys(NOMBRE_MUSCULO).map((m) => [m, []]))
-for (const e of ejercicios) grupos.get(e.principales[0]).push(e)
+for (const e of ejercicios) grupos.get(zonaPrincipal.get(e.id)).push(e)
 let md = `# Biblioteca de Ferro (${ejercicios.length} ejercicios)\n\nSolo peso libre (barra, barra Z, barra hexagonal, landmine, mancuernas y discos), poleas y multipower. Agrupados por su primer músculo principal. Generado por \`npm run catalogo\`.\n`
 for (const [m, lista] of grupos) {
   if (!lista.length) continue
   md += `\n## ${NOMBRE_MUSCULO[m]} (${lista.length})\n\n| Ejercicio | Material | Principales | Secundarios |\n|---|---|---|---|\n`
   for (const e of lista) {
-    const n = (l) => l.map((x) => NOMBRE_MUSCULO[x]).join(', ') || '—'
+    const n = (l) => l.map((x) => NOMBRE_MUSCULO[x] ?? x.replace(/_/g, ' ')).join(', ') || '—'
     md += `| ${e.nombre} | ${NOMBRE_MATERIAL[e.material]} | ${n(e.principales)} | ${n(e.secundarios)} |\n`
   }
 }

@@ -13,7 +13,6 @@ import { iniciarSesion } from '../../db/entreno'
 import { archivarRutina, guardarRutina } from '../../db/rutinas'
 import { equivalenteMasParecido, valoresPorDefecto } from '../../domain/biblioteca'
 import { rutinasDelCiclo } from '../../domain/ciclo'
-import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { ESCALAS, gruposSinTrabajar, nivelesDeTrabajo, rotulosEscala, trabajoMuscular } from '../../domain/mapaMuscular'
 import { ajustarItem, alternarSuperserie, normalizarPlan, planDesdeSesion, type ItemPlan } from '../../domain/rutinas'
 import type { Ejercicio } from '../../domain/tipos'
@@ -21,6 +20,7 @@ import { avisar } from '../../lib/avisos'
 import { fmtCrono, plural } from '../../lib/formato'
 import { nuevoId } from '../../lib/id'
 import { SelectorEjercicios } from '../ejercicios/SelectorEjercicios'
+import { nombresDeMusculos } from '../../domain/musculos'
 
 interface Borrador {
   id: string | null
@@ -174,7 +174,7 @@ export function RutinaPage() {
                     {e && <MiniaturaEjercicio ejercicio={e} className="size-12" />}
                     <span className="min-w-0 flex-1 py-2">
                       <span className="line-clamp-2 leading-snug font-semibold">{e?.nombre ?? 'Ejercicio eliminado'}</span>
-                      <span className="block truncate text-xs text-muted">{e?.musculosPrincipales.map((m) => NOMBRE_MUSCULO[m]).join(', ')}</span>
+                      <span className="block truncate text-xs text-muted">{nombresDeMusculos(e?.musculosPrincipales ?? []).join(', ')}</span>
                     </span>
                     <button
                       type="button"

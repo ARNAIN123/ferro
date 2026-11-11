@@ -1,6 +1,11 @@
-import type { Categoria, Material, Mecanica, Musculo, Nivel, OrigenEntrada, TipoSerie } from './tipos'
+import { INFO_MUSCULO } from './musculos'
+import { MUSCULOS, type Categoria, type Material, type Mecanica, type Musculo, type Nivel, type OrigenEntrada, type TipoSerie, type Zona } from './tipos'
 
-export const NOMBRE_MUSCULO: Record<Musculo, string> = {
+/** Nombre corto de cada músculo (chips, mapas, listas). El completo está en INFO_MUSCULO. */
+export const NOMBRE_MUSCULO: Record<Musculo, string> = Object.fromEntries(MUSCULOS.map((m) => [m, INFO_MUSCULO[m].corto])) as Record<Musculo, string>
+
+/** Nombre de cada zona 2D (para las animaciones 2D, que resaltan zonas). */
+export const NOMBRE_ZONA: Record<Zona, string> = {
   pectoral_superior: 'Pectoral superior',
   pectoral_inferior: 'Pectoral inferior',
   deltoides_anterior: 'Deltoides anterior',

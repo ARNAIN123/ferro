@@ -1,8 +1,9 @@
 import { crearCopia, migrarCopia, seriesACsv, TABLAS, validarCopia, type FilaCsv, type NombreTabla } from '../domain/copias'
-import { NOMBRE_MUSCULO, NOMBRE_TIPO_SERIE } from '../domain/etiquetas'
+import { NOMBRE_TIPO_SERIE } from '../domain/etiquetas'
 import { claveDia } from '../domain/semanas'
 import { guardarAjustes } from '../hooks/useAjustes'
 import { db } from './db'
+import { nombresDeMusculos } from '../domain/musculos'
 
 const tabla = (t: NombreTabla) => db.table(t)
 
@@ -65,7 +66,7 @@ export async function generarCsvSeries(): Promise<{ nombre: string; contenido: s
         hora: s.hora ?? sesionPorId.get(s.sesionId)!.entrada,
         rutina: sesionPorId.get(s.sesionId)!.rutinaNombre,
         ejercicio: e?.nombre ?? s.ejercicioId,
-        musculo: e ? e.musculosPrincipales.map((m) => NOMBRE_MUSCULO[m]).join(', ') : '',
+        musculo: e ? nombresDeMusculos(e.musculosPrincipales).join(', ') : '',
         serie: numero.get(clave)!,
         tipo: NOMBRE_TIPO_SERIE[s.tipo].toLowerCase(),
         peso: s.peso,

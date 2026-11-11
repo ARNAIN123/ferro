@@ -1,7 +1,8 @@
 // Qué animación tiene cada ejercicio: reglas por nombre (el id de Free Exercise DB en inglés y el
 // nombre en español) que eligen un patrón y sus parámetros. Los ejercicios propios que no encajan
 // en ninguna regla usan el patrón típico de su músculo principal.
-import type { Ejercicio, Material, Musculo } from '../domain/tipos'
+import { zonaDe } from '../domain/musculos'
+import type { Ejercicio, Material, Musculo, Zona } from '../domain/tipos'
 import {
   abdominal,
   aperturas,
@@ -288,9 +289,10 @@ const REGLAS: Regla[] = [
   [/row|remo/, (_e, t, c) => remo({ postura: 'inclinado', carga: c, unilateral: unilateral(t) })],
 ]
 
-/** Patrón típico del músculo principal, para ejercicios propios sin regla. */
+/** Patrón típico del músculo principal (de su zona), para ejercicios propios sin regla. */
 function generico(e: EjercicioAnimable, c: Carga): Animacion {
-  const m: Musculo = e.musculosPrincipales[0] ?? 'pectoral_inferior'
+  const principal: Musculo | undefined = e.musculosPrincipales[0]
+  const m: Zona = principal ? zonaDe(principal) : 'pectoral_inferior'
   const sc = cargaSentadilla(e)
   switch (m) {
     case 'pectoral_superior':

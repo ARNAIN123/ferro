@@ -46,38 +46,66 @@ export type RegionAvatar =
 /** Tendones y zonas que no son músculos: se dibujan, pero nunca se colorean ni se tocan. */
 export const NO_MUSCULO: ReadonlySet<RegionAvatar> = new Set(['rotula', 'tendon_rotuliano', 'popliteo', 'aquiles'])
 
-/** Qué regiones del avatar representan cada músculo de la base de datos. */
+/**
+ * Qué regiones del avatar 2D representan cada músculo (el mapa sin WebGL). Las porciones que el dibujo
+ * no separa comparten región; los profundos se pintan en la región que tienen encima.
+ */
 export const REGIONES_AVATAR: Record<Musculo, RegionAvatar[]> = {
-  pectoral_superior: ['pectoral_superior'],
-  pectoral_inferior: ['pectoral_inferior'],
+  esternocleidomastoideo: ['esternocleidomastoideo'],
+  esplenio: ['esternocleidomastoideo'],
   deltoides_anterior: ['deltoides_anterior'],
   deltoides_lateral: ['deltoides_lateral'],
   deltoides_posterior: ['deltoides_posterior'],
+  pectoral_clavicular: ['pectoral_superior'],
+  pectoral_esternal: ['pectoral_inferior'],
+  pectoral_costal: ['pectoral_inferior'],
+  serrato_anterior: ['serrato'],
+  trapecio_superior: ['trapecio_superior'],
+  trapecio_medio: ['trapecio_medio'],
+  trapecio_inferior: ['trapecio_medio'],
+  romboides: ['trapecio_medio'],
+  dorsal_ancho: ['dorsal_ancho'],
+  redondo_mayor: ['manguito_posterior'],
+  infraespinoso: ['manguito_posterior'],
+  redondo_menor: ['manguito_posterior'],
+  supraespinoso: ['trapecio_superior'],
+  subescapular: ['manguito_posterior'],
+  erectores_espinales: ['lumbares'],
   biceps: ['biceps'],
   braquial: ['braquial'],
-  triceps: ['triceps'],
-  antebrazos: ['antebrazo_flexores', 'antebrazo_extensores'],
-  trapecio: ['trapecio_superior'],
-  espalda_media: ['trapecio_medio', 'manguito_posterior'],
-  dorsales: ['dorsal_ancho'],
-  lumbares: ['lumbares'],
-  abdomen: ['recto_abdominal'],
+  braquiorradial: ['antebrazo_extensores'],
+  triceps_larga: ['triceps'],
+  triceps_lateral: ['triceps'],
+  triceps_medial: ['triceps'],
+  flexores_antebrazo: ['antebrazo_flexores'],
+  extensores_antebrazo: ['antebrazo_extensores'],
+  recto_abdominal: ['recto_abdominal'],
   oblicuos: ['oblicuos'],
   gluteo_mayor: ['gluteo_mayor'],
-  gluteo_medio: ['gluteo_medio', 'tensor_fascia'],
-  cuadriceps: ['recto_femoral', 'vasto_lateral', 'vasto_medial'],
-  isquiotibiales: ['biceps_femoral', 'isquios_mediales'],
+  gluteo_medio: ['gluteo_medio'],
+  gluteo_menor: ['gluteo_medio'],
+  tensor_fascia_lata: ['tensor_fascia'],
+  psoas_iliaco: ['psoas'],
+  recto_femoral: ['recto_femoral'],
+  vasto_lateral: ['vasto_lateral'],
+  vasto_medial: ['vasto_medial'],
+  sartorio: ['sartorio'],
   aductores: ['aductores'],
-  gemelos: ['gemelo'],
+  biceps_femoral: ['biceps_femoral'],
+  semitendinoso: ['isquios_mediales'],
+  semimembranoso: ['isquios_mediales'],
+  gemelo_medial: ['gemelo'],
+  gemelo_lateral: ['gemelo'],
   soleo: ['soleo'],
-  cuello: ['esternocleidomastoideo'],
+  tibial_anterior: ['tibial'],
+  peroneos: ['peroneos'],
 }
 
-const MUSCULO_DE_REGION = new Map<RegionAvatar, Musculo>(
-  (Object.entries(REGIONES_AVATAR) as [Musculo, RegionAvatar[]][]).flatMap(([m, rs]) => rs.map((r) => [r, m] as const)),
-)
+// Al tocar una región compartida se elige el primer músculo que la usa (el más superficial).
+const MUSCULO_DE_REGION = new Map<RegionAvatar, Musculo>()
+for (const [m, rs] of Object.entries(REGIONES_AVATAR) as [Musculo, RegionAvatar[]][]) for (const r of rs) if (!MUSCULO_DE_REGION.has(r)) MUSCULO_DE_REGION.set(r, m)
 
-/** Músculo de la base de datos que representa una región (null si no corresponde a ninguno). */
+/** Músculo que representa una región (null si no corresponde a ninguno). */
 export const musculoDeRegionAvatar = (r: RegionAvatar): Musculo | null => MUSCULO_DE_REGION.get(r) ?? null
 
 /** Nivel de cada región a partir del nivel de cada músculo. */

@@ -1,5 +1,6 @@
 // De las poses clave a los fotogramas de un bucle de ~2,6 s, listos para animar con SVG (SMIL):
 // cada forma tiene la misma estructura en todos los fotogramas y solo cambian sus números.
+import { zonaDe } from '../domain/musculos'
 import type { Musculo } from '../domain/tipos'
 import { dibujar, enPies, type Clase, type Forma } from './dibujo'
 import { interpolar, resolverFrontal, resolverLateral, SUELO, type Control, type ControlFrontal, type PoseLateral } from './esqueleto'
@@ -62,7 +63,7 @@ const numeros = (d: string) => (d.match(/-?\d+(\.\d+)?/g) ?? []).map(Number)
 
 /** Escena animada. Con `soloFijo` calcula solo el fotograma de la miniatura (mucho más rápido). */
 export function generarEscena(a: Animacion, musculos: readonly Musculo[], soloFijo = false): Escena {
-  const resaltar = new Set(musculos)
+  const resaltar = new Set(musculos.map(zonaDe))
   const primera = pose(a, 0)
   const fijo = { barraX: primera.vista === 'lateral' ? puntoBarra(a, primera) : null }
   const cuadros: Forma[][] = []

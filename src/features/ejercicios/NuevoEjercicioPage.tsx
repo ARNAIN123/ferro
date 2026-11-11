@@ -6,6 +6,9 @@ import { Boton, Campo, Chip, claseInput } from '../../components/ui'
 import { crearEjercicio } from '../../db/ejercicios'
 import { NOMBRE_MATERIAL, NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { MATERIALES_BIBLIOTECA, type Material, type Musculo } from '../../domain/tipos'
+import { nombresDeMusculos } from '../../domain/musculos'
+import { EnlacesMusculos } from '../../components/mapa/EnlacesMusculos'
+import { PROFUNDOS } from '../../domain/musculos'
 
 type Papel = 'principal' | 'secundario'
 
@@ -72,14 +75,21 @@ export function NuevoEjercicioPage() {
               describir={(m) => `${NOMBRE_MUSCULO[m]}: ${musculos.get(m) ?? 'sin marcar'}`}
               className="h-80"
             />
+            <EnlacesMusculos
+              titulo="Profundos:"
+              lista={PROFUNDOS}
+              alElegir={tocar}
+              activo={(m) => musculos.has(m)}
+              detalle={(m) => musculos.get(m) && <span className="ml-1 text-muted">({musculos.get(m)})</span>}
+            />
           </div>
           <p className="mt-2 text-sm">
             <span className="text-muted">Principales: </span>
-            <span className="font-semibold">{principales.map((m) => NOMBRE_MUSCULO[m]).join(', ') || '—'}</span>
+            <span className="font-semibold">{nombresDeMusculos(principales).join(', ') || '—'}</span>
           </p>
           <p className="text-sm">
             <span className="text-muted">Secundarios: </span>
-            {secundarios.map((m) => NOMBRE_MUSCULO[m]).join(', ') || '—'}
+            {nombresDeMusculos(secundarios).join(', ') || '—'}
           </p>
         </fieldset>
 

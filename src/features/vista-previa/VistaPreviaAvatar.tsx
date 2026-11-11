@@ -2,19 +2,20 @@ import { useRef, useState } from 'react'
 import { Avatar } from '../../components/avatar/Avatar'
 import { Cuerpo3D, type Cuerpo3DControl } from '../../components/cuerpo3d/Cuerpo3D'
 import { Cabecera } from '../../components/Cabecera'
+import { FichaMusculo } from '../../components/mapa/MapaConDetalle'
 import { LeyendaMapa } from '../../components/mapa/MapaMuscular'
 import { Segmentado, Tarjeta } from '../../components/ui'
 import { ESCALA_SEMANA_AVATAR } from '../../domain/avatar'
-import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { nivelesDeEjercicio, nivelesDeTrabajo, rotulosEscala, trabajoMuscular } from '../../domain/mapaMuscular'
+import { musculosFinos } from '../../domain/reasignacion'
 import { MUSCULOS, type Musculo, type Tema } from '../../domain/tipos'
 import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
-import { fmtKg, plural } from '../../lib/formato'
 
 // Página de revisión del cuerpo 3D (ronda 3, fase 3): /vista-previa/avatar, enlazada desde Ajustes.
 
 type Def = { nombre: string; principales: Musculo[]; secundarios: Musculo[] }
-const EJERCICIOS: Record<string, Def> = {
+// Escritos con las zonas de antes; se pasan a la división completa con las mismas reglas que la biblioteca.
+const ANTES: Record<string, { nombre: string; principales: string[]; secundarios: string[] }> = {
   banca: { nombre: 'Press de banca con barra', principales: ['pectoral_inferior'], secundarios: ['deltoides_anterior', 'triceps'] },
   inclinado: { nombre: 'Press inclinado con mancuernas', principales: ['pectoral_inferior'], secundarios: ['deltoides_anterior', 'triceps'] },
   remo: { nombre: 'Remo con barra', principales: ['espalda_media', 'dorsales'], secundarios: ['biceps', 'deltoides_anterior'] },
@@ -30,6 +31,14 @@ const EJERCICIOS: Record<string, Def> = {
   encogimientos: { nombre: 'Encogimientos con barra', principales: ['trapecio'], secundarios: ['cuello'] },
   crunch: { nombre: 'Crunch en polea', principales: ['abdomen'], secundarios: [] },
 }
+const EJERCICIOS: Record<string, Def> = Object.fromEntries(
+  Object.entries(ANTES).map(([k, d]) => {
+    const r = musculosFinos({ nombre: d.nombre, material: 'barra', musculosPrincipales: d.principales, musculosSecundarios: d.secundarios })
+    return [k, { nombre: d.nombre, principales: r.principales, secundarios: r.secundarios }]
+  }),
+)
+
+const NOMBRES = new Map(Object.entries(EJERCICIOS).map(([id, d]) => [id, d.nombre]))
 
 type Estado = 'vacia' | 'media' | 'completa' | 'ficha' | 'niveles'
 type Angulo = 'frente' | 'tres_cuartos' | 'perfil' | 'espalda'
@@ -80,7 +89,6 @@ export function VistaPreviaAvatar() {
   const trabajo = trabajoDe(estado === 'ficha' || estado === 'niveles' ? [] : SEMANAS[estado])
   const niveles =
     estado === 'ficha' ? nivelesDeEjercicio(fichas.get('banca')!) : estado === 'niveles' ? TODOS_LOS_NIVELES : nivelesDeTrabajo(trabajo, ESCALA_SEMANA_AVATAR)
-  const t = sel ? trabajo.get(sel) : undefined
 
   return (
     <>
@@ -138,28 +146,7 @@ export function VistaPreviaAvatar() {
         <div className="mt-2">
           <LeyendaMapa rotulos={rotulosEscala(ESCALA_SEMANA_AVATAR)} unidad="series" />
         </div>
-        <div className="mt-3 min-h-14 rounded-2xl bg-surface-2 px-4 py-3 text-sm" aria-live="polite">
-          {!sel ? (
-            <p className="text-muted">Toca un músculo.</p>
-          ) : (
-            <>
-              <p className="flex justify-between gap-2">
-                <span className="font-bold">{NOMBRE_MUSCULO[sel]}</span>
-                <span className="text-muted">{t ? `${fmtKg(t.series)} ${plural(t.series, 'serie')} esta semana` : 'Sin trabajar esta semana'}</span>
-              </p>
-              {t && (
-                <ul className="mt-1 space-y-0.5">
-                  {[...t.porEjercicio].map(([id, n]) => (
-                    <li key={id} className="flex justify-between gap-3 text-muted">
-                      <span className="truncate">{EJERCICIOS[id]?.nombre}</span>
-                      <span className="num shrink-0 text-fg">{fmtKg(n)}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          )}
-        </div>
+        <FichaMusculo sel={sel} trabajo={trabajo} nombres={NOMBRES} periodo="esta semana" alElegir={setSel} />
       </Tarjeta>
     </>
   )

@@ -14,13 +14,8 @@ describe('correspondencia músculo ↔ avatar', () => {
     }
   })
 
-  it('cada región pertenece como mucho a un músculo, y los tendones a ninguno', () => {
-    const vistas = new Map<RegionAvatar, string>()
-    for (const m of MUSCULOS)
-      for (const r of REGIONES_AVATAR[m]) {
-        expect(vistas.get(r), r).toBeUndefined()
-        vistas.set(r, m)
-      }
+  it('los tendones no son de ningún músculo (las porciones que el dibujo no separa comparten región)', () => {
+    for (const m of MUSCULOS) for (const r of REGIONES_AVATAR[m]) expect(NO_MUSCULO.has(r), r).toBe(false)
     for (const r of NO_MUSCULO) expect(musculoDeRegionAvatar(r)).toBeNull()
   })
 
@@ -39,16 +34,22 @@ describe('correspondencia músculo ↔ avatar', () => {
       expect(dibujadas.has(r), r).toBe(true)
     expect(musculoDeRegionAvatar('soleo')).toBe('soleo')
     expect(musculoDeRegionAvatar('deltoides_posterior')).toBe('deltoides_posterior')
-    expect(musculoDeRegionAvatar('antebrazo_extensores')).toBe('antebrazos')
+    expect(musculoDeRegionAvatar('antebrazo_extensores')).toBe('braquiorradial')
+    expect(musculoDeRegionAvatar('trapecio_medio')).toBe('trapecio_medio')
   })
 
-  it('todas las regiones de un músculo comparten su nivel', () => {
-    const r = nivelesPorRegionAvatar(new Map([['cuadriceps', 4], ['antebrazos', 2]]))
+  it('cada músculo pinta su región y una región compartida toma el nivel más alto', () => {
+    const r = nivelesPorRegionAvatar(new Map([['recto_femoral', 4], ['vasto_lateral', 3], ['flexores_antebrazo', 2], ['triceps_larga', 1], ['triceps_lateral', 5]]))
     expect(r.get('recto_femoral')).toBe(4)
-    expect(r.get('vasto_lateral')).toBe(4)
-    expect(r.get('vasto_medial')).toBe(4)
+    expect(r.get('vasto_lateral')).toBe(3)
+    expect(r.get('vasto_medial')).toBeUndefined()
     expect(r.get('antebrazo_flexores')).toBe(2)
+    expect(r.get('triceps')).toBe(5)
     expect(r.get('biceps')).toBeUndefined()
+  })
+
+  it('todos los músculos tienen su región en el mapa 2D', () => {
+    for (const m of MUSCULOS) expect(REGIONES_AVATAR[m].length, m).toBeGreaterThan(0)
   })
 })
 

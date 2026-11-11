@@ -1,6 +1,8 @@
 // Cuerpo 3D (public/modelos/cuerpo.glb): cada vértice lleva en COLOR_0.r el número de región
-// (id / 255; 0 = sin músculo de Ferro) y en COLOR_0.g la oclusión ambiental horneada.
+// (id / 255; 0 = sin músculo de Ferro), en COLOR_0.g la oclusión ambiental horneada y en COLOR_0.b
+// la marca del músculo profundo que tiene debajo.
 // Los ids siguen el orden de MUSCULOS (scripts/blender/generar-cuerpo.py usa la misma lista).
+import { PROFUNDOS } from './musculos'
 import { MUSCULOS, type Musculo } from './tipos'
 
 /** Región del modelo de cada músculo (1…23). */
@@ -8,6 +10,22 @@ export const regionDeMusculo = (m: Musculo): number => MUSCULOS.indexOf(m) + 1
 
 /** Músculo de una región del modelo (null si no es ningún músculo de Ferro). */
 export const musculoDeRegion = (id: number): Musculo | null => MUSCULOS[id - 1] ?? null
+
+/**
+ * Músculo profundo que hay bajo un punto de la piel: el modelo lo marca en COLOR_0.b (índice + 1 en
+ * PROFUNDOS; 0 = ninguno). Los profundos están dentro del cuerpo como piezas con su propia región.
+ */
+export const profundoDeMarca = (k: number): Musculo | null => PROFUNDOS[k - 1] ?? null
+
+/**
+ * Opacidad de la piel que hay encima de un músculo profundo: opaca si no está trabajado ni elegido;
+ * cuanto más nivel, más translúcida (se ve el músculo de dentro), y al elegirlo, casi transparente.
+ */
+export function opacidadSobreProfundo(nivel: number, elegido = false): number {
+  if (elegido) return 0.3
+  const n = Math.min(5, Math.max(0, Math.round(nivel)))
+  return n === 0 ? 1 : 0.9 - 0.08 * n
+}
 
 /** Lee el id de región guardado en un canal de color (0–1). */
 export const idDeCanal = (r: number): number => Math.round(r * 255)

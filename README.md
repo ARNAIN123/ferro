@@ -67,6 +67,17 @@ blender --background --factory-startup --disable-autoexec Startup.blend --python
 
 Tarda unos 8 minutos. Con `FERRO_CACHE=algo.blend` guarda el cuerpo ya simplificado y las siguientes veces solo repite las regiones y la exportación (si cambias el volumen, `INFLAR_REGION`, borra la caché). Para las animaciones añade `FERRO_RIG=public/modelos/cuerpo-rig.glb` (el cuerpo con esqueleto) y `FERRO_PUNTOS=src/animacion3d/superficie.json` (los puntos de la superficie con los que se comprueba que el cuerpo no atraviesa bancos ni cajones). El modelo resultante se distribuye con la misma licencia CC BY-SA 4.0 (créditos en **Ajustes → Créditos y licencias**). El visor está en `src/components/cuerpo3d` (three.js + react-three-fiber) y se revisa en **Ajustes → Vista previa del cuerpo 3D**.
 
+### División muscular (ronda 4)
+
+Los músculos están en `src/domain/tipos.ts` (`MUSCULOS`, 48: el orden es el de las regiones del modelo 3D, así que solo se añaden al final) y su organización —grupo → músculo → porción, nombres, cuáles son profundos y qué tienen encima— en `src/domain/musculos.ts`. Los músculos de cada ejercicio de la biblioteca están en `catalogo/musculos-r4.json`, que `npm run catalogo` aplica al generar el catálogo. Salen de las reglas por tipo de movimiento de `src/domain/reasignacion.ts` (las mismas que convierten los ejercicios propios al actualizar la app y las copias de seguridad antiguas). Para cambiarlos:
+
+1. Retoca las reglas de `reasignacion.ts` (o, para un ejercicio suelto, su entrada en `catalogo/musculos-r4.json` y salta al paso 4).
+2. Borra `catalogo/musculos-r4.json` y ejecuta `npm run catalogo` (el catálogo vuelve a las zonas de antes).
+3. `GENERAR_REVISION=revision/r4-musculos npx vitest run scripts/musculos/generar-revision.test.ts` vuelve a crear `catalogo/musculos-r4.json` y un listado para revisar (`revision/r4-musculos/ejercicios-musculos.html`).
+4. `npm run catalogo` otra vez.
+
+Si se añade un músculo, hay que darle región en `scripts/blender/generar-cuerpo.py` (lista `REGIONES` y diccionario `MUSCULOS`) y regenerar el cuerpo; los tests comprueban que el modelo y la app tienen los mismos músculos, en el mismo orden, y que cada uno tiene superficie.
+
 ### Animaciones 3D
 
 Todos los ejercicios tienen animación 3D sobre el mismo cuerpo del avatar (con esqueleto: `public/modelos/cuerpo-rig.glb`, que se genera con el mismo comando añadiendo `FERRO_RIG=public/modelos/cuerpo-rig.glb`). Cada ejercicio son datos —poses clave de una repetición con su tempo—, nunca vídeos: los 10 del piloto están hechos a mano en `src/animacion3d/ejercicios.ts` y el resto salen de las poses 2D de cada ejercicio (`src/animacion3d/desde2d.ts`), así que si una animación 2D se corrige en `asignacion.ts` o `patrones.ts`, la 3D se corrige con ella. La cinemática inversa coloca brazos y piernas, y el material de gimnasio está modelado en `src/animacion3d/material.ts`. Bancos, atriles y cajones se colocan solos contra el cuerpo real (que lo que se apoya los toque sin atravesarlos) y el material va siempre en las manos; los tests lo comprueban en toda la biblioteca. Se ven en su ficha (escena en vivo, que se gira) y en las listas (miniatura animada, generada una vez en el móvil y guardada aparte de los datos), y todos en **Ajustes → Animaciones 3D**, agrupados por patrón (`?revision=grande&ver=nombre` enseña fotogramas grandes de los que se quieran mirar de cerca). Sin WebGL se ve la animación 2D.

@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import { Icono } from '../../components/Icono'
 import { anadirSerie, saltarEjercicio } from '../../db/entreno'
-import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import type { Serie } from '../../domain/tipos'
 import { fmtCrono, fmtKg } from '../../lib/formato'
 import { FilaSerie } from './FilaSerie'
 import type { EjercicioVista } from './useEntreno'
+import { nombresDeMusculos } from '../../domain/musculos'
 
 interface Props {
   vista: EjercicioVista
@@ -33,7 +33,7 @@ export function TarjetaEjercicio({ vista, ultimaVez, seleccionId, superserieCon,
             <span className="font-sans font-normal">
               {' '}
               · descanso {fmtCrono(se.descansoSeg)}
-              {ejercicio && ` · ${ejercicio.musculosPrincipales.map((m) => NOMBRE_MUSCULO[m]).join(', ')}`}
+              {ejercicio && ` · ${nombresDeMusculos(ejercicio.musculosPrincipales).join(', ')}`}
             </span>
           </p>
         </div>

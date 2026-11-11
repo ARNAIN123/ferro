@@ -12,7 +12,7 @@ import { BASE, conDraco, crearEntorno, leerColores, lucesEstudio } from './estud
 
 const LADO = 140
 /** Cambia si cambian el modelo, el material o las animaciones: las miniaturas guardadas se rehacen. */
-const VERSION = 'v9'
+const VERSION = 'v10'
 
 class Miniaturas extends Dexie {
   tiras!: EntityTable<{ clave: string; tira: Blob; creada: number }, 'clave'>

@@ -1,4 +1,5 @@
 // Migraciones de datos (funciones puras). La base de datos las aplica en sus versiones de Dexie.
+import { musculosFinos } from './reasignacion'
 import type { Categoria, Ejercicio, Material, Mecanica, Musculo, Nivel } from './tipos'
 
 /**
@@ -98,27 +99,15 @@ export const MAPA_IDS_V1: Record<string, string> = {
 }
 
 /**
- * Músculos de versiones anteriores (v1 y v2) → regiones del avatar (v3). Los demás no cambian de nombre.
- * Para ejercicios propios no se sabe qué porción trabajan: pecho y hombros pasan a sus porciones principales.
+ * Músculos de cualquier versión anterior (v1/v2: «pecho», «espalda»…; v3: las 23 regiones) → la
+ * división completa de la ronda 4, con las reglas por tipo de movimiento de la biblioteca (ver
+ * domain/reasignacion.ts). Es idempotente: un ejercicio ya al día se queda igual.
  */
-const MUSCULOS_ANTIGUOS: Record<string, Musculo[]> = {
-  espalda: ['dorsales'],
-  pecho: ['pectoral_inferior', 'pectoral_superior'],
-  hombros: ['deltoides_anterior', 'deltoides_lateral'],
-  gluteos: ['gluteo_mayor'],
-  abductores: ['gluteo_medio'],
-}
-
-export const musculosActuales = (lista: readonly string[]): Musculo[] => [
-  ...new Set(lista.flatMap((m) => MUSCULOS_ANTIGUOS[m] ?? [m as Musculo])),
-]
-
-/** v2 → v3: los músculos de un ejercicio pasan a las regiones del avatar. Es idempotente. */
-export function migrarMusculosEjercicio<T extends { musculosPrincipales: readonly string[]; musculosSecundarios: readonly string[] }>(
-  e: T,
-): T & { musculosPrincipales: Musculo[]; musculosSecundarios: Musculo[] } {
-  const principales = musculosActuales(e.musculosPrincipales)
-  return { ...e, musculosPrincipales: principales, musculosSecundarios: musculosActuales(e.musculosSecundarios).filter((m) => !principales.includes(m)) }
+export function migrarMusculosEjercicio<
+  T extends { id?: string; nombre?: string; material?: Material; musculosPrincipales: readonly string[]; musculosSecundarios: readonly string[] },
+>(e: T): T & { musculosPrincipales: Musculo[]; musculosSecundarios: Musculo[] } {
+  const r = musculosFinos({ id: e.id, nombre: e.nombre ?? '', material: e.material ?? 'otro', musculosPrincipales: e.musculosPrincipales, musculosSecundarios: e.musculosSecundarios })
+  return { ...e, musculosPrincipales: r.principales, musculosSecundarios: r.secundarios }
 }
 
 /** Forma de un ejercicio en la versión 1 de la base de datos. */
@@ -139,13 +128,13 @@ export const idMigrado = (id: string): string => MAPA_IDS_V1[id] ?? id
 
 /** Ejercicio v1 → v2. Los campos del catálogo se completan después al sincronizarlo. */
 export function migrarEjercicioV1(e: EjercicioV1): Ejercicio {
-  const principales = musculosActuales([e.musculoPrincipal])
+  const { principales, secundarios } = musculosFinos({ id: e.id, nombre: e.nombre, material: e.material as Material, musculosPrincipales: [e.musculoPrincipal], musculosSecundarios: e.musculosSecundarios })
   return {
     id: e.personalizado ? e.id : idMigrado(e.id),
     nombre: e.nombre,
     alias: '',
     musculosPrincipales: principales,
-    musculosSecundarios: musculosActuales(e.musculosSecundarios).filter((m) => !principales.includes(m)),
+    musculosSecundarios: secundarios,
     material: e.material as Material,
     categoria: 'fuerza',
     nivel: null,

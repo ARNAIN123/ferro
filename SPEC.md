@@ -4,7 +4,7 @@
 
 Su trabajo es este ciclo: **detectar cuándo entro y salgo del gimnasio → saber qué rutina me toca → dejarme registrar el entreno lo más rápido posible → decirme qué peso usar la próxima vez → enseñarme mi progreso, mis músculos de la semana, mis pasos y mi objetivo del mes.**
 
-> Este documento ya incluye las **rondas 1, 2 y 3 de mejoras** (`MEJORAS-1.md`, `MEJORAS-2.md`, `MEJORAS-3.md`). Donde se contradicen, manda la más reciente. Lo que está en "Cosas que no deben volver" se quitó a propósito: no lo reintroduzcas.
+> Este documento ya incluye las **rondas 1, 2, 3 y 4 de mejoras** (`MEJORAS-1.md` … `MEJORAS-4.md`). Donde se contradicen, manda la más reciente. Lo que está en "Cosas que no deben volver" se quitó a propósito: no lo reintroduzcas.
 
 ---
 
@@ -152,6 +152,27 @@ El método es exactamente este: **la entrada se registra cuando abro la app S3 F
 - **Tabla de correspondencia** músculo de la base de datos → regiones del avatar, con tests.
 - Al tocar un músculo se abre una ficha con su nombre en español, sus series en el periodo y los ejercicios que lo han trabajado.
 
+### División muscular completa (ronda 4)
+
+Manda sobre lo anterior: los músculos ya no son las 23 regiones de la ronda 2, sino **todos los que se trabajan en el gimnasio**, organizados en **grupo → músculo → porción o cabeza** (`src/domain/musculos.ts`):
+
+- **Cuello:** esternocleidomastoideo y esplenio (extensores del cuello).
+- **Hombros:** deltoides anterior, lateral y posterior.
+- **Pecho:** pectoral mayor (porción clavicular o superior, esternal o media y costal o inferior) y serrato anterior.
+- **Espalda:** trapecio (superior, medio e inferior), romboides, dorsal ancho, redondo mayor, manguito rotador (infraespinoso, redondo menor, supraespinoso y subescapular) y erectores espinales (lumbares).
+- **Brazos:** bíceps, braquial, braquiorradial, tríceps (cabeza larga, lateral y medial), flexores y extensores del antebrazo.
+- **Core:** recto abdominal y oblicuos.
+- **Cadera:** glúteo mayor, medio y menor, tensor de la fascia lata y psoas-ilíaco (flexores de cadera).
+- **Piernas:** cuádriceps (recto femoral, vasto lateral y vasto medial), sartorio, aductores, isquiotibiales (bíceps femoral, semitendinoso y semimembranoso), gemelos (medial y lateral), sóleo, tibial anterior y peroneos.
+
+- **Auditoría:** cada músculo que trabaja algún ejercicio de la biblioteca tiene su región en el modelo. Se añadieron a la lista mínima el **esplenio** (extensión de cuello), el **supraespinoso** (elevaciones laterales y en Y) y el **subescapular** (rotación interna).
+- **Músculos profundos** (glúteo menor, psoas-ilíaco, supraespinoso y subescapular): están dentro del cuerpo 3D; cuando se resaltan o se eligen, la piel que tienen encima se vuelve translúcida para que se vean.
+- **Reasignación:** todos los ejercicios tienen sus músculos con esta división (p. ej., remo con barra: dorsal ancho, romboides y trapecio medio; y de secundarios redondo mayor, deltoides posterior, bíceps, braquial y lumbares). Antes de integrarlo se genera un listado para revisarlo (`scripts/musculos/generar-revision.test.ts`).
+- **Intensidad semanal:** igual que antes: cada músculo principal cuenta 1 serie y cada secundario 0,5, con los mismos 5 niveles.
+- **Ficha del músculo:** al tocar un músculo se abre su ficha con el grupo y el músculo al que pertenece, sus series de la semana y los ejercicios que lo han trabajado; desde ella se ven también las otras porciones y los músculos profundos de debajo.
+- **Migración:** los músculos antiguos se convierten a los nuevos (p. ej., "zona media de la espalda" → romboides + trapecio medio) en los ejercicios propios y retirados y en las copias de seguridad antiguas, con las mismas reglas por tipo de movimiento que la biblioteca; el historial semanal se calcula a partir de las series, así que sigue siendo coherente.
+- El mapa 2D (sin WebGL) y las animaciones 2D usan **zonas** (las 23 regiones de antes): cada músculo pertenece a una.
+
 ### Avatar de la semana (pantalla principal)
 
 - Pinta lo trabajado **esta semana, de lunes a domingo**; se actualiza con cada serie y el lunes empieza de cero. Encima, una etiqueta pequeña: "Semana del 2 al 8 nov".
@@ -284,7 +305,7 @@ Pestaña propia en la navegación. Como pollo, carne, huevos, pasta, arroz y lá
 ## Cuerpo 3D (ronda 3, fase 3)
 
 - **Modelo**: `public/modelos/cuerpo.glb` (≈ 0,34 MB, 110.000 triángulos, Draco), generado con Blender 4.5 LTS sin ventana por `scripts/blender/generar-cuerpo.py` a partir de **Z-Anatomy** (CC BY-SA 4.0, basado en BodyParts3D, CC BY-SA 2.1 JP): piel de las regiones del cuerpo (sin pelo ni genitales) hundida sobre los músculos superficiales donde los hay, unida a ellos —inflados según la región, para que tenga volumen y no parezca un modelo anatómico sin grasa (0,9–1,5 cm en hombros, pecho, brazos, glúteos y piernas; menos en abdomen, antebrazos y gemelos)— con un remallado por vóxeles, cierre morfológico, suavizado, simplificación y corrección de triángulos dados la vuelta. Cabeza, manos, pies y rodillas conservan la piel original.
-- **Regiones**: cada cara pertenece a una de las 23 regiones de Ferro (mismo orden que `MUSCULOS`) o a ninguna; se elige con un rayo hacia dentro (el primer músculo que se encuentra), con ventajas para los músculos bajo aponeurosis (recto abdominal, lumbares) y límites de altura (lumbares). En Z-Anatomy las piezas del trapecio «Ascending» y «Descending» están intercambiadas respecto a su posición: se asignan por posición. `COLOR_0.r` = id/255 y `COLOR_0.g` = oclusión ambiental horneada (Cycles). Licencia del modelo resultante: CC BY-SA 4.0, con créditos en Ajustes → Créditos.
+- **Regiones**: cada cara pertenece a una de las regiones de Ferro (mismo orden que `MUSCULOS`: 23 en la ronda 3 y, desde la ronda 4, los 48 músculos de la división completa) o a ninguna; se elige con un rayo hacia dentro (el primer músculo que se encuentra), con ventajas para los músculos bajo aponeurosis (recto abdominal, lumbares) y límites de altura (lumbares). En Z-Anatomy las piezas del trapecio «Ascending» y «Descending» están intercambiadas respecto a su posición: se asignan por posición. `COLOR_0.r` = id/255 y `COLOR_0.g` = oclusión ambiental horneada (Cycles). Licencia del modelo resultante: CC BY-SA 4.0, con créditos en Ajustes → Créditos.
 - **Visor** (`src/components/cuerpo3d/Cuerpo3D.tsx`, three.js + react-three-fiber): arcilla mate (`--cuerpo-arcilla`), luces de estudio (principal, relleno y dos de contorno) y entorno suave generado en el momento, oclusión ambiental horneada y sombra de contacto. Los músculos trabajados se tiñen del acento según los 5 niveles (`src/domain/cuerpo3d.ts`) con un brillo sutil en los niveles altos. Gira 360° con inercia, zoom con pellizco (1–2,4×; con zoom, arrastrar en vertical recorre el cuerpo), doble toque para volver de frente, botones Frente/Espalda y toque en un músculo para elegirlo. Solo dibuja cuando algo se mueve. Si no hay WebGL, el mapa 2D.
 - **Rig**: la misma malla (soldada, antes de exportar) acepta pesos automáticos con un esqueleto colocado sobre ella (probado: todos los huesos con pesos y ningún vértice sin peso), así que las animaciones de la fase 4 usarán este mismo cuerpo.
 - **En toda la app** (aprobado el 7 de noviembre de 2026): `MapaMuscular` muestra el cuerpo 3D en Hoy, el buscador por mapa (y el selector de ejercicios), la ficha del ejercicio, la creación de ejercicios y de rutinas, el resumen del entreno y Progreso. Se carga aparte (las pantallas aparecen al momento) y sin WebGL se ve el mapa 2D. La vista previa sigue en Ajustes → Vista previa del cuerpo 3D.
@@ -293,6 +314,7 @@ Pestaña propia en la navegación. Como pollo, carne, huevos, pasta, arroz y lá
 
 ## Animaciones 3D (ronda 3, fase 4)
 
+- **División completa** (ronda 4, fase 1): el mismo script asigna las 48 regiones (las tres porciones del pectoral, las tres del trapecio, romboides, redondos, infraespinoso, las tres cabezas del tríceps, braquiorradial, flexores y extensores del antebrazo, vastos y recto femoral, sartorio, los tres isquiotibiales, gemelo medial y lateral, tibial anterior, peroneos…). Los músculos pequeños o tapados (romboides bajo el trapecio, redondos bajo el borde del deltoides) tienen ventaja al elegir región y no se borran al limpiar islas pequeñas. Los **músculos profundos** (supraespinoso, subescapular, glúteo menor y psoas-ilíaco) van dentro del cuerpo como piezas propias (unos 2.400 triángulos cada una, con los pesos del esqueleto de la piel más cercana) y la piel que tienen encima lleva su marca en `COLOR_0.b`: al resaltarlos, esa piel se dibuja translúcida en una segunda pasada y por la ventana se ve el interior del cuerpo y el músculo. `cuerpo.json` dice qué regiones tiene encima cada uno. Unos triángulos degenerados de la simplificación hacían fallar los pesos automáticos: se disuelven antes de asignar regiones, y el script se para si los pesos fallan.
 - **Volumen** (8 de noviembre de 2026, v0.9.1): perímetros de unos 33 cm de brazo, 60 de muslo, 40 de gemelo, 105 de pecho y 78 de cintura (1,71 m).
 - **Mismo cuerpo**: `public/modelos/cuerpo-rig.glb` (0,54 MB) es el cuerpo del avatar con esqueleto (24 huesos: pelvis, lumbar, dorsal, pecho, cuello, cabeza, y por lado clavícula, brazo, antebrazo, mano, dedos, muslo, pierna, pie y punta), con las articulaciones colocadas en los huesos de Z-Anatomy (cabeza del fémur, cóndilos, astrágalo, cabeza del húmero, radio y cúbito, vértebras L5…C1) y pesos automáticos. Lo genera el mismo script de Blender con `FERRO_RIG=public/modelos/cuerpo-rig.glb` (y `cuerpo-rig.json` con las articulaciones). Con `FERRO_PUNTOS=src/animacion3d/superficie.json` guarda además unos 2.900 puntos de la superficie (uno cada 3 cm), cada uno con el hueso que lo mueve: con ellos se comprueba en cada pose que el cuerpo no atraviesa nada.
 - **Sin atravesar el material** (v0.9.1): antes de montar la escena (`preparar`), cada banco, atril y cajón del dibujo se ata a la articulación más cercana del cuerpo 3D y se coloca para que lo que se apoya en él (la espalda, los glúteos, la rodilla, el pie de atrás de una búlgara, los brazos en el predicador) lo toque sin atravesarlo en ninguna pose; se acorta por los extremos si algo cuelga (las piernas en un banco declinado, el pie en un remo a una mano) y, si solo se apoya una pierna, va bajo esa pierna, al lado de la otra. Los cajones se ajustan a la planta de los pies (el pie que sube desde el suelo primero se levanta y luego avanza); los bloques de las cargadas y arrancadas van bajo los discos. Tumbado o sentado en el suelo, el tronco se sube lo justo para no hundirse. El material va siempre donde quedan de verdad las manos (la barra se inclina si una mano queda más alta); con dos poleas, cada cable a la mano de su lado; a una mano, el cable a la que se mueve; y en un leñador o unos giros rusos, las dos manos juntas en el agarre.
@@ -326,6 +348,8 @@ Pestaña propia en la navegación. Como pollo, carne, huevos, pasta, arroz y lá
 ---
 
 ## Modelo de datos (Dexie)
+
+Versión 5 (ronda 4): los músculos de `Ejercicio` son los 48 de la división completa; la migración de la 4 a la 5 convierte los de los ejercicios propios y retirados (los de la biblioteca llegan con el catálogo) y no toca nada más. Las copias de seguridad llevan el esquema 5 y las antiguas se convierten al importarlas.
 
 ```
 Ejercicio        id, nombre, alias, musculosPrincipales[], musculosSecundarios[], material, categoria,
@@ -386,6 +410,13 @@ Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, p
 3. *(Hecha, v0.7.0.)* **Modelo 3D y avatar:** flujo con Blender, vista previa para revisión y sustitución de todas las vistas del mapa.
 4. *(Hecha, v0.9.0.)* **Animaciones 3D:** piloto de 10 ejercicios (v0.8.0, aprobado) y después toda la biblioteca, en la ficha (escena en vivo) y en las listas (miniaturas animadas). En v0.9.1, cuerpo con más volumen y animaciones que no atraviesan bancos ni cajones, con el material bien agarrado.
 
+**Ronda 4** (`MEJORAS-4.md`):
+
+1. **División muscular completa:** lista completa, auditoría, músculos profundos, reasignación de ejercicios (con el listado para revisión) y migración.
+2. **Avatar personalizado:** base MakeHuman/MPFB (CC0) con morph targets, esqueleto recalculado, perfil corporal (sexo, edad, altura, peso del registro, medidas con fecha, grasa corporal de Health Connect, de la fórmula de la Marina de EE. UU. o a mano), definición muscular según la grasa, ajuste fino con deslizadores, peinados opcionales, evolución con la tendencia del peso, "Antes / Ahora" y Katch-McArdle en nutrición si hay porcentaje de grasa.
+3. **Ejercicios con mi avatar:** las animaciones usan mi avatar y se adaptan a mis proporciones (agarre, banco, rack, polea, pies) con cinemática inversa sobre el esqueleto recalculado; las miniaturas se regeneran en segundo plano al cambiar el perfil.
+4. **Físicas:** motor de físicas (Rapier) con paso fijo, cápsulas en cada hueso del avatar, barra y mancuernas como cuerpos rígidos, cable de polea como cuerda inextensible que pasa por las ruedas y colisiona, pila de discos en su guía con el recorrido exacto del cable, multipower con guías y ganchos, banco y suelo estáticos; escenas colocadas como en un gimnasio real; test automático de penetraciones con tres tamaños de cuerpo y su informe; física solo en pantalla y 60 fps.
+
 **Ronda 2 (detalle):**
 
 1. **App Android:** Capacitor, importación de datos, APK firmado con GitHub Actions, instalación y actualizaciones, aviso nativo de fin de descanso.
@@ -407,4 +438,5 @@ Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, p
 - No queda ninguna racha ni objetivo semanal.
 - Registrar una serie lleva un solo toque.
 - Nutrición: tests de gasto inicial, recalibración semanal (también contra la base de datos), reparto de macros, límites de seguridad (basal y 1 %/semana), sugerencias de "Cerrar el día", registro de comidas y validación de lo que devuelve la IA.
+- Ronda 4: todos los músculos de la lista tienen su región, los profundos se ven al resaltarlos y cada ejercicio tiene sus músculos reasignados; el avatar cambia de forma creíble con peso, altura, edad, medidas y grasa; las animaciones usan mi avatar y encajan con mis proporciones; ningún cable ni objeto atraviesa el cuerpo (el test de penetraciones pasa con los tres tamaños de cuerpo); la pila de discos sube y baja de acuerdo con el cable; 60 fps con física; mis datos intactos (entrenos, nutrición, peso e historial semanal de músculos).
 - `SPEC.md` y README actualizados.
