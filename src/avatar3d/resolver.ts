@@ -101,6 +101,13 @@ export function resolverMacro(info: InfoAvatar, d: DatosCuerpo): { musculo: numb
 const FUERZA_AJUSTE: Record<keyof AjusteFino, number> = { hombros: 1, piernas: 0.5, brazos: 0.5, cintura: 1 }
 const TOPE_OBJETIVO = 2
 
+/**
+ * Volumen muscular de más (ronda 5): los deformadores de medidas que dan hombros, pecho, brazos,
+ * piernas y cuello (no la cintura ni la cadera), para que el avatar se vea más musculado sin engordar.
+ * Unos 2–4 cm más de perímetro en un hombre; en una mujer, el 70 %. Las medidas con cinta mandan.
+ */
+export const VOLUMEN: Partial<Record<NombreObjetivo, number>> = { hombros: 0.25, pecho: 0.35, brazo: 0.3, antebrazo: 0.4, muslo: 0.25, gemelo: 0.2, cuello: 0.25 }
+
 /** Lo último que se ha resuelto (el ajuste fino en directo y «Antes / Ahora» repiten cálculos). */
 const MEMORIA = 12
 const recordadas = new WeakMap<ModeloAvatar, { bases: Map<string, Base>; formas: Map<string, FormaResuelta> }>()
@@ -137,7 +144,8 @@ function resolverBase(modelo: ModeloAvatar, d: DatosCuerpo): Base {
   const macro = resolverMacro(info, d)
   const sexo = d.sexo === 'hombre' ? 1 : 0
   const base = { sexo, edad: edadMakeHuman(info, d.edad), musculo: macro.musculo, peso: macro.peso, alturaM: d.alturaCm / 100 }
-  const objetivos: Partial<Record<NombreObjetivo, number>> = {}
+  const k = d.sexo === 'hombre' ? 1 : 0.7
+  const objetivos: Partial<Record<NombreObjetivo, number>> = Object.fromEntries(Object.entries(VOLUMEN).map(([o, t]) => [o, t * k]))
   const medir = (o: Partial<Record<NombreObjetivo, number>>) => medirAvatar(modelo, construirForma(modelo, { ...base, objetivos: o }), sexo)
 
   // Medidas de cinta: cada una mueve su deformador hasta que el avatar mide lo mismo.

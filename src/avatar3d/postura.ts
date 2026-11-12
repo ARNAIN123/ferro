@@ -1,7 +1,7 @@
 // Postura del avatar en el mapa muscular (ronda 5): de pie, recto y simétrico, como en el gimnasio,
 // no en la postura anatómica rígida del modelo. Pecho fuera y hombros atrás, piernas a la anchura de
 // las caderas con las puntas algo abiertas y las rodillas sin bloquear, los brazos algo abiertos (como
-// con los dorsales marcados) con los codos un poco doblados, las palmas hacia los muslos y los dedos
+// con los dorsales marcados) con los codos un poco doblados, las palmas hacia dentro y los dedos
 // medio cerrados. Encima, la respiración: el pecho y los hombros suben y bajan muy poco.
 import { Object3D, Quaternion, Vector3 } from 'three'
 import { perpendicular, type V3 } from '../animacion3d/ik'
@@ -68,8 +68,8 @@ export function posturaRelajada(modelo: ModeloAvatar, articulaciones: Record<str
       .applyAxisAngle(V(1, 0, 0), -rad(2))
       .normalize()
     const muneca = hombro.clone().add(dir.multiplyScalar(largo * ESTIRADO_BRAZO))
-    // Palma hacia el muslo y algo hacia atrás; nudillos hacia abajo y un poco hacia dentro.
-    const palma = V(-s, 0, -0.4).normalize()
+    // Palma hacia dentro (hacia el muslo), con el pulgar delante; nudillos hacia abajo y un poco hacia dentro.
+    const palma = V(-s, 0, 0.05).normalize()
     const nudillos = V(-0.12 * s, -1, 0.05).normalize()
     manos[lado] = { pos: t3(muneca), polo: t3(V(0.5 * s, -0.05, -1)), dir: t3(nudillos), normal: t3(perpendicular(palma, nudillos)) }
   }

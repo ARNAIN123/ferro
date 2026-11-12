@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { BufferAttribute, BufferGeometry, MeshBasicMaterial, SkinnedMesh, Vector3 } from 'three'
+import { BufferAttribute, BufferGeometry, MeshBasicMaterial, Quaternion, SkinnedMesh, Vector3 } from 'three'
 import { describe, expect, it } from 'vitest'
 import type { DatosCuerpo } from '../domain/cuerpo'
 import { aplicarPostura, crearEsqueleto, ponerEnReposo } from './esqueleto'
@@ -82,6 +82,17 @@ describe('postura relajada del avatar', () => {
         const apertura = (Math.atan2(brazo.x * s, -brazo.y) * 180) / Math.PI
         expect(apertura, `${d.kg} kg, ${lado}`).toBeGreaterThan(12)
         expect(apertura, `${d.kg} kg, ${lado}`).toBeLessThan(32)
+      }
+    }
+  })
+
+  it('las palmas miran hacia dentro, hacia los muslos', () => {
+    for (const d of CUERPOS) {
+      const { e } = montar(d)
+      for (const [lado, s] of [['L', 1], ['R', -1]] as const) {
+        // En reposo la palma mira al frente (+Z): con la postura, hacia el centro del cuerpo.
+        const palma = new Vector3(0, 0, 1).applyQuaternion(e.porNombre.get(`mano.${lado}`)!.getWorldQuaternion(new Quaternion()))
+        expect(palma.x * -s, `${d.kg} kg, ${lado}`).toBeGreaterThan(0.85)
       }
     }
   })

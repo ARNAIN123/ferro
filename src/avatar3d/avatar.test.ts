@@ -5,7 +5,7 @@ import { REGIONES_MODELO } from '../domain/musculos'
 import { construirForma, normalesAvatar, pesosEsquinas, volumenLitros } from './forma'
 import { medirAvatar, perimetroConvexo } from './medidas'
 import { modeloDesdeGlb, type InfoAvatar } from './modelo'
-import { cuerpoDeMakeHuman, FRANJA_ATLETICA, resolverForma, resolverMacro } from './resolver'
+import { cuerpoDeMakeHuman, FRANJA_ATLETICA, resolverForma, resolverMacro, VOLUMEN } from './resolver'
 
 const glb = readFileSync('public/modelos/avatar.glb')
 const info = JSON.parse(readFileSync('public/modelos/avatar.json', 'utf8')) as InfoAvatar
@@ -110,11 +110,11 @@ describe('cinta métrica', () => {
     expect(perimetroConvexo([...puntos, [0, 0], [0.2, 0.1]])).toBeCloseTo(2 * Math.PI, 3)
   })
 
-  it('las medidas del cuerpo medio son las de una persona', () => {
+  it('las medidas del cuerpo medio son las de una persona que entrena', () => {
     const r = resolverForma(modelo, CUERPO_POR_DEFECTO)
     console.log('cuerpo por defecto', JSON.stringify(r.medidas), 'músculo', r.parametros.musculo, 'peso', r.parametros.peso, 'definición', r.definicion)
     const limites: Record<string, [number, number]> = {
-      cuello: [33, 42], hombros: [100, 125], pecho: [88, 108], cintura: [72, 92], cadera: [86, 104], brazo: [26, 36], antebrazo: [23, 31], muslo: [48, 62], gemelo: [32, 41],
+      cuello: [35, 43], hombros: [110, 132], pecho: [95, 112], cintura: [70, 86], cadera: [86, 100], brazo: [33, 41], antebrazo: [26, 32], muslo: [52, 64], gemelo: [35, 43],
     }
     for (const m of MEDIDAS) {
       expect(r.medidas[m], m).toBeGreaterThan(limites[m]![0])
@@ -170,6 +170,15 @@ describe('del perfil a la forma', () => {
     const c = cuerpoDeMakeHuman(info, 1, 0, 0.5, 0.5, 1.75)
     expect(c.kg).toBeGreaterThan(60)
     expect(c.kg).toBeLessThan(75)
+  })
+
+  it('con volumen muscular de más: más hombros, pecho, brazos y piernas, la misma cintura', () => {
+    const r = resolverForma(modelo, persona)
+    const sin = medirAvatar(modelo, construirForma(modelo, { ...r.parametros, objetivos: {} }), 1)
+    for (const m of ['hombros', 'pecho', 'brazo', 'muslo'] as const) expect(r.medidas[m] - sin[m], m).toBeGreaterThan(1.5)
+    expect(Math.abs(r.medidas.cintura - sin.cintura)).toBeLessThan(1.5)
+    expect(VOLUMEN.cintura).toBeUndefined()
+    expect(VOLUMEN.cadera).toBeUndefined()
   })
 
   it('ajusta las medidas de cinta', () => {
