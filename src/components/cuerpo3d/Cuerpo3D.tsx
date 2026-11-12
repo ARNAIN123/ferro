@@ -4,9 +4,11 @@ import { forwardRef, Suspense, use, useEffect, useImperativeHandle, useLayoutEff
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { leerColores } from '../../animacion3d/estudio'
+import { anadirPiel, crearEsqueleto, ponerEnReposo, type Postura } from '../../avatar3d/esqueleto'
 import { aplicarForma, crearGeometriaAvatar } from '../../avatar3d/geometria'
 import { crearMaterialesAvatar } from '../../avatar3d/material'
 import { cargarModeloAvatar, type ModeloAvatar } from '../../avatar3d/modelo'
+import { posturaRelajada, respirar } from '../../avatar3d/postura'
 import { resolverForma } from '../../avatar3d/resolver'
 import { cargarTexturasAvatar, regionEn, type TexturasAvatar } from '../../avatar3d/texturas'
 import type { DatosCuerpo } from '../../domain/cuerpo'
@@ -68,12 +70,16 @@ interface Vista {
   alturaObjetivo: number | null
 }
 
+/** Fotogramas por segundo de la respiración (los gestos van a los del móvil). */
+const FPS_RESPIRACION = 24
+
 /**
- * El cuerpo 3D de Ferro: mi avatar (el cuerpo de MakeHuman con la forma de mi perfil corporal) en
- * arcilla mate, con los músculos trabajados teñidos del acento según su nivel. Se gira con el dedo
- * (con inercia), se acerca pellizcando, un doble toque lo pone de frente y un toque en un músculo lo
- * elige. Solo se dibuja cuando algo se mueve. Si algo falla (el modelo, la tarjeta gráfica…), se ve
- * el mapa 2D con el motivo, nunca una pantalla vacía.
+ * El cuerpo 3D de Ferro: mi avatar (una persona musculada de mi peso y mi altura) en arcilla mate, de
+ * pie y relajado, respirando, con los músculos trabajados teñidos del acento según su nivel y los
+ * bordes suaves. Se gira con el dedo (con inercia), se acerca pellizcando, un doble toque lo pone de
+ * frente y un toque en un músculo lo elige. Solo respira mientras se ve (y no con «reducir
+ * movimiento»); si no, solo se dibuja cuando algo se mueve. Si algo falla (el modelo, la tarjeta
+ * gráfica…), se ve el mapa 2D con el motivo, nunca una pantalla vacía.
  */
 export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D(props, ref) {
   const [fallo, setFallo] = useState<string | null>(null)
@@ -117,6 +123,8 @@ const Cuerpo3DVisor = forwardRef<Cuerpo3DControl, Props & { alFallar: (motivo: s
   const lista = useMemo(() => cuerpos ?? (mio ? [mio.datos] : []), [cuerpos, mio])
 
   const mover = () => escena.current?.invalidar()
+  /** Si el cuerpo respira: se ve en pantalla, la app está delante y no se pide reducir el movimiento. */
+  const vivo = useRef(false)
   const girarA = (angulo: number, animado = true) => {
     const v = vista.current
     v.velocidad = 0
@@ -167,7 +175,7 @@ const Cuerpo3DVisor = forwardRef<Cuerpo3DControl, Props & { alFallar: (motivo: s
       const golpes = rayo.intersectObjects(e.mallas(), false)
       const piel = golpes[0]
       if (!piel?.uv) return
-      const musculo = musculoDeRegion(regionEn(e.texturas, piel.uv.x, piel.uv.y).region)
+      const musculo = musculoDeRegion(regionEn(e.texturas, piel.uv.x, piel.uv.y))
       if (musculo) tocar.current(musculo)
     }
 
@@ -257,6 +265,31 @@ const Cuerpo3DVisor = forwardRef<Cuerpo3DControl, Props & { alFallar: (motivo: s
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Respira solo mientras se ve.
+  useEffect(() => {
+    const el = contenedor.current
+    if (!el) return
+    const quieto = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let enPantalla = false
+    const actualizar = () => {
+      const antes = vivo.current
+      vivo.current = enPantalla && !document.hidden && !quieto.matches
+      if (vivo.current && !antes) mover()
+    }
+    const observador = new IntersectionObserver(([e]) => {
+      enPantalla = e?.isIntersecting ?? false
+      actualizar()
+    })
+    observador.observe(el)
+    document.addEventListener('visibilitychange', actualizar)
+    quieto.addEventListener('change', actualizar)
+    return () => {
+      observador.disconnect()
+      document.removeEventListener('visibilitychange', actualizar)
+      quieto.removeEventListener('change', actualizar)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const girar = (l: 'frente' | 'espalda') => {
     setLado(l)
     girarA(l === 'frente' ? 0 : Math.PI)
@@ -290,7 +323,7 @@ const Cuerpo3DVisor = forwardRef<Cuerpo3DControl, Props & { alFallar: (motivo: s
           }}
         >
           <Suspense fallback={null}>
-            <Escena vista={vista} niveles={niveles} seleccionado={seleccionado ?? null} cuerpos={lista} alListo={(e) => (escena.current = e)} alCambiarLado={setLado} />
+            <Escena vista={vista} vivo={vivo} niveles={niveles} seleccionado={seleccionado ?? null} cuerpos={lista} alListo={(e) => (escena.current = e)} alCambiarLado={setLado} />
           </Suspense>
         </Canvas>
       </div>
@@ -325,6 +358,7 @@ const Cuerpo3DVisor = forwardRef<Cuerpo3DControl, Props & { alFallar: (motivo: s
 
 function Escena({
   vista,
+  vivo,
   niveles,
   seleccionado,
   cuerpos,
@@ -333,6 +367,7 @@ function Escena({
 }: {
   alCambiarLado: (l: 'frente' | 'espalda') => void
   vista: RefObject<Vista>
+  vivo: RefObject<boolean>
   niveles: ReadonlyMap<Musculo, number>
   seleccionado: Musculo | null
   cuerpos: readonly DatosCuerpo[]
@@ -387,6 +422,8 @@ function Escena({
   }, [camera, texturas, alListo, invalidate])
 
   const lado = useRef<'frente' | 'espalda'>('frente')
+  const proximo = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(proximo.current), [])
 
   // Inercia, animaciones de giro y zoom. Solo pide otro fotograma mientras algo se mueve.
   useFrame((_, dt) => {
@@ -436,7 +473,13 @@ function Escena({
     }
     cam.position.set(0, v.altura, DISTANCIA)
     cam.lookAt(0, v.altura, 0)
+    // Los gestos piden el fotograma siguiente; la respiración, uno cada 1/24 s.
     if (sigue) invalidate()
+    else if (vivo.current && proximo.current === undefined)
+      proximo.current = window.setTimeout(() => {
+        proximo.current = undefined
+        invalidate()
+      }, 1000 / FPS_RESPIRACION)
   })
 
   const dos = cuerpos.length > 1
@@ -457,6 +500,7 @@ function Escena({
           x={dos ? (i === 0 ? -SEPARACION : SEPARACION) : 0}
           sombra={dos ? 0.74 : 1.3}
           aspecto={aspecto}
+          vivo={vivo}
           alMontar={(grupo, malla) => {
             if (grupo && malla) {
               grupos.current.set(i, grupo)
@@ -481,6 +525,7 @@ function CuerpoAvatar({
   x,
   sombra,
   aspecto,
+  vivo,
   alMontar,
 }: {
   modelo: ModeloAvatar
@@ -489,24 +534,52 @@ function CuerpoAvatar({
   x: number
   sombra: number
   aspecto: { porRegion: readonly { color: RGB; brillo: number }[]; acento: RGB }
+  vivo: RefObject<boolean>
   alMontar: (grupo: THREE.Group | null, malla: THREE.Mesh | null) => void
 }) {
   const { invalidate } = useThree()
   const grupo = useRef<THREE.Group>(null)
-  const malla = useRef<THREE.Mesh>(null)
-  const geometria = useMemo(() => crearGeometriaAvatar(modelo), [modelo])
+  const geometria = useMemo(() => {
+    const g = crearGeometriaAvatar(modelo)
+    anadirPiel(g, modelo)
+    return g
+  }, [modelo])
   const materiales = useMemo(() => crearMaterialesAvatar(texturas), [texturas])
+  // La malla con piel y su esqueleto (los mismos 24 huesos que las animaciones). Se crean juntos: el
+  // esqueleto cuelga de su malla, y si React repite el cálculo, cada malla tiene el suyo.
+  const { malla, esqueleto } = useMemo(() => {
+    const e = crearEsqueleto(modelo)
+    const m = new THREE.SkinnedMesh(geometria, materiales.material)
+    m.add(e.raiz)
+    // Los huesos se apartan de la postura de reposo: que three.js no lo recorte.
+    m.frustumCulled = false
+    return { malla: m, esqueleto: e }
+  }, [geometria, materiales, modelo])
+  const postura = useRef<Postura | null>(null)
   useEffect(() => () => geometria.dispose(), [geometria])
   useEffect(() => () => materiales.liberar(), [materiales])
 
-  // La forma: solo se recalcula cuando cambian los datos del cuerpo.
+  // La forma: solo se recalcula cuando cambian los datos del cuerpo. Con ella, el esqueleto se pone en
+  // sus articulaciones (reposo), se ata la piel y se calcula la postura relajada.
   const clave = JSON.stringify(datos)
   const resuelta = useMemo(() => resolverForma(modelo, datos), [modelo, clave]) // eslint-disable-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
     aplicarForma(geometria, modelo, resuelta.forma)
     materiales.definir(resuelta.definicion)
+    ponerEnReposo(esqueleto, modelo, resuelta.forma.articulaciones)
+    malla.bind(esqueleto.esqueleto)
+    postura.current = posturaRelajada(modelo, resuelta.forma.articulaciones)
+    respirar(esqueleto, postura.current, performance.now() / 1000)
+    // Para tocar los músculos: la esfera que lo envuelve se recalcula con la postura.
+    esqueleto.raiz.updateMatrixWorld(true)
+    esqueleto.esqueleto.update()
+    malla.computeBoundingSphere()
     invalidate()
-  }, [geometria, materiales, modelo, resuelta, invalidate])
+  }, [geometria, materiales, esqueleto, malla, modelo, resuelta, invalidate])
+
+  useFrame(() => {
+    if (vivo.current && postura.current) respirar(esqueleto, postura.current, performance.now() / 1000)
+  })
 
   useLayoutEffect(() => {
     materiales.pintar(aspecto.porRegion, aspecto.acento)
@@ -516,15 +589,15 @@ function CuerpoAvatar({
   const montar = useRef(alMontar)
   montar.current = alMontar
   useEffect(() => {
-    montar.current(grupo.current, malla.current)
+    montar.current(grupo.current, malla)
     return () => montar.current(null, null)
-  }, [])
+  }, [malla])
 
   return (
     <group position={[x, 0, 0]}>
       <group ref={grupo}>
         <group scale={ALTO / resuelta.forma.alto}>
-          <mesh ref={malla} geometry={geometria} material={materiales.material} />
+          <primitive object={malla} />
         </group>
         <ContactShadows key={clave} position={[0, 0.001, 0]} scale={sombra} far={0.6} blur={2.4} opacity={0.75} resolution={512} frames={1} />
       </group>

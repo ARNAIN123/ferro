@@ -5,7 +5,7 @@ import { REGIONES_MODELO } from '../domain/musculos'
 import { construirForma, normalesAvatar, pesosEsquinas, volumenLitros } from './forma'
 import { medirAvatar, perimetroConvexo } from './medidas'
 import { modeloDesdeGlb, type InfoAvatar } from './modelo'
-import { cuerpoDeMakeHuman, resolverForma, resolverMacro } from './resolver'
+import { cuerpoDeMakeHuman, FRANJA_ATLETICA, resolverForma, resolverMacro } from './resolver'
 
 const glb = readFileSync('public/modelos/avatar.glb')
 const info = JSON.parse(readFileSync('public/modelos/avatar.json', 'utf8')) as InfoAvatar
@@ -133,29 +133,39 @@ describe('cinta métrica', () => {
 describe('del perfil a la forma', () => {
   const persona: DatosCuerpo = { sexo: 'hombre', edad: 28, alturaCm: 178, kg: 80, grasaPct: 15 }
 
-  it('el avatar pesa lo que la persona y tiene su grasa', () => {
-    for (const d of [persona, { ...persona, kg: 65, grasaPct: 12 }, { ...persona, kg: 98, grasaPct: 28 }, { sexo: 'mujer', edad: 35, alturaCm: 164, kg: 60, grasaPct: 26 }] as DatosCuerpo[]) {
+  it('con un peso corriente, el avatar es musculado: pesa lo que la persona y tiene grasa de gimnasio', () => {
+    for (const d of [persona, { ...persona, kg: 72 }, { sexo: 'mujer', edad: 35, alturaCm: 164, kg: 58 }] as DatosCuerpo[]) {
       const m = resolverMacro(info, d)
-      console.log(d.sexo, d.kg, 'kg', d.grasaPct, '% →', 'músculo', m.musculo, 'peso', m.peso, 'da', m.kg.toFixed(1), 'kg y', m.grasa.toFixed(1), '%')
+      console.log(d.sexo, d.kg, 'kg →', 'músculo', m.musculo, 'peso', m.peso, 'da', m.kg.toFixed(1), 'kg y', m.grasa.toFixed(1), '%')
       expect(Math.abs(m.kg - d.kg) / d.kg).toBeLessThan(0.04)
-      expect(Math.abs(m.grasa - d.grasaPct!)).toBeLessThan(5)
+      const [minimo, maximo] = FRANJA_ATLETICA[d.sexo]
+      expect(m.grasa).toBeGreaterThanOrEqual(minimo - 1)
+      expect(m.grasa).toBeLessThanOrEqual(maximo + 1)
+      expect(m.musculo).toBeGreaterThanOrEqual(0.75)
     }
   })
 
-  it('sin dato de grasa, manda el peso', () => {
+  it('nunca gordo ni flaco: muy pesado, el más musculado posible; muy ligero, fibroso', () => {
     for (const kg of [55, 70, 85, 100, 120]) {
       const m = resolverMacro(info, { sexo: 'hombre', edad: 30, alturaCm: 175, kg })
-      console.log(kg, 'kg sin grasa →', 'músculo', m.musculo, 'peso', m.peso, 'da', m.kg.toFixed(1), 'kg y', m.grasa.toFixed(1), '%')
-      expect(Math.abs(m.kg - kg) / kg).toBeLessThan(0.06)
+      console.log(kg, 'kg →', 'músculo', m.musculo, 'peso', m.peso, 'da', m.kg.toFixed(1), 'kg y', m.grasa.toFixed(1), '%')
+      expect(m.grasa).toBeLessThan(17)
+      expect(m.grasa).toBeGreaterThan(5)
+      if (kg <= 85) expect(Math.abs(m.kg - kg) / kg).toBeLessThan(0.05)
+      if (kg >= 100) expect(m.musculo).toBe(1)
+      if (kg <= 55) expect(m.musculo).toBeGreaterThanOrEqual(0.2)
     }
   })
 
-  it('con más peso, el avatar es más ancho; con menos grasa, más definido', () => {
+  it('mi grasa no cambia el avatar; con más peso, más músculo y más ancho', () => {
     const a = resolverForma(modelo, persona)
-    const b = resolverForma(modelo, { ...persona, kg: 95, grasaPct: 27 })
-    expect(b.medidas.cintura).toBeGreaterThan(a.medidas.cintura + 8)
-    expect(b.definicion).toBeLessThan(a.definicion - 0.3)
-    expect(resolverForma(modelo, { ...persona, grasaPct: 9 }).definicion).toBeGreaterThan(a.definicion)
+    expect(resolverForma(modelo, { ...persona, grasaPct: 30 }).forma.posiciones).toEqual(a.forma.posiciones)
+    const b = resolverForma(modelo, { ...persona, kg: 90 })
+    expect(b.parametros.musculo).toBeGreaterThanOrEqual(a.parametros.musculo)
+    expect(b.medidas.pecho).toBeGreaterThan(a.medidas.pecho + 3)
+    expect(b.medidas.brazo).toBeGreaterThan(a.medidas.brazo + 1)
+    // Siempre bien definido.
+    expect(a.definicion).toBeGreaterThan(1)
     // La masa de la tabla coincide con la de la malla.
     const c = cuerpoDeMakeHuman(info, 1, 0, 0.5, 0.5, 1.75)
     expect(c.kg).toBeGreaterThan(60)
@@ -163,7 +173,7 @@ describe('del perfil a la forma', () => {
   })
 
   it('ajusta las medidas de cinta', () => {
-    const medidas = { cuello: 39, cintura: 88, brazo: 37, muslo: 60, pecho: 104, gemelo: 39, cadera: 100, antebrazo: 30, hombros: 122 }
+    const medidas = { cuello: 39, cintura: 86, brazo: 37, muslo: 60, pecho: 108, gemelo: 39, cadera: 100, antebrazo: 30, hombros: 125 }
     const t0 = performance.now()
     const r = resolverForma(modelo, { ...persona, medidas })
     console.log('medidas pedidas', JSON.stringify(medidas), '\nmedidas del avatar', JSON.stringify(r.medidas), `\n${(performance.now() - t0).toFixed(0)} ms`, JSON.stringify(r.parametros.objetivos))

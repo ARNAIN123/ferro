@@ -86,15 +86,6 @@ export function grasaMarina(d: { sexo: Sexo; alturaCm: number; cuello?: number; 
   return Number.isFinite(pct) ? redondear1(limitar(pct, 3, 60)) : null
 }
 
-/**
- * Estimación gruesa de la grasa a partir del IMC, la edad y el sexo (Deurenberg, 1991). Solo sirve
- * para dar forma al avatar cuando no hay otro dato: no distingue el músculo de la grasa.
- */
-export function grasaPorImc(d: { sexo: Sexo; edad: number; alturaCm: number; kg: number }): number {
-  const imc = d.kg / (d.alturaCm / 100) ** 2
-  return redondear1(limitar(1.2 * imc + 0.23 * d.edad - (d.sexo === 'hombre' ? 10.8 : 0) - 5.4, 4, 55))
-}
-
 /** Densidad del cuerpo (kg/L) para un porcentaje de grasa (Siri, 1961). */
 export const densidadCorporal = (grasaPct: number): number => 495 / (limitar(grasaPct, 2, 65) + 450)
 

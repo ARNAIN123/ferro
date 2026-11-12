@@ -5,7 +5,6 @@ import {
   definicionMuscular,
   densidadCorporal,
   grasaMarina,
-  grasaPorImc,
   grasaVigente,
   haceMeses,
   medidasVigentes,
@@ -28,11 +27,6 @@ describe('porcentaje de grasa', () => {
     expect(grasaMarina({ sexo: 'hombre', alturaCm: 178, cuello: 38 })).toBeNull()
     expect(grasaMarina({ sexo: 'mujer', alturaCm: 165, cuello: 32, cintura: 72 })).toBeNull()
     expect(grasaMarina({ sexo: 'hombre', alturaCm: 178, cuello: 40, cintura: 39 })).toBeNull()
-  })
-
-  it('estimación por el IMC (solo para dar forma al avatar)', () => {
-    expect(grasaPorImc({ sexo: 'hombre', edad: 30, alturaCm: 175, kg: 74 })).toBeCloseTo(19.6, 0)
-    expect(grasaPorImc({ sexo: 'mujer', edad: 30, alturaCm: 165, kg: 60 })).toBeGreaterThan(grasaPorImc({ sexo: 'hombre', edad: 30, alturaCm: 165, kg: 60 }))
   })
 
   it('densidad del cuerpo: con más grasa, menos densa', () => {

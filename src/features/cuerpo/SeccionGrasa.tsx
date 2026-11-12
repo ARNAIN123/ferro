@@ -20,10 +20,10 @@ const fecha = (f: string) => fmtFechaCorta(new Date(`${f}T12:00`).getTime())
 
 /**
  * Porcentaje de grasa: el de la báscula (Health Connect) si lo registra; si no, el método de la
- * Marina con las medidas de cinta, o escrito a mano. Con él, los músculos del avatar se ven más o
- * menos marcados y Nutrición calcula el metabolismo basal con Katch-McArdle.
+ * Marina con las medidas de cinta, o escrito a mano. Con él, Nutrición calcula el metabolismo basal
+ * con Katch-McArdle. No cambia el avatar, que siempre tiene la forma de una persona musculada.
  */
-export function SeccionGrasa({ sexo, vigente, estimada }: { sexo: Sexo; vigente: GrasaVigente | null; estimada: number | null }) {
+export function SeccionGrasa({ sexo, vigente }: { sexo: Sexo; vigente: GrasaVigente | null }) {
   const [texto, setTexto] = useState('')
   const registros = useLiveQuery(() => db.grasas.orderBy('fecha').reverse().limit(6).toArray(), [])
   const pct = parseNumero(texto)
@@ -48,11 +48,11 @@ export function SeccionGrasa({ sexo, vigente, estimada }: { sexo: Sexo; vigente:
         </p>
       ) : (
         <p className="text-sm text-muted">
-          Sin dato reciente{estimada !== null && <>: el avatar usa una estimación por tu peso y tu altura (≈ {fmtKg(estimada)} %), que no distingue el músculo de la grasa</>}.
+          Sin dato reciente.
         </p>
       )}
       <p className="mt-2 text-xs text-muted">
-        Con menos grasa, los músculos del avatar se ven más marcados. Si hay porcentaje de grasa, Nutrición calcula tu metabolismo basal con la fórmula de Katch-McArdle.
+        Si hay porcentaje de grasa, Nutrición calcula tu metabolismo basal con la fórmula de Katch-McArdle. El avatar no cambia con él: siempre tiene la forma de una persona musculada de tu peso y tu altura.
       </p>
 
       <ul className="mt-3 space-y-1 border-t border-line pt-3 text-sm text-muted">

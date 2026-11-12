@@ -66,7 +66,7 @@ export function PerfilCorporalPage() {
 
   return (
     <>
-      <Cabecera titulo="Perfil corporal" subtitulo="Tu avatar se parece a ti: cambia con tu peso y tus medidas" atras="/ajustes" />
+      <Cabecera titulo="Perfil corporal" subtitulo="Tu avatar: una persona musculada de tu peso y tu altura" atras="/ajustes" />
       <div className="mt-2 space-y-4">
         <Tarjeta>
           <Suspense fallback={<div className="h-80 w-full" aria-hidden />}>
@@ -76,12 +76,6 @@ export function PerfilCorporalPage() {
             <p className="mt-2 text-center text-sm text-muted">
               <span className="num text-fg">{cuerpo.datos.alturaCm}</span> cm · <span className="num text-fg">{fmtKg(cuerpo.datos.kg)}</span> kg
               {cuerpo.kg !== null && ' (tendencia)'}
-              {resuelta && (
-                <>
-                  {' · '}
-                  <span className="num text-fg">{fmtKg(resuelta.grasa)} %</span> de grasa{!resuelta.grasaConocida && ' (estimada)'}
-                </>
-              )}
             </p>
           )}
           {cuerpo && cuerpo.faltan.length > 0 && (
@@ -160,7 +154,7 @@ export function PerfilCorporalPage() {
           <p className="text-xs text-muted">El peso sale de tu registro: el avatar usa la tendencia (la media de la semana), no el dato de un día.</p>
         </Tarjeta>
 
-        <SeccionGrasa sexo={cuerpo?.datos.sexo ?? 'hombre'} vigente={cuerpo?.grasa ?? null} estimada={resuelta && !resuelta.grasaConocida ? resuelta.grasa : null} />
+        <SeccionGrasa sexo={cuerpo?.datos.sexo ?? 'hombre'} vigente={cuerpo?.grasa ?? null} />
 
         <SeccionMedidas delAvatar={resuelta?.medidas ?? null} />
 

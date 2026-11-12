@@ -1,7 +1,9 @@
 // Del perfil corporal a la forma del avatar. MakeHuman describe un cuerpo con «músculo» y «peso»;
 // aquí se buscan los valores que dan el peso real (con el volumen de la malla y la densidad del
-// cuerpo) y el porcentaje de grasa, y después se ajustan las medidas de cinta que se hayan tomado.
-import { AJUSTE_NEUTRO, definicionMuscular, densidadCorporal, grasaPorImc, MEDIDAS, type AjusteFino, type DatosCuerpo, type NombreMedida } from '../domain/cuerpo'
+// cuerpo) con la composición de una persona musculada (ronda 5: ni gorda ni flaca, sea cual sea su
+// porcentaje de grasa), y después se ajustan las medidas de cinta que se hayan tomado.
+import type { Sexo } from '../domain/nutricion'
+import { AJUSTE_NEUTRO, definicionMuscular, densidadCorporal, MEDIDAS, type AjusteFino, type DatosCuerpo, type NombreMedida } from '../domain/cuerpo'
 import { construirForma, type FormaAvatar, type NombreObjetivo, type ParametrosForma } from './forma'
 import { medirAvatar } from './medidas'
 import type { InfoAvatar, ModeloAvatar } from './modelo'
@@ -11,10 +13,8 @@ export interface FormaResuelta {
   forma: FormaAvatar
   /** Fuerza del relieve muscular (más con menos grasa). */
   definicion: number
-  /** Porcentaje de grasa al que corresponde la forma. */
+  /** Porcentaje de grasa al que corresponde la forma (el de un cuerpo musculado, no el mío). */
   grasa: number
-  /** Si la grasa es un dato (true) o una estimación por el IMC (false). */
-  grasaConocida: boolean
   /** Lo que mide el avatar (cm). */
   medidas: Record<NombreMedida, number>
 }
@@ -68,21 +68,29 @@ export function cuerpoDeMakeHuman(info: InfoAvatar, sexo: number, edad: number, 
 
 const PASOS = 40
 
+/** Porcentaje de grasa de un cuerpo musculado, ni gordo ni flaco: [mínimo, máximo]. */
+export const FRANJA_ATLETICA: Record<Sexo, readonly [number, number]> = { hombre: [8, 14], mujer: [17, 24] }
+
+/** Lo que cuesta cada punto de grasa fuera de la franja y que falte músculo, frente a un 1 % de peso. */
+const PESO_FRANJA = 25
+const PESO_MUSCULO = 30
+
 /**
- * Músculo y peso de MakeHuman que mejor dan el peso real y el porcentaje de grasa. Si la grasa es
- * solo una estimación, cuenta menos que el peso.
+ * Músculo y peso de MakeHuman de una persona musculada con mi peso y mi altura: la grasa dentro de
+ * la franja atlética y, entre las formas que dan mi peso, la de más músculo. Si nadie tan musculado
+ * pesa tanto (un cuerpo muy pesado), el avatar se queda en el más musculado posible, más ligero que
+ * yo, antes que engordarlo; si peso muy poco, sale fibroso. Mi porcentaje de grasa no se usa.
  */
 export function resolverMacro(info: InfoAvatar, d: DatosCuerpo): { musculo: number; peso: number; grasa: number; kg: number } {
   const sexo = d.sexo === 'hombre' ? 1 : 0
   const edad = edadMakeHuman(info, d.edad)
-  const conocida = d.grasaPct != null
-  const grasa = d.grasaPct ?? grasaPorImc(d)
-  const tolerancia = conocida ? 1.5 : 5 // puntos de grasa que valen lo mismo que un 1 % de peso
+  const [minimo, maximo] = FRANJA_ATLETICA[d.sexo]
   let mejor = { musculo: 0.5, peso: 0.5, grasa: 0, kg: 0, error: Infinity }
   for (let i = 0; i <= PASOS; i++) {
     for (let j = 0; j <= PASOS; j++) {
       const c = cuerpoDeMakeHuman(info, sexo, edad, i / PASOS, j / PASOS, d.alturaCm / 100)
-      const error = (((c.kg - d.kg) / d.kg) * 100) ** 2 + ((c.grasa - grasa) / tolerancia) ** 2
+      const fuera = c.grasa < minimo ? minimo - c.grasa : c.grasa > maximo ? c.grasa - maximo : 0
+      const error = (((c.kg - d.kg) / d.kg) * 100) ** 2 + PESO_FRANJA * fuera ** 2 + PESO_MUSCULO * (1 - i / PASOS) ** 2
       if (error < mejor.error) mejor = { musculo: i / PASOS, peso: j / PASOS, ...c, error }
     }
   }
@@ -111,11 +119,13 @@ interface Base {
   objetivos: Partial<Record<NombreObjetivo, number>>
 }
 
-/** La forma de un cuerpo. Lo lento (peso, grasa y medidas de cinta) se recuerda; el ajuste fino es inmediato. */
-export function resolverForma(modelo: ModeloAvatar, d: DatosCuerpo): FormaResuelta {
+/** La forma de un cuerpo. Lo lento (peso y medidas de cinta) se recuerda; el ajuste fino es inmediato. */
+export function resolverForma(modelo: ModeloAvatar, datos: DatosCuerpo): FormaResuelta {
   let memoria = recordadas.get(modelo)
   if (!memoria) recordadas.set(modelo, (memoria = { bases: new Map(), formas: new Map() }))
   const { bases } = memoria
+  // La grasa no da forma al avatar: dos días que solo cambian en ella dan el mismo cuerpo.
+  const d: DatosCuerpo = { ...datos, grasaPct: undefined }
   return recordar(memoria.formas, JSON.stringify(d), () => {
     const base = recordar(bases, JSON.stringify({ ...d, ajuste: undefined }), () => resolverBase(modelo, d))
     return conAjuste(modelo, d, base)
@@ -158,13 +168,11 @@ function conAjuste(modelo: ModeloAvatar, d: DatosCuerpo, base: Base): FormaResue
 
   const parametros: ParametrosForma = { sexo, edad: edadMakeHuman(modelo.info, d.edad), musculo: macro.musculo, peso: macro.peso, alturaM: d.alturaCm / 100, objetivos }
   const forma = construirForma(modelo, parametros)
-  const grasa = d.grasaPct ?? macro.grasa
   return {
     parametros,
     forma,
-    definicion: definicionMuscular(d.sexo, grasa, macro.musculo),
-    grasa: Math.round(grasa * 10) / 10,
-    grasaConocida: d.grasaPct != null,
+    definicion: definicionMuscular(d.sexo, macro.grasa, macro.musculo),
+    grasa: Math.round(macro.grasa * 10) / 10,
     medidas: medirAvatar(modelo, forma, sexo),
   }
 }
