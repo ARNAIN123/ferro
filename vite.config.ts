@@ -64,7 +64,10 @@ export default defineConfig({
       workbox: {
         // Sin fotos: las animaciones de los ejercicios se dibujan en el propio código (SVG).
         // El cuerpo 3D (glb) y su decodificador (wasm) también: funcionan sin conexión.
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest,txt,glb,wasm}'],
+        // El avatar (ronda 4) son el GLB con sus deformadores, su JSON y sus dos texturas.
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest,txt,glb,wasm}', 'modelos/*.json'],
+        // avatar.glb pesa unos 5 MB (por defecto, Workbox no guarda nada de más de 2 MB).
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         // Decodificador Draco en asm.js: solo para navegadores sin WebAssembly (no se usa).
         globIgnores: ['**/draco_decoder-*.js'],
         navigateFallback: '/index.html',

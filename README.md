@@ -78,6 +78,19 @@ Los músculos están en `src/domain/tipos.ts` (`MUSCULOS`, 48: el orden es el de
 
 Si se añade un músculo, hay que darle región en `scripts/blender/generar-cuerpo.py` (lista `REGIONES` y diccionario `MUSCULOS`) y regenerar el cuerpo; los tests comprueban que el modelo y la app tienen los mismos músculos, en el mismo orden, y que cada uno tiene superficie.
 
+### Avatar personalizado (ronda 4)
+
+El avatar (`public/modelos/avatar.glb`, `avatar.json` y sus dos texturas) es el cuerpo paramétrico de [MakeHuman/MPFB2](https://github.com/makehumancommunity/mpfb2) (sus datos son CC0) con las regiones musculares y el relieve del cuerpo de Z-Anatomy. Para regenerarlo (después de `cuerpo-rig.glb`, del que toma las regiones y la postura):
+
+1. Descarga `mpfb2-2.0.18.zip` de las *releases* de MPFB2 y descomprímelo (solo se usan los datos de `src/mpfb/data`; no se instala ni se ejecuta MPFB).
+2. Ejecuta:
+
+```bash
+blender --background --factory-startup --python scripts/blender/generar-avatar.py -- <mpfb2>/src/mpfb/data public/modelos
+```
+
+Con `FERRO_CACHE_AVATAR=<carpeta>` guarda los pasos lentos (el ajuste sobre Z-Anatomy, el horneado y la oclusión: unos 10 minutos la primera vez) y las siguientes tarda segundos; borra la carpeta si cambias el cuerpo de Z-Anatomy. `FERRO_ETAPA=esquinas` o `transferencia` (con una tercera ruta como prefijo de capturas) dibuja formas de muestra o las regiones transferidas, para revisarlas. En la app, `src/avatar3d` lee el GLB (`glb.ts`, `modelo.ts`), mezcla las formas y recalcula el esqueleto (`forma.ts`), mide como una cinta (`medidas.ts`) y pasa del perfil corporal a la forma (`resolver.ts`); los datos del perfil están en `src/domain/cuerpo.ts` y la pantalla en `src/features/cuerpo`.
+
 ### Animaciones 3D
 
 Todos los ejercicios tienen animación 3D sobre el mismo cuerpo del avatar (con esqueleto: `public/modelos/cuerpo-rig.glb`, que se genera con el mismo comando añadiendo `FERRO_RIG=public/modelos/cuerpo-rig.glb`). Cada ejercicio son datos —poses clave de una repetición con su tempo—, nunca vídeos: los 10 del piloto están hechos a mano en `src/animacion3d/ejercicios.ts` y el resto salen de las poses 2D de cada ejercicio (`src/animacion3d/desde2d.ts`), así que si una animación 2D se corrige en `asignacion.ts` o `patrones.ts`, la 3D se corrige con ella. La cinemática inversa coloca brazos y piernas, y el material de gimnasio está modelado en `src/animacion3d/material.ts`. Bancos, atriles y cajones se colocan solos contra el cuerpo real (que lo que se apoya los toque sin atravesarlos) y el material va siempre en las manos; los tests lo comprueban en toda la biblioteca. Se ven en su ficha (escena en vivo, que se gira) y en las listas (miniatura animada, generada una vez en el móvil y guardada aparte de los datos), y todos en **Ajustes → Animaciones 3D**, agrupados por patrón (`?revision=grande&ver=nombre` enseña fotogramas grandes de los que se quieran mirar de cerca). Sin WebGL se ve la animación 2D.

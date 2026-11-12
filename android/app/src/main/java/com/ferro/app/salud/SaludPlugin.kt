@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResult
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
+import androidx.health.connect.client.records.BodyFatRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.WeightRecord
 import androidx.health.connect.client.request.AggregateRequest
@@ -28,7 +29,7 @@ import java.time.Duration
 import java.time.Instant
 
 /**
- * Pasos y peso desde Health Connect (solo lectura). Ver src/lib/salud.ts.
+ * Pasos, peso y porcentaje de grasa desde Health Connect (solo lectura). Ver src/lib/salud.ts.
  * Los pasos se piden con la agregación de Health Connect, que junta las fuentes (móvil, pulsera,
  * Google Health, Mi Fitness…) sin contar dos veces el mismo paso.
  */
@@ -72,13 +73,14 @@ class SaludPlugin : Plugin() {
         val concedidos = cliente()?.permissionController?.getGrantedPermissions() ?: emptySet()
         r.put("pasos", PERMISO_PASOS in concedidos)
         r.put("peso", PERMISO_PESO in concedidos)
+        r.put("grasa", PERMISO_GRASA in concedidos)
         return r
     }
 
     @PluginMethod
     fun estado(call: PluginCall) = call.lanzar { resolve(estadoJs()) }
 
-    /** Abre la pantalla de Health Connect para conceder pasos y peso (nada más). */
+    /** Abre la pantalla de Health Connect para conceder pasos, peso y grasa corporal (nada más). */
     @PluginMethod
     fun pedirPermisos(call: PluginCall) = call.lanzar {
         val c = cliente()
@@ -162,6 +164,30 @@ class SaludPlugin : Plugin() {
         resolve(JSObject().put("pesos", lista))
     }
 
+    /** Mediciones de grasa corporal (%) entre dos instantes (ms), de la más antigua a la más reciente. */
+    @PluginMethod
+    fun grasas(call: PluginCall) = call.lanzar {
+        val c = cliente() ?: return@lanzar reject("Health Connect no está disponible")
+        val desde = Instant.ofEpochMilli(getLong("desde") ?: 0L)
+        val hasta = Instant.ofEpochMilli(getLong("hasta") ?: System.currentTimeMillis())
+        val lista = JSArray()
+        var pagina: String? = null
+        do {
+            val r = c.readRecords(
+                ReadRecordsRequest(
+                    recordType = BodyFatRecord::class,
+                    timeRangeFilter = TimeRangeFilter.between(desde, hasta),
+                    ascendingOrder = true,
+                    pageSize = 500,
+                    pageToken = pagina,
+                ),
+            )
+            r.records.forEach { lista.put(JSObject().put("pct", it.percentage.value).put("hora", it.time.toEpochMilli())) }
+            pagina = r.pageToken
+        } while (pagina != null)
+        resolve(JSObject().put("grasas", lista))
+    }
+
     /** Ajustes de Health Connect, o su ficha en Play Store si hay que instalarlo o actualizarlo. */
     @PluginMethod
     fun abrirHealthConnect(call: PluginCall) {
@@ -187,6 +213,7 @@ class SaludPlugin : Plugin() {
         private const val PAQUETE_HC = "com.google.android.apps.healthdata"
         private val PERMISO_PASOS = HealthPermission.getReadPermission(StepsRecord::class)
         private val PERMISO_PESO = HealthPermission.getReadPermission(WeightRecord::class)
-        private val PERMISOS = setOf(PERMISO_PASOS, PERMISO_PESO)
+        private val PERMISO_GRASA = HealthPermission.getReadPermission(BodyFatRecord::class)
+        private val PERMISOS = setOf(PERMISO_PASOS, PERMISO_PESO, PERMISO_GRASA)
     }
 }

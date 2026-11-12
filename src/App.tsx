@@ -28,6 +28,7 @@ const ProgresoPage = perezosa(() => import('./features/progreso/ProgresoPage'), 
 const HistorialPage = perezosa(() => import('./features/historial/HistorialPage'), 'HistorialPage')
 const SesionPage = perezosa(() => import('./features/historial/SesionPage'), 'SesionPage')
 const PesoPage = perezosa(() => import('./features/peso/PesoPage'), 'PesoPage')
+const PerfilCorporalPage = perezosa(() => import('./features/cuerpo/PerfilCorporalPage'), 'PerfilCorporalPage')
 const AjustesPage = perezosa(() => import('./features/ajustes/AjustesPage'), 'AjustesPage')
 const RegistroDeteccionPage = perezosa(() => import('./features/ajustes/RegistroDeteccionPage'), 'RegistroDeteccionPage')
 const CreditosPage = perezosa(() => import('./features/ajustes/CreditosPage'), 'CreditosPage')
@@ -65,6 +66,7 @@ export function App() {
             <Route path="progreso/historial/:id" element={<SesionPage />} />
             <Route path="peso" element={<PesoPage />} />
             <Route path="ajustes" element={<AjustesPage />} />
+            <Route path="ajustes/cuerpo" element={<PerfilCorporalPage />} />
             <Route path="ajustes/deteccion" element={<RegistroDeteccionPage />} />
             <Route path="ajustes/creditos" element={<CreditosPage />} />
             <Route path="nutricion" element={<NutricionPage />} />

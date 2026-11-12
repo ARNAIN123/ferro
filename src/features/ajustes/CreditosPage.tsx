@@ -18,6 +18,12 @@ const SECCIONES: { titulo: string; creditos: Credito[] }[] = [
         enlace: 'https://github.com/Z-Anatomy/The-blend',
       },
       {
+        nombre: 'MakeHuman / MPFB2',
+        uso: 'Cuerpo paramétrico del avatar: malla, deformadores (sexo, edad, músculo, peso y medidas) y esqueleto.',
+        licencia: 'CC0 (datos) · MakeHuman Community',
+        enlace: 'https://github.com/makehumancommunity/mpfb2',
+      },
+      {
         nombre: 'BodyParts3D',
         uso: 'Modelo anatómico original en el que se basa Z-Anatomy.',
         licencia: 'CC BY-SA 2.1 Japón · © The Database Center for Life Science',

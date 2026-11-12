@@ -1,34 +1,27 @@
 import { ContactShadows } from '@react-three/drei'
-import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
-import { forwardRef, Suspense, useEffect, useImperativeHandle, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { forwardRef, Suspense, use, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { conDraco, leerColores } from '../../animacion3d/estudio'
-import {
-  anguloCercano,
-  aspectoDeNivel,
-  factorOclusion,
-  FRENADO_GIRO,
-  GIRO_POR_PIXEL,
-  idDeCanal,
-  limitarAltura,
-  limitarZoom,
-  musculoDeRegion,
-  opacidadSobreProfundo,
-  profundoDeMarca,
-  type RGB,
-} from '../../domain/cuerpo3d'
+import { leerColores } from '../../animacion3d/estudio'
+import { aplicarForma, crearGeometriaAvatar } from '../../avatar3d/geometria'
+import { crearMaterialesAvatar } from '../../avatar3d/material'
+import { cargarModeloAvatar, type ModeloAvatar } from '../../avatar3d/modelo'
+import { resolverForma } from '../../avatar3d/resolver'
+import { cargarTexturasAvatar, regionEn, type TexturasAvatar } from '../../avatar3d/texturas'
+import type { DatosCuerpo } from '../../domain/cuerpo'
+import { anguloCercano, aspectoDeNivel, FRENADO_GIRO, GIRO_POR_PIXEL, limitarAltura, limitarZoom, musculoDeRegion, opacidadSobreProfundo, profundoDeMarca, type RGB } from '../../domain/cuerpo3d'
 import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { ANGULO_PROFUNDO, PROFUNDOS } from '../../domain/musculos'
 import { MUSCULOS, type Musculo } from '../../domain/tipos'
 import { useAjustes } from '../../hooks/useAjustes'
+import { useCuerpo } from '../../hooks/useCuerpo'
 
-const BASE = import.meta.env.BASE_URL
-const MODELO = `${BASE}modelos/cuerpo.glb`
+/** Alto con el que se ve el cuerpo: el avatar se dibuja a esta talla, mida lo que mida. */
 const ALTO = 1.71
 const DISTANCIA = 3.75
-
+/** Con dos cuerpos (Antes / Ahora), lo que se aparta cada uno del centro. */
+const SEPARACION = 0.38
 
 export interface Cuerpo3DControl {
   /** Gira el cuerpo hasta un ángulo (0 = de frente, π = de espaldas). */
@@ -45,19 +38,24 @@ interface Props {
   /** Texto accesible de cada músculo (por defecto, su nombre). */
   describir?: (m: Musculo) => string
   className?: string
+  /** Proporción del visor cuando no se le da un alto. */
+  proporcion?: string
   /** Lo que se ve si el móvil no tiene WebGL (el mapa 2D). */
   sinWebgl?: ReactNode
+  /**
+   * Los cuerpos que se dibujan. Por defecto, el mío de hoy (según el perfil corporal). Con dos, van
+   * uno al lado del otro y giran a la vez (Antes / Ahora).
+   */
+  cuerpos?: readonly DatosCuerpo[]
 }
 
 /** Lo que necesitan los gestos de la escena ya montada. */
 interface EscenaLista {
   camara: THREE.Camera
-  malla: THREE.Mesh
-  regiones: Uint8Array
-  /** Músculo profundo que hay bajo cada vértice de la piel (índice + 1; 0 = ninguno). */
-  marcas: Uint8Array
-  /** Opacidad actual de cada vértice (< 1 donde la piel está translúcida). */
-  opacidad: Float32Array
+  mallas: () => THREE.Mesh[]
+  texturas: TexturasAvatar
+  /** Opacidad de la piel según su marca de músculo profundo (la 0, sin marca, es opaca). */
+  sobre: number[]
   invalidar: () => void
 }
 
@@ -72,13 +70,13 @@ interface Vista {
   alturaObjetivo: number | null
 }
 
-
 /**
- * El cuerpo 3D de Ferro: arcilla mate con los músculos trabajados teñidos del acento según su nivel.
- * Se gira con el dedo (con inercia), se acerca pellizcando, un doble toque lo pone de frente y un
- * toque en un músculo lo elige. Solo se dibuja cuando algo se mueve.
+ * El cuerpo 3D de Ferro: mi avatar (el cuerpo de MakeHuman con la forma de mi perfil corporal) en
+ * arcilla mate, con los músculos trabajados teñidos del acento según su nivel. Se gira con el dedo
+ * (con inercia), se acerca pellizcando, un doble toque lo pone de frente y un toque en un músculo lo
+ * elige. Solo se dibuja cuando algo se mueve.
  */
-export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ niveles, seleccionado, onTocar, describir, className = '', sinWebgl }, ref) {
+export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ niveles, seleccionado, onTocar, describir, className = '', proporcion = 'aspect-[4/5]', sinWebgl, cuerpos }, ref) {
   const vista = useRef<Vista>({ angulo: 0, velocidad: 0, objetivo: null, zoom: 1, zoomObjetivo: null, altura: ALTO / 2, alturaObjetivo: null })
   const escena = useRef<EscenaLista | null>(null)
   const contenedor = useRef<HTMLDivElement>(null)
@@ -86,6 +84,8 @@ export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ n
   const [conZoom, setConZoom] = useState(false)
   const tocar = useRef(onTocar)
   tocar.current = onTocar
+  const mio = useCuerpo()
+  const lista = useMemo(() => cuerpos ?? (mio ? [mio.datos] : []), [cuerpos, mio])
 
   const mover = () => escena.current?.invalidar()
   const girarA = (angulo: number, animado = true) => {
@@ -135,14 +135,15 @@ export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ n
       const ndc = new THREE.Vector2(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1)
       const rayo = new THREE.Raycaster()
       rayo.setFromCamera(ndc, e.camara)
-      const golpes = rayo.intersectObject(e.malla, false)
-      const piel = golpes[0]?.face
-      if (!piel) return
-      let musculo = musculoDeRegion(e.regiones[piel.a] ?? 0)
+      const golpes = rayo.intersectObjects(e.mallas(), false)
+      const piel = golpes[0]
+      if (!piel?.uv) return
+      const enPiel = regionEn(e.texturas, piel.uv.x, piel.uv.y)
+      let musculo = musculoDeRegion(enPiel.region)
       // Si la piel de ahí está translúcida, lo que se toca es el músculo profundo que se ve dentro.
-      if ((e.opacidad[piel.a] ?? 1) < 0.995) {
-        const dentro = profundoDeMarca(e.marcas[piel.a] ?? 0)
-        if (dentro && golpes.some((g) => g.face && musculoDeRegion(e.regiones[g.face.a] ?? 0) === dentro)) musculo = dentro
+      if ((e.sobre[enPiel.marca] ?? 1) < 0.995) {
+        const dentro = profundoDeMarca(enPiel.marca)
+        if (dentro && golpes.some((g) => g.object === piel.object && g.uv && musculoDeRegion(regionEn(e.texturas, g.uv.x, g.uv.y).region) === dentro)) musculo = dentro
       }
       if (musculo) tocar.current(musculo)
     }
@@ -246,7 +247,7 @@ export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ n
 
   return (
     // Sin alto propio, la figura toma una proporción de 4:5; con un alto (h-96…), lo llena.
-    <div className={`relative aspect-[4/5] w-full ${className}`}>
+    <div className={`relative ${proporcion} w-full ${className}`}>
       <div
         ref={contenedor}
         className="absolute inset-0 select-none"
@@ -263,7 +264,7 @@ export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ n
           fallback={sinWebgl}
         >
           <Suspense fallback={null}>
-            <Escena vista={vista} niveles={niveles} seleccionado={seleccionado ?? null} alListo={(e) => (escena.current = e)} alCambiarLado={setLado} />
+            <Escena vista={vista} niveles={niveles} seleccionado={seleccionado ?? null} cuerpos={lista} alListo={(e) => (escena.current = e)} alCambiarLado={setLado} />
           </Suspense>
         </Canvas>
       </div>
@@ -296,43 +297,11 @@ export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ n
   )
 })
 
-/** Datos del modelo que no cambian: región, oclusión y marca de músculo profundo de cada vértice. */
-interface Modelo {
-  base: THREE.BufferGeometry
-  regiones: Uint8Array
-  oclusion: Float32Array
-  marcas: Uint8Array
-}
-const modelos = new WeakMap<object, Modelo>()
-
-function prepararModelo(gltf: { scene: THREE.Object3D }): Modelo {
-  const previo = modelos.get(gltf)
-  if (previo) return previo
-  let malla: THREE.Mesh | null = null
-  gltf.scene.traverse((o) => {
-    if (!malla && (o as THREE.Mesh).isMesh) malla = o as THREE.Mesh
-  })
-  if (!malla) throw new Error('El modelo no tiene malla')
-  const base = (malla as THREE.Mesh).geometry as THREE.BufferGeometry
-  const datos = base.getAttribute('color') as THREE.BufferAttribute
-  const n = base.getAttribute('position').count
-  const regiones = new Uint8Array(n)
-  const oclusion = new Float32Array(n)
-  const marcas = new Uint8Array(n)
-  for (let i = 0; i < n; i++) {
-    regiones[i] = idDeCanal(datos.getX(i))
-    oclusion[i] = datos.getY(i)
-    marcas[i] = idDeCanal(datos.getZ(i))
-  }
-  const m = { base, regiones, oclusion, marcas }
-  modelos.set(gltf, m)
-  return m
-}
-
 function Escena({
   vista,
   niveles,
   seleccionado,
+  cuerpos,
   alListo,
   alCambiarLado,
 }: {
@@ -340,64 +309,26 @@ function Escena({
   vista: RefObject<Vista>
   niveles: ReadonlyMap<Musculo, number>
   seleccionado: Musculo | null
+  cuerpos: readonly DatosCuerpo[]
   alListo: (e: EscenaLista) => void
 }) {
-  const gltf = useLoader(GLTFLoader, MODELO, conDraco)
-  const modelo = useMemo(() => prepararModelo(gltf), [gltf])
+  const modelo = use(cargarModeloAvatar())
+  const texturas = use(cargarTexturasAvatar(modelo))
   const { gl, scene, camera, invalidate, setSize } = useThree()
-  const grupo = useRef<THREE.Group>(null)
-  const malla = useRef<THREE.Mesh>(null)
-  const velo = useRef<THREE.Mesh>(null)
+  const grupos = useRef(new Map<number, THREE.Group>())
+  const mallas = useRef(new Map<number, THREE.Mesh>())
   const { tema } = useAjustes()
-  const brillo = useMemo(() => ({ value: new THREE.Color() }), [])
 
-  // Geometría propia (colores de este avatar) que comparte posiciones, normales e índices.
-  const geometria = useMemo(() => {
-    const g = new THREE.BufferGeometry()
-    g.setIndex(modelo.base.getIndex())
-    g.setAttribute('position', modelo.base.getAttribute('position'))
-    g.setAttribute('normal', modelo.base.getAttribute('normal'))
-    const n = modelo.regiones.length
-    g.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(n * 3), 3))
-    g.setAttribute('brillo', new THREE.Float32BufferAttribute(new Float32Array(n), 1))
-    g.setAttribute('opacidad', new THREE.Float32BufferAttribute(new Float32Array(n).fill(1), 1))
-    g.computeBoundingSphere()
-    return g
-  }, [modelo])
-  useEffect(() => () => geometria.dispose(), [geometria])
-
-  // Arcilla mate; los músculos de nivel alto tienen un brillo propio sutil. Dos pasadas: la opaca
-  // (todo menos la piel translúcida que hay sobre un músculo profundo resaltado; por esa «ventana» se ve
-  // el interior, más oscuro, y el músculo de dentro) y el velo (esa piel, translúcida, por encima).
-  const [material, materialVelo] = useMemo(() => {
-    const crear = (esVelo: boolean) => {
-      const m = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85, metalness: 0, envMapIntensity: 0.1, transparent: esVelo, depthWrite: !esVelo })
-      m.onBeforeCompile = (s) => {
-        s.uniforms.colorBrillo = brillo
-        s.vertexShader = s.vertexShader
-          .replace('#include <common>', '#include <common>\nattribute float brillo;\nattribute float opacidad;\nvarying float vBrillo;\nvarying float vOpacidad;')
-          .replace('#include <begin_vertex>', '#include <begin_vertex>\nvBrillo = brillo;\nvOpacidad = opacidad;')
-        s.fragmentShader = s.fragmentShader
-          .replace('#include <common>', '#include <common>\nuniform vec3 colorBrillo;\nvarying float vBrillo;\nvarying float vOpacidad;')
-          .replace(
-            '#include <color_fragment>',
-            esVelo
-              ? '#include <color_fragment>\nif (vOpacidad >= 0.995) discard;\ndiffuseColor.a *= vOpacidad;'
-              : '#include <color_fragment>\nif (vOpacidad < 0.995) discard;\nif (!gl_FrontFacing) diffuseColor.rgb *= 0.72;',
-          )
-          .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += colorBrillo * vBrillo;')
-      }
-      return m
-    }
-    return [crear(false), crear(true)]
-  }, [brillo])
-  useEffect(
-    () => () => {
-      material.dispose()
-      materialVelo.dispose()
-    },
-    [material, materialVelo],
-  )
+  // Colores de cada región según su nivel (y al cambiar de tema o de músculo elegido), y opacidad de
+  // la piel que hay sobre cada músculo profundo: translúcida si está trabajado o elegido.
+  const aspecto = useMemo(() => {
+    const { arcilla, acento } = leerColores()
+    const porRegion: { color: RGB; brillo: number }[] = [aspectoDeNivel(0, arcilla, acento)]
+    for (const m of MUSCULOS) porRegion.push(aspectoDeNivel(niveles.get(m) ?? 0, arcilla, acento, m === seleccionado))
+    return { porRegion, acento, sobre: PROFUNDOS.map((m) => opacidadSobreProfundo(niveles.get(m) ?? 0, m === seleccionado)) }
+    // El tema cambia los colores que lee `leerColores`.
+  }, [niveles, seleccionado, tema]) // eslint-disable-line react-hooks/exhaustive-deps
+  const sobre = useMemo(() => [1, ...aspecto.sobre], [aspecto])
 
   // El lienzo se mide solo (en algunos WebView la primera medida llega tarde y se queda en 300×150).
   useEffect(() => {
@@ -429,65 +360,16 @@ function Escena({
     }
   }, [gl, scene, invalidate])
 
-  // Colores según los niveles (y al cambiar de tema o de músculo elegido).
   useEffect(() => {
-    const f = requestAnimationFrame(() => {
-      const { arcilla, acento } = leerColores()
-      brillo.value.setRGB(acento[0], acento[1], acento[2])
-      const porRegion: { color: RGB; brillo: number }[] = [aspectoDeNivel(0, arcilla, acento)]
-      for (const m of MUSCULOS) porRegion.push(aspectoDeNivel(niveles.get(m) ?? 0, arcilla, acento, m === seleccionado))
-      // La piel que hay sobre cada músculo profundo: translúcida si está trabajado o elegido.
-      const sobre = PROFUNDOS.map((m) => opacidadSobreProfundo(niveles.get(m) ?? 0, m === seleccionado))
-      const hayVentana = sobre.some((o) => o < 1)
-      const color = geometria.getAttribute('color') as THREE.BufferAttribute
-      const brilloV = geometria.getAttribute('brillo') as THREE.BufferAttribute
-      const opacidadV = geometria.getAttribute('opacidad') as THREE.BufferAttribute
-      const c = color.array as Float32Array
-      const b = brilloV.array as Float32Array
-      const o = opacidadV.array as Float32Array
-      for (let i = 0; i < modelo.regiones.length; i++) {
-        const a = porRegion[modelo.regiones[i]!] ?? porRegion[0]!
-        const k = factorOclusion(modelo.oclusion[i]!)
-        c[i * 3] = a.color[0] * k
-        c[i * 3 + 1] = a.color[1] * k
-        c[i * 3 + 2] = a.color[2] * k
-        b[i] = a.brillo
-        const marca = modelo.marcas[i]!
-        o[i] = marca ? (sobre[marca - 1] ?? 1) : 1
-      }
-      color.needsUpdate = true
-      brilloV.needsUpdate = true
-      opacidadV.needsUpdate = true
-      // Con ventana se dibuja también el interior del cuerpo (las caras de dentro) y el velo.
-      const lado = hayVentana ? THREE.DoubleSide : THREE.FrontSide
-      if (material.side !== lado) {
-        material.side = lado
-        material.needsUpdate = true
-      }
-      if (velo.current) velo.current.visible = hayVentana
-      invalidate()
-    })
-    return () => cancelAnimationFrame(f)
-  }, [niveles, seleccionado, tema, geometria, modelo, brillo, material, invalidate])
-
-  useEffect(() => {
-    if (malla.current)
-      alListo({
-        camara: camera,
-        malla: malla.current,
-        regiones: modelo.regiones,
-        marcas: modelo.marcas,
-        opacidad: (geometria.getAttribute('opacidad') as THREE.BufferAttribute).array as Float32Array,
-        invalidar: invalidate,
-      })
-  }, [camera, modelo, geometria, alListo, invalidate])
+    alListo({ camara: camera, mallas: () => [...mallas.current.values()], texturas, sobre, invalidar: invalidate })
+  }, [camera, texturas, sobre, alListo, invalidate])
 
   const lado = useRef<'frente' | 'espalda'>('frente')
 
   // Inercia, animaciones de giro y zoom. Solo pide otro fotograma mientras algo se mueve.
   useFrame((_, dt) => {
     const v = vista.current
-    if (!v || !grupo.current) return
+    if (!v) return
     const ms = Math.min(dt, 0.05) * 1000
     let sigue = false
     if (v.objetivo !== null) {
@@ -518,7 +400,8 @@ function Escena({
         v.alturaObjetivo = null
       } else sigue = true
     }
-    grupo.current.rotation.y = v.angulo
+    // Cada cuerpo gira sobre sí mismo (con dos, giran a la vez).
+    for (const g of grupos.current.values()) g.rotation.y = v.angulo
     const ahora = Math.cos(v.angulo) >= 0 ? 'frente' : 'espalda'
     if (ahora !== lado.current) {
       lado.current = ahora
@@ -534,6 +417,7 @@ function Escena({
     if (sigue) invalidate()
   })
 
+  const dos = cuerpos.length > 1
   return (
     <>
       <ambientLight intensity={0.05} />
@@ -542,11 +426,89 @@ function Escena({
       <directionalLight position={[2.6, 0.9, 2]} intensity={0.14} />
       <directionalLight position={[2.4, 2.2, -3]} intensity={1.1} color="#e6edff" />
       <directionalLight position={[-2.6, 1.6, -2.4]} intensity={0.6} color="#fff2e6" />
-      <group ref={grupo}>
-        <mesh ref={malla} geometry={geometria} material={material} />
-        <mesh ref={velo} geometry={geometria} material={materialVelo} visible={false} renderOrder={1} />
-        <ContactShadows position={[0, 0.001, 0]} scale={1.3} far={0.6} blur={2.4} opacity={0.75} resolution={512} frames={1} />
-      </group>
+      {cuerpos.slice(0, 2).map((datos, i) => (
+        <CuerpoAvatar
+          key={i}
+          modelo={modelo}
+          texturas={texturas}
+          datos={datos}
+          x={dos ? (i === 0 ? -SEPARACION : SEPARACION) : 0}
+          sombra={dos ? 0.74 : 1.3}
+          aspecto={aspecto}
+          alMontar={(grupo, malla) => {
+            if (grupo && malla) {
+              grupos.current.set(i, grupo)
+              mallas.current.set(i, malla)
+            } else {
+              grupos.current.delete(i)
+              mallas.current.delete(i)
+            }
+            invalidate()
+          }}
+        />
+      ))}
     </>
+  )
+}
+
+/** Un cuerpo: su malla con la forma de esos datos, su material y su sombra. */
+function CuerpoAvatar({
+  modelo,
+  texturas,
+  datos,
+  x,
+  sombra,
+  aspecto,
+  alMontar,
+}: {
+  modelo: ModeloAvatar
+  texturas: TexturasAvatar
+  datos: DatosCuerpo
+  x: number
+  sombra: number
+  aspecto: { porRegion: readonly { color: RGB; brillo: number }[]; acento: RGB; sobre: readonly number[] }
+  alMontar: (grupo: THREE.Group | null, malla: THREE.Mesh | null) => void
+}) {
+  const { invalidate } = useThree()
+  const grupo = useRef<THREE.Group>(null)
+  const malla = useRef<THREE.Mesh>(null)
+  const velo = useRef<THREE.Mesh>(null)
+  const geometria = useMemo(() => crearGeometriaAvatar(modelo), [modelo])
+  const materiales = useMemo(() => crearMaterialesAvatar(texturas), [texturas])
+  useEffect(() => () => geometria.dispose(), [geometria])
+  useEffect(() => () => materiales.liberar(), [materiales])
+
+  // La forma: solo se recalcula cuando cambian los datos del cuerpo.
+  const clave = JSON.stringify(datos)
+  const resuelta = useMemo(() => resolverForma(modelo, datos), [modelo, clave]) // eslint-disable-line react-hooks/exhaustive-deps
+  useLayoutEffect(() => {
+    aplicarForma(geometria, modelo, resuelta.forma)
+    materiales.definir(resuelta.definicion)
+    invalidate()
+  }, [geometria, materiales, modelo, resuelta, invalidate])
+
+  useLayoutEffect(() => {
+    const hayVentana = materiales.pintar(aspecto.porRegion, aspecto.acento, aspecto.sobre)
+    if (velo.current) velo.current.visible = hayVentana
+    invalidate()
+  }, [materiales, aspecto, invalidate])
+
+  const montar = useRef(alMontar)
+  montar.current = alMontar
+  useEffect(() => {
+    montar.current(grupo.current, malla.current)
+    return () => montar.current(null, null)
+  }, [])
+
+  return (
+    <group position={[x, 0, 0]}>
+      <group ref={grupo}>
+        <group scale={ALTO / resuelta.forma.alto}>
+          <mesh ref={malla} geometry={geometria} material={materiales.material} />
+          <mesh ref={velo} geometry={geometria} material={materiales.velo} visible={false} renderOrder={1} />
+        </group>
+        <ContactShadows key={clave} position={[0, 0.001, 0]} scale={sombra} far={0.6} blur={2.4} opacity={0.75} resolution={512} frames={1} />
+      </group>
+    </group>
   )
 }

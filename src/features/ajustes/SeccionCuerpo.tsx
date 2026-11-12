@@ -57,13 +57,23 @@ export function SeccionCuerpo({ a }: { a: Ajustes }) {
         </Link>
       </p>
 
+      <Link to="/ajustes/cuerpo" className="mt-1 flex min-h-12 items-center justify-between gap-2 border-t border-line pt-2 text-sm">
+        <span>
+          <span className="font-semibold">Perfil corporal</span>
+          <span className="block text-muted">Tu avatar: sexo, medidas con cinta, grasa corporal y Antes / Ahora.</span>
+        </span>
+        <span aria-hidden className="text-lg text-muted">
+          ›
+        </span>
+      </Link>
+
       {haySalud() && <HealthConnect />}
     </Tarjeta>
   )
 }
 
 /** Número opcional que se guarda al salir del campo; vacío = sin dato. */
-function CampoNumero({
+export function CampoNumero({
   etiqueta,
   valor,
   min,

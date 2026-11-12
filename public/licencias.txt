@@ -88,3 +88,12 @@ Visor 3D
 --------
 @react-three/fiber y @react-three/drei (https://github.com/pmndrs), MIT License, Copyright (c) Poimandres.
 Decodificador Draco (https://github.com/google/draco), incluido en three.js, Apache License 2.0.
+
+----------------------------------------------------------------------------------------------------
+MakeHuman / MPFB2 (avatar personalizado)
+----------------------------------------------------------------------------------------------------
+El avatar parte del cuerpo paramétrico de MakeHuman en MPFB2 (https://github.com/makehumancommunity/mpfb2):
+malla base, deformadores (targets) y esqueleto. Esos datos se distribuyen como CC0 1.0 Universal
+(dedicación al dominio público, https://creativecommons.org/publicdomain/zero/1.0/). El avatar de Ferro
+lleva además las regiones musculares y el relieve del cuerpo de Z-Anatomy, así que el modelo resultante
+(public/modelos/avatar.*) se comparte con la licencia CC BY-SA 4.0, como el cuerpo 3D.

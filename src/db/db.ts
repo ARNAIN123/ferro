@@ -14,6 +14,7 @@ import {
   type Sesion,
   type SesionEjercicio,
 } from '../domain/tipos'
+import type { GrasaCorporal, MedidaCorporal } from '../domain/cuerpo'
 import type { AguaDia, Alimento, PerfilNutricion, Plato, RegistroComida } from '../domain/tiposNutricion'
 
 export class FerroDB extends Dexie {
@@ -33,6 +34,9 @@ export class FerroDB extends Dexie {
   platos!: EntityTable<Plato, 'id'>
   agua!: EntityTable<AguaDia, 'id'>
   nutricion!: EntityTable<PerfilNutricion, 'id'>
+  // Perfil corporal (v6)
+  medidas!: EntityTable<MedidaCorporal, 'id'>
+  grasas!: EntityTable<GrasaCorporal, 'id'>
 
   constructor(nombre = 'ferro') {
     super(nombre)
@@ -113,6 +117,13 @@ export class FerroDB extends Dexie {
           delete a.versionCatalogo
         })
       })
+
+    // v6 (ronda 4, avatar personalizado): medidas con cinta y porcentaje de grasa, con fecha. Solo se
+    // añaden tablas nuevas y vacías; lo demás del perfil corporal va en los ajustes. No se toca nada más.
+    this.version(6).stores({
+      medidas: 'id, &fecha',
+      grasas: 'id, fecha',
+    })
 
     this.on('populate', (tx) => {
       tx.table('ajustes').add(AJUSTES_POR_DEFECTO)

@@ -2,6 +2,8 @@
 // reparto entre días de entreno y de descanso, macros, "Cerrar el día" y avisos amables.
 // Todo son funciones puras con tests (nutricion.test.ts).
 
+import { basalKatchMcArdle } from './cuerpo'
+
 export type Sexo = 'hombre' | 'mujer'
 export type ObjetivoNutricion = 'perder' | 'mantener' | 'ganar'
 export type Ritmo = 'suave' | 'moderado' | 'rapido'
@@ -30,6 +32,17 @@ const conSuelo = (v: number, basal: number) => Math.max(redondear10(v), Math.cei
 /** Metabolismo basal (Mifflin-St Jeor, 1990): 10·kg + 6,25·cm − 5·edad + 5 (hombre) o − 161 (mujer). */
 export function metabolismoBasal(d: { sexo: Sexo; kg: number; alturaCm: number; edad: number }): number {
   return Math.round(10 * d.kg + 6.25 * d.alturaCm - 5 * d.edad + (d.sexo === 'hombre' ? 5 : -161))
+}
+
+export type FormulaBasal = 'katch' | 'mifflin'
+export const NOMBRE_FORMULA_BASAL: Record<FormulaBasal, string> = { katch: 'Katch-McArdle', mifflin: 'Mifflin-St Jeor' }
+
+/**
+ * Metabolismo basal con la mejor fórmula para los datos que hay: si se conoce el porcentaje de grasa,
+ * Katch-McArdle (con la masa magra: no confunde el músculo con la grasa); si no, Mifflin-St Jeor.
+ */
+export function basalDe(d: { sexo: Sexo; kg: number; alturaCm: number; edad: number; grasaPct?: number | null }): { kcal: number; formula: FormulaBasal } {
+  return d.grasaPct != null ? { kcal: basalKatchMcArdle(d.kg, d.grasaPct), formula: 'katch' } : { kcal: metabolismoBasal(d), formula: 'mifflin' }
 }
 
 /**

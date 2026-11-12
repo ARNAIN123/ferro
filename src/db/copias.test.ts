@@ -101,6 +101,8 @@ const DATOS: Record<NombreTabla, Fila[]> = {
   platos: [{ id: 'pl1', nombre: 'Pasta con pollo', items: [{ alimentoId: 'g-pasta', nombre: 'Pasta', gramos: 80 }], creado: 1, usos: 3 }],
   agua: [{ id: '2026-10-30', ml: 1500 }],
   nutricion: [{ id: 'perfil', sexo: 'hombre', objetivo: 'perder', ritmo: 'moderado', proteinaGkg: 2, inicio: '2026-10-01', basal: 1780, gastoInicial: 2500, objetivoKcal: 2060, ajustes: [], retoActivo: true, retos: [] }],
+  medidas: [{ id: 'm1', fecha: '2026-11-10', cuello: 38.5, cintura: 84, brazo: 36 }],
+  grasas: [{ id: 'manual:2026-11-10', fecha: '2026-11-10', pct: 16.5, origen: 'manual' }],
 }
 
 const porId = (filas: Fila[]) => [...filas].sort((a, b) => a.id.localeCompare(b.id))
@@ -146,5 +148,18 @@ describe('exportar e importar la copia JSON (de la PWA a la app Android)', () =>
     expect(await db.series.count()).toBe(2)
     expect(await db.comidas.count()).toBe(0)
     expect(await db.nutricion.count()).toBe(0)
+  })
+
+  it('una copia anterior al perfil corporal se importa entera, sin medidas ni grasa', async () => {
+    const vieja = { app: 'ferro', version: 1, esquema: 5, exportado: '2026-11-08', datos: { ...DATOS, ejercicios: [], medidas: undefined, grasas: undefined } }
+    const leida = await leerCopia(new File([JSON.stringify(vieja)], 'vieja.json', { type: 'application/json' }))
+    expect(leida.ok).toBe(true)
+    if (!leida.ok) return
+    await restaurarCopia(leida.copia)
+    expect(await db.sesiones.count()).toBe(1)
+    expect(await db.pesosCorporales.count()).toBe(DATOS.pesosCorporales.length)
+    expect(await db.comidas.count()).toBe(1)
+    expect(await db.medidas.count()).toBe(0)
+    expect(await db.grasas.count()).toBe(0)
   })
 })

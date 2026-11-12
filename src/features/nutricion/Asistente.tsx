@@ -5,9 +5,10 @@ import { db } from '../../db/db'
 import { guardarPerfil } from '../../db/nutricion'
 import { guardarPeso } from '../../db/peso'
 import {
+  basalDe,
   gastoEstimado,
   macrosDelDia,
-  metabolismoBasal,
+  NOMBRE_FORMULA_BASAL,
   objetivoCalorico,
   PROTEINA_POR_DEFECTO,
   RITMO_PORCENTAJE,
@@ -17,6 +18,7 @@ import {
 } from '../../domain/nutricion'
 import { claveDia } from '../../domain/semanas'
 import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
+import { useCuerpo } from '../../hooks/useCuerpo'
 import { actividadReciente, type ActividadReciente } from '../../lib/actividad'
 import { fmtEntero, fmtKg, parseNumero } from '../../lib/formato'
 import { Paso } from '../ajustes/Paso'
@@ -76,7 +78,10 @@ export function Asistente({ alTerminar }: { alTerminar?: () => void }) {
     }
   }, [valido, kg, cm])
 
-  const basal = valido ? metabolismoBasal({ sexo, kg: kg!, alturaCm: cm!, edad: anos! }) : null
+  // Con porcentaje de grasa (perfil corporal), Katch-McArdle; sin él, Mifflin-St Jeor.
+  const grasa = useCuerpo()?.grasa ?? null
+  const calculo = valido ? basalDe({ sexo, kg: kg!, alturaCm: cm!, edad: anos!, grasaPct: grasa?.pct }) : null
+  const basal = calculo?.kcal ?? null
   const gasto = basal !== null && actividad ? gastoEstimado(basal, actividad.kcal) : null
   const obj = basal !== null && gasto !== null ? objetivoCalorico({ gasto, basal, objetivo, ritmo, kg: kg! }) : null
   const macros = obj ? macrosDelDia({ kcalDia: obj.kcal, kcalMedia: obj.kcal, kg: kg!, proteinaGkg: proteina }) : null
@@ -93,6 +98,7 @@ export function Asistente({ alTerminar }: { alTerminar?: () => void }) {
       proteinaGkg: proteina,
       inicio: claveDia(Date.now()),
       basal,
+      formulaBasal: calculo?.formula,
       gastoInicial: gasto,
       objetivoKcal: obj.kcal,
       // Rehacer el cálculo no borra nada: conserva el historial de revisiones y los retos.
@@ -189,7 +195,10 @@ export function Asistente({ alTerminar }: { alTerminar?: () => void }) {
           </p>
           <dl className="mt-3 space-y-1 border-t border-line pt-3 text-sm text-muted">
             <div className="flex justify-between">
-              <dt>Metabolismo basal (Mifflin-St Jeor)</dt>
+              <dt>
+                Metabolismo basal ({NOMBRE_FORMULA_BASAL[calculo?.formula ?? 'mifflin']}
+                {calculo?.formula === 'katch' && grasa ? `, con tu ${fmtKg(grasa.pct)} % de grasa` : ''})
+              </dt>
               <dd className="num">{fmtEntero(basal)} kcal</dd>
             </div>
             <div className="flex justify-between">

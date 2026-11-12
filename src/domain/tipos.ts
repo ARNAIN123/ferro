@@ -1,5 +1,8 @@
 // Modelo de datos de Ferro. Todas las fechas son milisegundos desde epoch (Date.now()).
 
+import type { AjusteFino } from './cuerpo'
+import type { Sexo } from './nutricion'
+
 /**
  * Músculos (ronda 4): división completa, grupo → músculo → porción o cabeza (ver domain/musculos.ts).
  * Los ejercicios usan estos nombres para principales y secundarios. El orden es el de las regiones
@@ -280,6 +283,10 @@ export interface Ajustes {
   ultimaCopia: number | null
   /** Versión del catálogo de ejercicios sincronizada en la base de datos. */
   versionCatalogo?: string
+  /** Perfil corporal (ronda 4): con el sexo, la edad, la altura, el peso y las medidas se da forma al avatar. */
+  sexo?: Sexo | null
+  /** Ajuste fino visual del avatar (de −1 a 1 cada deslizador). */
+  ajusteAvatar?: AjusteFino
 }
 
 export const AJUSTES_POR_DEFECTO: Ajustes = {

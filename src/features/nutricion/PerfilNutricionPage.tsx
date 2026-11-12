@@ -50,7 +50,7 @@ export function PerfilNutricionPage() {
           </p>
         )}
         <p className="mt-2 text-xs text-muted">
-          Metabolismo basal {fmtEntero(perfil.basal)} kcal: el objetivo nunca baja de ahí. Los días de entreno llevan algo más de hidratos y los de descanso algo menos; el total de la semana es el mismo.
+          Metabolismo basal {fmtEntero(perfil.basal)} kcal{perfil.formulaBasal === 'katch' ? ' (Katch-McArdle, con tu porcentaje de grasa)' : ''}: el objetivo nunca baja de ahí. Los días de entreno llevan algo más de hidratos y los de descanso algo menos; el total de la semana es el mismo.
         </p>
         <div className="mt-2 border-t border-line pt-2">
           <Paso

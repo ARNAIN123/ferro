@@ -16,6 +16,7 @@
     <!-- Health Connect: solo leer pasos y peso. -->
     <uses-permission android:name="android.permission.health.READ_STEPS" />
     <uses-permission android:name="android.permission.health.READ_WEIGHT" />
+    <uses-permission android:name="android.permission.health.READ_BODY_FAT" />
 
     <queries>
         <package android:name="com.google.android.apps.healthdata" />

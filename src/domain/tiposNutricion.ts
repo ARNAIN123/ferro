@@ -1,5 +1,5 @@
 // Tipos de la sección de nutrición (tablas de Dexie desde la versión 4).
-import type { ObjetivoNutricion, Ritmo, Sexo, Valores100 } from './nutricion'
+import type { FormulaBasal, ObjetivoNutricion, Ritmo, Sexo, Valores100 } from './nutricion'
 
 export type Comida = 'desayuno' | 'antes' | 'comida' | 'merienda' | 'despues' | 'cena'
 
@@ -106,6 +106,8 @@ export interface PerfilNutricion {
   /** Día en que hice el asistente: las dos primeras semanas se usa la estimación. */
   inicio: string
   basal: number
+  /** Con qué fórmula se calculó el basal (Katch-McArdle si había porcentaje de grasa). */
+  formulaBasal?: FormulaBasal
   gastoInicial: number
   /** Objetivo medio diario vigente (kcal). */
   objetivoKcal: number
