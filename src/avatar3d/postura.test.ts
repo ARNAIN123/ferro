@@ -48,11 +48,11 @@ function montar(d: DatosCuerpo) {
 const angulo = (a: Vector3, b: Vector3, c: Vector3) => (a.clone().sub(b).angleTo(c.clone().sub(b)) * 180) / Math.PI
 
 describe('postura relajada del avatar', () => {
-  it('los pies siguen apoyados en el suelo y la izquierda va algo adelantada', () => {
+  it('los pies siguen apoyados en el suelo, a la par', () => {
     for (const d of CUERPOS) {
       const { forma, pos } = montar(d)
       for (const lado of ['L', 'R']) expect(Math.abs(pos(`pie.${lado}`).y - forma.articulaciones[`pie.${lado}`]![1]), `${d.kg} kg, ${lado}`).toBeLessThan(0.01)
-      expect(pos('pie.L').z).toBeGreaterThan(pos('pie.R').z + 0.025)
+      expect(Math.abs(pos('pie.L').z - pos('pie.R').z)).toBeLessThan(0.005)
     }
   })
 
@@ -64,14 +64,32 @@ describe('postura relajada del avatar', () => {
         expect(codo, `codo ${lado}`).toBeGreaterThan(8)
         expect(codo, `codo ${lado}`).toBeLessThan(35)
         const rodilla = 180 - angulo(pos(`muslo.${lado}`), pos(`pierna.${lado}`), pos(`pie.${lado}`))
-        expect(rodilla, `rodilla ${lado}`).toBeLessThan(22)
+        expect(rodilla, `rodilla ${lado}`).toBeLessThan(15)
       }
     }
   })
 
-  it('es asimétrica: la cadera izquierda baja (peso en la pierna derecha)', () => {
-    const { pos } = montar(CUERPOS[0]!)
-    expect(pos('muslo.L').y).toBeLessThan(pos('muslo.R').y - 0.005)
+  it('es simétrica (sin cargar el peso en una pierna) y con los brazos algo abiertos', () => {
+    for (const d of CUERPOS) {
+      const { pos } = montar(d)
+      expect(Math.abs(pos('muslo.L').y - pos('muslo.R').y)).toBeLessThan(0.002)
+      expect(Math.abs(pos('mano.L').y - pos('mano.R').y)).toBeLessThan(0.002)
+      expect(Math.abs(pos('mano.L').x + pos('mano.R').x)).toBeLessThan(0.004)
+      expect(Math.abs(pos('cabeza').x)).toBeLessThan(0.005)
+      for (const [lado, s] of [['L', 1], ['R', -1]] as const) {
+        // Brazo abierto: del hombro a la muñeca, más de 12° respecto a la vertical, hacia fuera.
+        const brazo = pos(`mano.${lado}`).sub(pos(`brazo.${lado}`))
+        const apertura = (Math.atan2(brazo.x * s, -brazo.y) * 180) / Math.PI
+        expect(apertura, `${d.kg} kg, ${lado}`).toBeGreaterThan(12)
+        expect(apertura, `${d.kg} kg, ${lado}`).toBeLessThan(32)
+      }
+    }
+  })
+
+  it('pecho fuera y hombros atrás', () => {
+    const { pos, forma } = montar(CUERPOS[0]!)
+    // Los hombros, más atrás que en reposo.
+    for (const lado of ['L', 'R']) expect(pos(`brazo.${lado}`).z).toBeLessThan(forma.articulaciones[`brazo.${lado}`]![2] - 0.005)
   })
 
   it('los brazos cuelgan junto al cuerpo sin meterse en él', () => {
