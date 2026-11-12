@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import { AvisoActualizacion } from './components/AvisoActualizacion'
 import { Avisos } from './components/Avisos'
 import { EnlacesNativos } from './components/EnlacesNativos'
+import { LimiteError, PantallaError } from './components/LimiteError'
 import { Marco } from './components/Marco'
 import { EmpezarPage } from './features/entreno/EmpezarPage'
 import { EntrenoPage } from './features/entreno/EntrenoPage'
@@ -51,6 +52,7 @@ export function App() {
       {!esNativa() && <AvisoActualizacion />}
       <Avisos />
       <EnlacesNativos />
+      <LimiteError alFallar={(error, reintentar) => <PantallaError error={error} reintentar={reintentar} />}>
       <Suspense fallback={null}>
         <Routes>
           <Route element={<Marco />}>
@@ -81,6 +83,7 @@ export function App() {
           <Route path="entreno/resumen/:id" element={<ResumenPage />} />
         </Routes>
       </Suspense>
+      </LimiteError>
     </BrowserRouter>
   )
 }

@@ -16,6 +16,7 @@ import { ANGULO_PROFUNDO, PROFUNDOS } from '../../domain/musculos'
 import { MUSCULOS, type Musculo } from '../../domain/tipos'
 import { useAjustes } from '../../hooks/useAjustes'
 import { useCuerpo } from '../../hooks/useCuerpo'
+import { guardarUltimoError, LimiteError } from '../LimiteError'
 
 /** Alto con el que se ve el cuerpo: el avatar se dibuja a esta talla, mida lo que mida. */
 const ALTO = 1.71
@@ -74,9 +75,40 @@ interface Vista {
  * El cuerpo 3D de Ferro: mi avatar (el cuerpo de MakeHuman con la forma de mi perfil corporal) en
  * arcilla mate, con los músculos trabajados teñidos del acento según su nivel. Se gira con el dedo
  * (con inercia), se acerca pellizcando, un doble toque lo pone de frente y un toque en un músculo lo
- * elige. Solo se dibuja cuando algo se mueve.
+ * elige. Solo se dibuja cuando algo se mueve. Si algo falla (el modelo, la tarjeta gráfica…), se ve
+ * el mapa 2D con el motivo, nunca una pantalla vacía.
  */
-export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ niveles, seleccionado, onTocar, describir, className = '', proporcion = 'aspect-[4/5]', sinWebgl, cuerpos }, ref) {
+export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D(props, ref) {
+  const [fallo, setFallo] = useState<string | null>(null)
+  const sustituto = (motivo: string) => (
+    // El mapa 2D ya trae su alto: el mensaje va debajo, sin montarse en lo que sigue.
+    <div className="w-full">
+      {props.sinWebgl}
+      <p className="mt-1 text-center text-[11px] break-words text-muted">El cuerpo 3D no se ha podido mostrar ({motivo}).</p>
+    </div>
+  )
+  if (fallo) return sustituto(fallo)
+  return (
+    <LimiteError alFallar={(e) => sustituto(`${e.name}: ${e.message}`)}>
+      <Cuerpo3DVisor {...props} ref={ref} alFallar={setFallo} />
+    </LimiteError>
+  )
+})
+
+/** Nombre de la tarjeta gráfica (para saber dónde falla). */
+function tarjetaGrafica(ctx: WebGLRenderingContext | WebGL2RenderingContext): string {
+  try {
+    const ext = ctx.getExtension('WEBGL_debug_renderer_info')
+    return String(ext ? ctx.getParameter(ext.UNMASKED_RENDERER_WEBGL) : ctx.getParameter(ctx.RENDERER))
+  } catch {
+    return 'GPU desconocida'
+  }
+}
+
+const Cuerpo3DVisor = forwardRef<Cuerpo3DControl, Props & { alFallar: (motivo: string) => void }>(function Cuerpo3DVisor(
+  { niveles, seleccionado, onTocar, describir, className = '', proporcion = 'aspect-[4/5]', sinWebgl, cuerpos, alFallar },
+  ref,
+) {
   const vista = useRef<Vista>({ angulo: 0, velocidad: 0, objetivo: null, zoom: 1, zoomObjetivo: null, altura: ALTO / 2, alturaObjetivo: null })
   const escena = useRef<EscenaLista | null>(null)
   const contenedor = useRef<HTMLDivElement>(null)
@@ -262,6 +294,15 @@ export const Cuerpo3D = forwardRef<Cuerpo3DControl, Props>(function Cuerpo3D({ n
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance', toneMapping: THREE.NeutralToneMapping }}
           camera={{ fov: 28, near: 0.1, far: 20, position: [0, ALTO / 2, DISTANCIA] }}
           fallback={sinWebgl}
+          onCreated={({ gl }) => {
+            // Si el sombreador no compila en esta tarjeta gráfica, el cuerpo no se vería: mejor el mapa 2D y el motivo.
+            gl.debug.onShaderError = (ctx, programa, vs, fs) => {
+              const registro = (ctx.getShaderInfoLog(fs) || ctx.getShaderInfoLog(vs) || ctx.getProgramInfoLog(programa) || '').trim().split('\n')[0]
+              const motivo = `sombreador en ${tarjetaGrafica(ctx)}: ${registro || 'sin detalle'}`
+              guardarUltimoError(new Error(motivo))
+              alFallar(motivo)
+            }
+          }}
         >
           <Suspense fallback={null}>
             <Escena vista={vista} niveles={niveles} seleccionado={seleccionado ?? null} cuerpos={lista} alListo={(e) => (escena.current = e)} alCambiarLado={setLado} />

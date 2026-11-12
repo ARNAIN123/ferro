@@ -50,7 +50,8 @@ export function cargarTexturasAvatar(modelo: ModeloAvatar): Promise<TexturasAvat
     }
     return { ids, relieve, lado, region, marca }
   })()
-  cargando.catch(() => (cargando = null))
+  // Si falla, se queda el fallo (ver cargarModeloAvatar).
+  cargando.catch(() => undefined)
   return cargando
 }
 

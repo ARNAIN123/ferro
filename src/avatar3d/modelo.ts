@@ -147,6 +147,8 @@ export function cargarModeloAvatar(): Promise<ModeloAvatar> {
     if (!glb.ok || !info.ok) throw new Error('No se ha podido cargar el avatar')
     return modeloDesdeGlb(await glb.arrayBuffer(), (await info.json()) as InfoAvatar)
   })()
-  cargando.catch(() => (cargando = null))
+  // Si falla, se queda el fallo (hasta reabrir la app): el visor lo usa con `use()`, y una promesa
+  // nueva en cada intento lo haría pedir el modelo sin parar y congelaría la pantalla.
+  cargando.catch(() => undefined)
   return cargando
 }

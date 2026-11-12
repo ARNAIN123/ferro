@@ -9,7 +9,9 @@ import { MUSCULOS } from '../domain/tipos'
 import type { TexturasAvatar } from './texturas'
 
 const REGIONES = MUSCULOS.length + 1
-const MARCAS = PROFUNDOS.length + 1
+/** Ancho de la tabla de colores (una columna por región). */
+const ANCHO_PALETA = 64
+if (REGIONES > ANCHO_PALETA || PROFUNDOS.length > 4) throw new Error('La tabla de colores del avatar se ha quedado pequeña')
 
 export interface MaterialesAvatar {
   /** Pasada opaca: todo menos la piel translúcida que hay sobre un músculo profundo resaltado. */
@@ -27,10 +29,18 @@ export interface MaterialesAvatar {
 }
 
 export function crearMaterialesAvatar(texturas: TexturasAvatar): MaterialesAvatar {
+  // Color (rgb) y brillo (a) de cada región en una textura de 64 × 1: así el sombreador no indexa
+  // arrays de uniformes con un número variable, que algunas tarjetas gráficas de móvil no llevan bien.
+  const datosPaleta = new Float32Array(ANCHO_PALETA * 4)
+  const paleta = new THREE.DataTexture(datosPaleta, ANCHO_PALETA, 1, THREE.RGBAFormat, THREE.FloatType)
+  paleta.magFilter = paleta.minFilter = THREE.NearestFilter
+  paleta.generateMipmaps = false
+  paleta.needsUpdate = true
   const uniformes = {
     mapaIds: { value: texturas.ids },
-    uRegiones: { value: Array.from({ length: REGIONES }, () => new THREE.Vector4(0.5, 0.5, 0.5, 0)) },
-    uSobre: { value: new Array<number>(MARCAS).fill(1) },
+    paletaRegiones: { value: paleta },
+    // Opacidad de la piel sobre cada uno de los 4 músculos profundos.
+    uSobre: { value: new THREE.Vector4(1, 1, 1, 1) },
     colorBrillo: { value: new THREE.Color() },
   }
   const relieve = new THREE.Vector2(1, 1)
@@ -40,14 +50,16 @@ export function crearMaterialesAvatar(texturas: TexturasAvatar): MaterialesAvata
     m.onBeforeCompile = (s) => {
       Object.assign(s.uniforms, uniformes)
       s.fragmentShader = s.fragmentShader
-        .replace('#include <common>', `#include <common>\nuniform sampler2D mapaIds;\nuniform vec4 uRegiones[${REGIONES}];\nuniform float uSobre[${MARCAS}];\nuniform vec3 colorBrillo;`)
+        .replace('#include <common>', '#include <common>\nuniform sampler2D mapaIds;\nuniform sampler2D paletaRegiones;\nuniform vec4 uSobre;\nuniform vec3 colorBrillo;')
         .replace(
           '#include <color_fragment>',
           `#include <color_fragment>
 vec4 idsAvatar = texture2D( mapaIds, vNormalMapUv );
-vec4 aspecto = uRegiones[ min( int( idsAvatar.r * 255.0 + 0.5 ), ${REGIONES - 1} ) ];
+float idRegion = floor( idsAvatar.r * 255.0 + 0.5 );
+vec4 aspecto = texture2D( paletaRegiones, vec2( ( idRegion + 0.5 ) / ${ANCHO_PALETA}.0, 0.5 ) );
 diffuseColor.rgb = aspecto.rgb * ( 0.55 + 0.45 * pow( texture2D( normalMap, vNormalMapUv ).b, 1.5 ) );
-float opacidadPiel = uSobre[ min( int( idsAvatar.g * 255.0 + 0.5 ), ${MARCAS - 1} ) ];
+float marcaPiel = floor( idsAvatar.g * 255.0 + 0.5 );
+float opacidadPiel = 1.0 - dot( vec4( 1.0 ) - uSobre, vec4( equal( vec4( marcaPiel ), vec4( 1.0, 2.0, 3.0, 4.0 ) ) ) );
 ${esVelo ? 'if ( opacidadPiel >= 0.995 ) discard;\ndiffuseColor.a *= opacidadPiel;' : 'if ( opacidadPiel < 0.995 ) discard;\nif ( ! gl_FrontFacing ) diffuseColor.rgb *= 0.72;'}`,
         )
         // El mapa solo lleva x e y de la normal (el azul es la oclusión): la z se reconstruye.
@@ -63,9 +75,10 @@ ${esVelo ? 'if ( opacidadPiel >= 0.995 ) discard;\ndiffuseColor.a *= opacidadPie
     material,
     velo,
     pintar(porRegion, acento, sobre) {
-      porRegion.forEach((a, i) => uniformes.uRegiones.value[i]?.set(a.color[0], a.color[1], a.color[2], a.brillo))
+      porRegion.forEach((a, i) => datosPaleta.set([a.color[0], a.color[1], a.color[2], a.brillo], i * 4))
+      paleta.needsUpdate = true
       uniformes.colorBrillo.value.setRGB(acento[0], acento[1], acento[2])
-      sobre.forEach((o, i) => (uniformes.uSobre.value[i + 1] = o))
+      uniformes.uSobre.value.set(sobre[0] ?? 1, sobre[1] ?? 1, sobre[2] ?? 1, sobre[3] ?? 1)
       const hayVentana = sobre.some((o) => o < 1)
       // Con ventana se dibuja también el interior del cuerpo (las caras de dentro).
       const lado = hayVentana ? THREE.DoubleSide : THREE.FrontSide
@@ -81,6 +94,7 @@ ${esVelo ? 'if ( opacidadPiel >= 0.995 ) discard;\ndiffuseColor.a *= opacidadPie
     liberar() {
       material.dispose()
       velo.dispose()
+      paleta.dispose()
     },
   }
 }
