@@ -10,9 +10,8 @@ import { cargarModeloAvatar, type ModeloAvatar } from '../../avatar3d/modelo'
 import { resolverForma } from '../../avatar3d/resolver'
 import { cargarTexturasAvatar, regionEn, type TexturasAvatar } from '../../avatar3d/texturas'
 import type { DatosCuerpo } from '../../domain/cuerpo'
-import { anguloCercano, aspectoDeNivel, FRENADO_GIRO, GIRO_POR_PIXEL, limitarAltura, limitarZoom, musculoDeRegion, opacidadSobreProfundo, profundoDeMarca, type RGB } from '../../domain/cuerpo3d'
+import { anguloCercano, aspectoDeNivel, FRENADO_GIRO, GIRO_POR_PIXEL, limitarAltura, limitarZoom, musculoDeRegion, porRegion, type RGB } from '../../domain/cuerpo3d'
 import { NOMBRE_MUSCULO } from '../../domain/etiquetas'
-import { ANGULO_PROFUNDO, PROFUNDOS } from '../../domain/musculos'
 import { MUSCULOS, type Musculo } from '../../domain/tipos'
 import { useAjustes } from '../../hooks/useAjustes'
 import { useCuerpo } from '../../hooks/useCuerpo'
@@ -55,8 +54,6 @@ interface EscenaLista {
   camara: THREE.Camera
   mallas: () => THREE.Mesh[]
   texturas: TexturasAvatar
-  /** Opacidad de la piel según su marca de músculo profundo (la 0, sin marca, es opaca). */
-  sobre: number[]
   invalidar: () => void
 }
 
@@ -170,13 +167,7 @@ const Cuerpo3DVisor = forwardRef<Cuerpo3DControl, Props & { alFallar: (motivo: s
       const golpes = rayo.intersectObjects(e.mallas(), false)
       const piel = golpes[0]
       if (!piel?.uv) return
-      const enPiel = regionEn(e.texturas, piel.uv.x, piel.uv.y)
-      let musculo = musculoDeRegion(enPiel.region)
-      // Si la piel de ahí está translúcida, lo que se toca es el músculo profundo que se ve dentro.
-      if ((e.sobre[enPiel.marca] ?? 1) < 0.995) {
-        const dentro = profundoDeMarca(enPiel.marca)
-        if (dentro && golpes.some((g) => g.object === piel.object && g.uv && musculoDeRegion(regionEn(e.texturas, g.uv.x, g.uv.y).region) === dentro)) musculo = dentro
-      }
+      const musculo = musculoDeRegion(regionEn(e.texturas, piel.uv.x, piel.uv.y).region)
       if (musculo) tocar.current(musculo)
     }
 
@@ -271,12 +262,6 @@ const Cuerpo3DVisor = forwardRef<Cuerpo3DControl, Props & { alFallar: (motivo: s
     girarA(l === 'frente' ? 0 : Math.PI)
   }
 
-  // Al elegir un músculo profundo, el cuerpo gira hacia el lado por el que se ve.
-  useEffect(() => {
-    const angulo = seleccionado ? ANGULO_PROFUNDO[seleccionado] : undefined
-    if (angulo !== undefined) girarA(angulo)
-  }, [seleccionado]) // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     // Sin alto propio, la figura toma una proporción de 4:5; con un alto (h-96…), lo llena.
     <div className={`relative ${proporcion} w-full ${className}`}>
@@ -360,16 +345,12 @@ function Escena({
   const mallas = useRef(new Map<number, THREE.Mesh>())
   const { tema } = useAjustes()
 
-  // Colores de cada región según su nivel (y al cambiar de tema o de músculo elegido), y opacidad de
-  // la piel que hay sobre cada músculo profundo: translúcida si está trabajado o elegido.
+  // Color de cada región: el del nivel de su grupo (y al cambiar de tema o de músculo elegido).
   const aspecto = useMemo(() => {
     const { arcilla, acento } = leerColores()
-    const porRegion: { color: RGB; brillo: number }[] = [aspectoDeNivel(0, arcilla, acento)]
-    for (const m of MUSCULOS) porRegion.push(aspectoDeNivel(niveles.get(m) ?? 0, arcilla, acento, m === seleccionado))
-    return { porRegion, acento, sobre: PROFUNDOS.map((m) => opacidadSobreProfundo(niveles.get(m) ?? 0, m === seleccionado)) }
+    return { porRegion: porRegion((m) => aspectoDeNivel(m ? (niveles.get(m) ?? 0) : 0, arcilla, acento, m !== null && m === seleccionado)), acento }
     // El tema cambia los colores que lee `leerColores`.
   }, [niveles, seleccionado, tema]) // eslint-disable-line react-hooks/exhaustive-deps
-  const sobre = useMemo(() => [1, ...aspecto.sobre], [aspecto])
 
   // El lienzo se mide solo (en algunos WebView la primera medida llega tarde y se queda en 300×150).
   useEffect(() => {
@@ -402,8 +383,8 @@ function Escena({
   }, [gl, scene, invalidate])
 
   useEffect(() => {
-    alListo({ camara: camera, mallas: () => [...mallas.current.values()], texturas, sobre, invalidar: invalidate })
-  }, [camera, texturas, sobre, alListo, invalidate])
+    alListo({ camara: camera, mallas: () => [...mallas.current.values()], texturas, invalidar: invalidate })
+  }, [camera, texturas, alListo, invalidate])
 
   const lado = useRef<'frente' | 'espalda'>('frente')
 
@@ -507,13 +488,12 @@ function CuerpoAvatar({
   datos: DatosCuerpo
   x: number
   sombra: number
-  aspecto: { porRegion: readonly { color: RGB; brillo: number }[]; acento: RGB; sobre: readonly number[] }
+  aspecto: { porRegion: readonly { color: RGB; brillo: number }[]; acento: RGB }
   alMontar: (grupo: THREE.Group | null, malla: THREE.Mesh | null) => void
 }) {
   const { invalidate } = useThree()
   const grupo = useRef<THREE.Group>(null)
   const malla = useRef<THREE.Mesh>(null)
-  const velo = useRef<THREE.Mesh>(null)
   const geometria = useMemo(() => crearGeometriaAvatar(modelo), [modelo])
   const materiales = useMemo(() => crearMaterialesAvatar(texturas), [texturas])
   useEffect(() => () => geometria.dispose(), [geometria])
@@ -529,8 +509,7 @@ function CuerpoAvatar({
   }, [geometria, materiales, modelo, resuelta, invalidate])
 
   useLayoutEffect(() => {
-    const hayVentana = materiales.pintar(aspecto.porRegion, aspecto.acento, aspecto.sobre)
-    if (velo.current) velo.current.visible = hayVentana
+    materiales.pintar(aspecto.porRegion, aspecto.acento)
     invalidate()
   }, [materiales, aspecto, invalidate])
 
@@ -546,7 +525,6 @@ function CuerpoAvatar({
       <group ref={grupo}>
         <group scale={ALTO / resuelta.forma.alto}>
           <mesh ref={malla} geometry={geometria} material={materiales.material} />
-          <mesh ref={velo} geometry={geometria} material={materiales.velo} visible={false} renderOrder={1} />
         </group>
         <ContactShadows key={clave} position={[0, 0.001, 0]} scale={sombra} far={0.6} blur={2.4} opacity={0.75} resolution={512} frames={1} />
       </group>

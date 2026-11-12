@@ -5,7 +5,7 @@ import { claveDia } from './semanas'
 export const VERSION_COPIA = 1
 
 /** Versión actual de la base de datos (Dexie). Súbela junto con cada `db.version(n)` nueva. */
-export const ESQUEMA_ACTUAL = 6
+export const ESQUEMA_ACTUAL = 7
 
 export const TABLAS = [
   'ejercicios',
@@ -59,11 +59,12 @@ export function migrarCopia(copia: Copia): Copia {
     const migrados = migrarDatosV1(actual.datos as unknown as DatosV1)
     actual = { ...actual, esquema: 2, datos: { ...actual.datos, ...migrados } as unknown as Copia['datos'] }
   }
-  // Esquemas 2–4 → 5 (ronda 4): los músculos de cada ejercicio pasan a la división completa, como
-  // en la base de datos (migrarMusculosEjercicio vale para los nombres de cualquier versión).
-  if (esquemaDeCopia(actual) < 5) {
+  // Esquemas 2–6 → 7 (ronda 5): los músculos de cada ejercicio pasan a los 18 grupos, como en la
+  // base de datos (migrarMusculosEjercicio vale para los nombres de cualquier versión). Del 6 al 7
+  // no cambia nada más.
+  if (esquemaDeCopia(actual) < 7) {
     const ejercicios = (actual.datos.ejercicios as unknown as Parameters<typeof migrarMusculosEjercicio>[0][]).map(migrarMusculosEjercicio)
-    actual = { ...actual, esquema: 5, datos: { ...actual.datos, ejercicios: ejercicios as unknown as Copia['datos']['ejercicios'] } }
+    actual = { ...actual, esquema: 7, datos: { ...actual.datos, ejercicios: ejercicios as unknown as Copia['datos']['ejercicios'] } }
   }
   return actual
 }

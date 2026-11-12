@@ -29,16 +29,16 @@ describe('migración v1 → v2 de la biblioteca', () => {
   it('convierte un ejercicio: nuevo id, músculos en lista, sin salto de peso y con mis notas', () => {
     const e = migrarEjercicioV1(viejo('press-banca', { notasFijas: 'Banco en 3', reinicioProgresion: 5 }))
     expect(e.id).toBe('Barbell_Bench_Press_-_Medium_Grip')
-    expect(e.musculosPrincipales).toEqual(['pectoral_esternal'])
+    expect(e.musculosPrincipales).toEqual(['pecho'])
     expect(e.notasFijas).toBe('Banco en 3')
     expect(e.reinicioProgresion).toBe(5)
     expect('saltoPeso' in e).toBe(false)
   })
 
-  it('"espalda" pasa a la espalda de la ronda 4 (un remo: dorsal ancho, romboides y trapecio medio) y los personalizados conservan su id', () => {
+  it('"espalda" pasa a los dorsales y los personalizados conservan su id', () => {
     const e = migrarEjercicioV1(viejo('mi-remo', { personalizado: true, musculoPrincipal: 'espalda', musculosSecundarios: ['biceps', 'espalda'] }))
     expect(e.id).toBe('mi-remo')
-    expect(e.musculosPrincipales).toEqual(['dorsal_ancho', 'romboides', 'trapecio_medio'])
+    expect(e.musculosPrincipales).toEqual(['dorsales'])
     expect(e.musculosSecundarios).toContain('biceps')
     expect([...e.musculosPrincipales, ...e.musculosSecundarios].every((m) => (MUSCULOS as readonly string[]).includes(m))).toBe(true)
   })
@@ -83,7 +83,7 @@ describe('sincronización del catálogo', () => {
     id: 'X',
     nombre: 'Press',
     alias: 'Press',
-    principales: ['pectoral_esternal'],
+    principales: ['pecho'],
     secundarios: [],
     material: 'barra',
     categoria: 'fuerza',
@@ -109,11 +109,11 @@ describe('sincronización del catálogo', () => {
       material: 'maquina',
       notasFijas,
     })
-    const retirados = [{ id: 'usada', principales: ['pectoral_esternal' as const], secundarios: ['deltoides_anterior' as const] }]
+    const retirados = [{ id: 'usada', principales: ['pecho' as const], secundarios: ['hombros' as const] }]
     const r = sincronizarCatalogo([base], [maquina('usada'), maquina('con-notas', 'asiento 2'), maquina('olvidada')], new Set(['usada']), retirados)
     expect(r.borrar).toEqual(['olvidada'])
     const usada = r.poner.find((e) => e.id === 'usada')
-    expect(usada).toMatchObject({ retirado: true, musculosPrincipales: ['pectoral_esternal'], musculosSecundarios: ['deltoides_anterior'] })
+    expect(usada).toMatchObject({ retirado: true, musculosPrincipales: ['pecho'], musculosSecundarios: ['hombros'] })
     expect(r.poner.find((e) => e.id === 'con-notas')).toMatchObject({ retirado: true, notasFijas: 'asiento 2' })
     expect(r.poner.find((e) => e.id === 'X')?.retirado).toBeUndefined()
   })
@@ -130,28 +130,26 @@ describe('sincronización del catálogo', () => {
   })
 })
 
-describe('migración de músculos (v1/v2 y las zonas de la v3) a la división completa (ronda 4)', () => {
-  it('con un nombre que no dice nada, usa el movimiento típico de su músculo (pecho → press)', () => {
-    const e = migrarMusculosEjercicio({ nombre: 'Algo raro', musculosPrincipales: ['pecho'], musculosSecundarios: ['hombros', 'triceps'] })
-    expect(e.musculosPrincipales).toEqual(['pectoral_esternal'])
-    expect(e.musculosSecundarios).toEqual(expect.arrayContaining(['deltoides_anterior', 'triceps_larga', 'triceps_lateral', 'triceps_medial']))
+describe('migración de músculos de cualquier versión a los 18 grupos (ronda 5)', () => {
+  it('los nombres de la v1 y las zonas de las rondas 2–3 pasan a su grupo', () => {
+    const e = migrarMusculosEjercicio({ nombre: 'Algo raro', musculosPrincipales: ['pecho', 'pectoral_superior'], musculosSecundarios: ['deltoides_anterior', 'triceps', 'abdomen'] })
+    expect(e.musculosPrincipales).toEqual(['pecho'])
+    expect(e.musculosSecundarios).toEqual(['hombros', 'triceps', 'abdominales'])
   })
 
-  it('sin movimiento reconocible, cada zona pasa a sus músculos', () => {
-    const e = migrarMusculosEjercicio({ nombre: 'Algo raro', musculosPrincipales: ['gemelos'], musculosSecundarios: ['abductores', 'cuello'] })
-    expect(e.musculosPrincipales).toEqual(['gemelo_medial', 'gemelo_lateral'])
-    expect(e.musculosSecundarios).toEqual(['soleo'])
-  })
-
-  it('con el nombre, usa las reglas de la biblioteca (zona media de la espalda → romboides y trapecio medio)', () => {
-    const e = migrarMusculosEjercicio({ nombre: 'Remo con barra', material: 'barra', musculosPrincipales: ['espalda_media'], musculosSecundarios: ['biceps', 'dorsales'] })
-    expect(e.musculosPrincipales).toEqual(['dorsal_ancho', 'romboides', 'trapecio_medio'])
-    expect(e.musculosSecundarios).toEqual(expect.arrayContaining(['redondo_mayor', 'deltoides_posterior', 'biceps', 'braquial']))
+  it('la división fina de la ronda 4 se agrupa, sin repetir ni dejar en secundarios lo que ya es principal', () => {
+    const e = migrarMusculosEjercicio({
+      nombre: 'Remo con barra',
+      musculosPrincipales: ['dorsal_ancho', 'romboides', 'trapecio_medio'],
+      musculosSecundarios: ['redondo_mayor', 'deltoides_posterior', 'biceps', 'braquial', 'erectores_espinales'],
+    })
+    expect(e.musculosPrincipales).toEqual(['dorsales', 'espalda_alta'])
+    expect(e.musculosSecundarios).toEqual(['hombros', 'biceps', 'lumbares'])
   })
 
   it('es idempotente (se puede aplicar a datos ya migrados)', () => {
-    const una = migrarMusculosEjercicio({ nombre: 'Press de banca', material: 'barra', musculosPrincipales: ['pecho'], musculosSecundarios: ['pectoral_superior', 'biceps'] })
+    const una = migrarMusculosEjercicio({ nombre: 'Press de banca', musculosPrincipales: ['pecho'], musculosSecundarios: ['pectoral_superior', 'biceps'] })
     expect(migrarMusculosEjercicio(una)).toEqual(una)
-    expect(una.musculosPrincipales).toEqual(['pectoral_esternal'])
+    expect(una).toMatchObject({ musculosPrincipales: ['pecho'], musculosSecundarios: ['biceps'] })
   })
 })

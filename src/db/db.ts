@@ -125,6 +125,20 @@ export class FerroDB extends Dexie {
       grasas: 'id, fecha',
     })
 
+    // v7 (ronda 5): división muscular simple. Los músculos de cada ejercicio (los propios y los
+    // retirados; los de la biblioteca se ponen al día al sincronizar el catálogo) pasan a los 18
+    // grupos. No se borra nada: el historial semanal se calcula de las series y sigue coherente.
+    this.version(7)
+      .stores({})
+      .upgrade(async (tx) => {
+        await tx.table('ejercicios').toCollection().modify((e: Ejercicio) => {
+          Object.assign(e, migrarMusculosEjercicio(e))
+        })
+        await tx.table('ajustes').where('id').equals('ajustes').modify((a: Ajustes) => {
+          delete a.versionCatalogo
+        })
+      })
+
     this.on('populate', (tx) => {
       tx.table('ajustes').add(AJUSTES_POR_DEFECTO)
     })

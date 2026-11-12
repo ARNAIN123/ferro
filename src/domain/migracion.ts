@@ -1,5 +1,5 @@
 // Migraciones de datos (funciones puras). La base de datos las aplica en sus versiones de Dexie.
-import { musculosFinos } from './reasignacion'
+import { aGrupos } from './musculos'
 import type { Categoria, Ejercicio, Material, Mecanica, Musculo, Nivel } from './tipos'
 
 /**
@@ -99,14 +99,14 @@ export const MAPA_IDS_V1: Record<string, string> = {
 }
 
 /**
- * Músculos de cualquier versión anterior (v1/v2: «pecho», «espalda»…; v3: las 23 regiones) → la
- * división completa de la ronda 4, con las reglas por tipo de movimiento de la biblioteca (ver
- * domain/reasignacion.ts). Es idempotente: un ejercicio ya al día se queda igual.
+ * Músculos de cualquier versión anterior (v1/v2: «pecho», «espalda»…; rondas 2–3: las 23 zonas;
+ * ronda 4: los 48 músculos y porciones) → los 18 grupos de ahora (ver domain/musculos.ts). Es
+ * idempotente: un ejercicio ya al día se queda igual.
  */
-export function migrarMusculosEjercicio<
-  T extends { id?: string; nombre?: string; material?: Material; musculosPrincipales: readonly string[]; musculosSecundarios: readonly string[] },
->(e: T): T & { musculosPrincipales: Musculo[]; musculosSecundarios: Musculo[] } {
-  const r = musculosFinos({ id: e.id, nombre: e.nombre ?? '', material: e.material ?? 'otro', musculosPrincipales: e.musculosPrincipales, musculosSecundarios: e.musculosSecundarios })
+export function migrarMusculosEjercicio<T extends { musculosPrincipales: readonly string[]; musculosSecundarios: readonly string[] }>(
+  e: T,
+): T & { musculosPrincipales: Musculo[]; musculosSecundarios: Musculo[] } {
+  const r = aGrupos(e.musculosPrincipales, e.musculosSecundarios)
   return { ...e, musculosPrincipales: r.principales, musculosSecundarios: r.secundarios }
 }
 
@@ -128,7 +128,7 @@ export const idMigrado = (id: string): string => MAPA_IDS_V1[id] ?? id
 
 /** Ejercicio v1 → v2. Los campos del catálogo se completan después al sincronizarlo. */
 export function migrarEjercicioV1(e: EjercicioV1): Ejercicio {
-  const { principales, secundarios } = musculosFinos({ id: e.id, nombre: e.nombre, material: e.material as Material, musculosPrincipales: [e.musculoPrincipal], musculosSecundarios: e.musculosSecundarios })
+  const { principales, secundarios } = aGrupos([e.musculoPrincipal], e.musculosSecundarios)
   return {
     id: e.personalizado ? e.id : idMigrado(e.id),
     nombre: e.nombre,

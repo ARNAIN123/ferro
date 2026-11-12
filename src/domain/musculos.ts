@@ -1,164 +1,206 @@
-// División muscular (ronda 4): grupo → músculo → porción o cabeza. Cada hoja es un `Musculo` (una
-// región del cuerpo 3D, en el mismo orden que MUSCULOS) y es lo que llevan los ejercicios.
-// Las zonas (ZONAS, las regiones de la ronda 2) quedan para el mapa y las animaciones 2D, que
-// agrupan varios músculos en la misma forma.
+// División muscular (ronda 5): 18 grupos grandes, como se dicen en el gimnasio. Cada ejercicio lleva
+// sus grupos principales y secundarios. Los modelos 3D siguen teniendo sus 48 regiones (las de la
+// división fina de la ronda 4): cada región pertenece a un grupo y se pinta con él.
+// Las zonas (ZONAS, las regiones de la ronda 2) quedan para el mapa y las animaciones 2D.
 import { MUSCULOS, type Musculo, type Zona } from './tipos'
 
-export const GRUPOS = ['cuello', 'hombros', 'pecho', 'espalda', 'brazos', 'core', 'cadera', 'piernas'] as const
-export type Grupo = (typeof GRUPOS)[number]
-
-export const NOMBRE_GRUPO: Record<Grupo, string> = {
-  cuello: 'Cuello',
-  hombros: 'Hombros',
-  pecho: 'Pecho',
-  espalda: 'Espalda',
-  brazos: 'Brazos',
-  core: 'Core',
-  cadera: 'Cadera',
-  piernas: 'Piernas',
-}
-
 export interface InfoMusculo {
-  grupo: Grupo
-  /** Músculo al que pertenece la porción (si es una porción o cabeza): «Pectoral mayor», «Tríceps»… */
-  musculo?: string
-  /** Nombre completo, para listas y fichas. */
+  /** Nombre para listas, fichas y mapas. */
   nombre: string
-  /** Nombre corto, para chips y mapas. */
-  corto: string
-  /** Músculo profundo: no llega a la piel; al resaltarlo, lo que tiene encima se vuelve translúcido. */
-  profundo?: boolean
-  /** Zona del mapa y las animaciones 2D. */
-  zona: Zona
+  /** Zonas del mapa y las animaciones 2D que pinta (la primera es la principal). */
+  zonas: readonly Zona[]
 }
 
 export const INFO_MUSCULO: Record<Musculo, InfoMusculo> = {
-  esternocleidomastoideo: { grupo: 'cuello', nombre: 'Esternocleidomastoideo', corto: 'Esternocleidomastoideo', zona: 'cuello' },
-  esplenio: { grupo: 'cuello', nombre: 'Esplenio (extensores del cuello)', corto: 'Esplenio', zona: 'cuello' },
-
-  deltoides_anterior: { grupo: 'hombros', musculo: 'Deltoides', nombre: 'Deltoides anterior', corto: 'Deltoides anterior', zona: 'deltoides_anterior' },
-  deltoides_lateral: { grupo: 'hombros', musculo: 'Deltoides', nombre: 'Deltoides lateral', corto: 'Deltoides lateral', zona: 'deltoides_lateral' },
-  deltoides_posterior: { grupo: 'hombros', musculo: 'Deltoides', nombre: 'Deltoides posterior', corto: 'Deltoides posterior', zona: 'deltoides_posterior' },
-
-  pectoral_clavicular: { grupo: 'pecho', musculo: 'Pectoral mayor', nombre: 'Pectoral mayor, porción clavicular (superior)', corto: 'Pectoral superior', zona: 'pectoral_superior' },
-  pectoral_esternal: { grupo: 'pecho', musculo: 'Pectoral mayor', nombre: 'Pectoral mayor, porción esternal (media)', corto: 'Pectoral medio', zona: 'pectoral_inferior' },
-  pectoral_costal: { grupo: 'pecho', musculo: 'Pectoral mayor', nombre: 'Pectoral mayor, porción costal (inferior)', corto: 'Pectoral inferior', zona: 'pectoral_inferior' },
-  serrato_anterior: { grupo: 'pecho', nombre: 'Serrato anterior', corto: 'Serrato anterior', zona: 'oblicuos' },
-
-  trapecio_superior: { grupo: 'espalda', musculo: 'Trapecio', nombre: 'Trapecio superior', corto: 'Trapecio superior', zona: 'trapecio' },
-  trapecio_medio: { grupo: 'espalda', musculo: 'Trapecio', nombre: 'Trapecio medio', corto: 'Trapecio medio', zona: 'espalda_media' },
-  trapecio_inferior: { grupo: 'espalda', musculo: 'Trapecio', nombre: 'Trapecio inferior', corto: 'Trapecio inferior', zona: 'espalda_media' },
-  romboides: { grupo: 'espalda', nombre: 'Romboides', corto: 'Romboides', zona: 'espalda_media' },
-  dorsal_ancho: { grupo: 'espalda', nombre: 'Dorsal ancho', corto: 'Dorsal ancho', zona: 'dorsales' },
-  redondo_mayor: { grupo: 'espalda', nombre: 'Redondo mayor', corto: 'Redondo mayor', zona: 'espalda_media' },
-  infraespinoso: { grupo: 'espalda', musculo: 'Manguito rotador', nombre: 'Infraespinoso', corto: 'Infraespinoso', zona: 'espalda_media' },
-  redondo_menor: { grupo: 'espalda', musculo: 'Manguito rotador', nombre: 'Redondo menor', corto: 'Redondo menor', zona: 'espalda_media' },
-  supraespinoso: { grupo: 'espalda', musculo: 'Manguito rotador', nombre: 'Supraespinoso', corto: 'Supraespinoso', profundo: true, zona: 'trapecio' },
-  subescapular: { grupo: 'espalda', musculo: 'Manguito rotador', nombre: 'Subescapular', corto: 'Subescapular', profundo: true, zona: 'espalda_media' },
-  erectores_espinales: { grupo: 'espalda', nombre: 'Erectores espinales (lumbares)', corto: 'Lumbares', zona: 'lumbares' },
-
-  biceps: { grupo: 'brazos', nombre: 'Bíceps', corto: 'Bíceps', zona: 'biceps' },
-  braquial: { grupo: 'brazos', nombre: 'Braquial', corto: 'Braquial', zona: 'braquial' },
-  braquiorradial: { grupo: 'brazos', nombre: 'Braquiorradial', corto: 'Braquiorradial', zona: 'antebrazos' },
-  triceps_larga: { grupo: 'brazos', musculo: 'Tríceps', nombre: 'Tríceps, cabeza larga', corto: 'Tríceps (larga)', zona: 'triceps' },
-  triceps_lateral: { grupo: 'brazos', musculo: 'Tríceps', nombre: 'Tríceps, cabeza lateral', corto: 'Tríceps (lateral)', zona: 'triceps' },
-  triceps_medial: { grupo: 'brazos', musculo: 'Tríceps', nombre: 'Tríceps, cabeza medial', corto: 'Tríceps (medial)', zona: 'triceps' },
-  flexores_antebrazo: { grupo: 'brazos', musculo: 'Antebrazo', nombre: 'Flexores del antebrazo', corto: 'Flexores del antebrazo', zona: 'antebrazos' },
-  extensores_antebrazo: { grupo: 'brazos', musculo: 'Antebrazo', nombre: 'Extensores del antebrazo', corto: 'Extensores del antebrazo', zona: 'antebrazos' },
-
-  recto_abdominal: { grupo: 'core', nombre: 'Recto abdominal', corto: 'Abdominales', zona: 'abdomen' },
-  oblicuos: { grupo: 'core', nombre: 'Oblicuos', corto: 'Oblicuos', zona: 'oblicuos' },
-
-  gluteo_mayor: { grupo: 'cadera', musculo: 'Glúteos', nombre: 'Glúteo mayor', corto: 'Glúteo mayor', zona: 'gluteo_mayor' },
-  gluteo_medio: { grupo: 'cadera', musculo: 'Glúteos', nombre: 'Glúteo medio', corto: 'Glúteo medio', zona: 'gluteo_medio' },
-  gluteo_menor: { grupo: 'cadera', musculo: 'Glúteos', nombre: 'Glúteo menor', corto: 'Glúteo menor', profundo: true, zona: 'gluteo_medio' },
-  tensor_fascia_lata: { grupo: 'cadera', nombre: 'Tensor de la fascia lata', corto: 'Tensor fascia lata', zona: 'gluteo_medio' },
-  psoas_iliaco: { grupo: 'cadera', nombre: 'Psoas-ilíaco (flexores de cadera)', corto: 'Psoas-ilíaco', profundo: true, zona: 'cuadriceps' },
-
-  recto_femoral: { grupo: 'piernas', musculo: 'Cuádriceps', nombre: 'Cuádriceps, recto femoral', corto: 'Recto femoral', zona: 'cuadriceps' },
-  vasto_lateral: { grupo: 'piernas', musculo: 'Cuádriceps', nombre: 'Cuádriceps, vasto lateral', corto: 'Vasto lateral', zona: 'cuadriceps' },
-  vasto_medial: { grupo: 'piernas', musculo: 'Cuádriceps', nombre: 'Cuádriceps, vasto medial', corto: 'Vasto medial', zona: 'cuadriceps' },
-  sartorio: { grupo: 'piernas', nombre: 'Sartorio', corto: 'Sartorio', zona: 'cuadriceps' },
-  aductores: { grupo: 'piernas', nombre: 'Aductores', corto: 'Aductores', zona: 'aductores' },
-  biceps_femoral: { grupo: 'piernas', musculo: 'Isquiotibiales', nombre: 'Isquiotibiales, bíceps femoral', corto: 'Bíceps femoral', zona: 'isquiotibiales' },
-  semitendinoso: { grupo: 'piernas', musculo: 'Isquiotibiales', nombre: 'Isquiotibiales, semitendinoso', corto: 'Semitendinoso', zona: 'isquiotibiales' },
-  semimembranoso: { grupo: 'piernas', musculo: 'Isquiotibiales', nombre: 'Isquiotibiales, semimembranoso', corto: 'Semimembranoso', zona: 'isquiotibiales' },
-  gemelo_medial: { grupo: 'piernas', musculo: 'Gemelos', nombre: 'Gemelo medial', corto: 'Gemelo medial', zona: 'gemelos' },
-  gemelo_lateral: { grupo: 'piernas', musculo: 'Gemelos', nombre: 'Gemelo lateral', corto: 'Gemelo lateral', zona: 'gemelos' },
-  soleo: { grupo: 'piernas', nombre: 'Sóleo', corto: 'Sóleo', zona: 'soleo' },
-  tibial_anterior: { grupo: 'piernas', nombre: 'Tibial anterior', corto: 'Tibial anterior', zona: 'soleo' },
-  peroneos: { grupo: 'piernas', nombre: 'Peroneos', corto: 'Peroneos', zona: 'soleo' },
+  cuello: { nombre: 'Cuello', zonas: ['cuello'] },
+  trapecio: { nombre: 'Trapecio', zonas: ['trapecio'] },
+  hombros: { nombre: 'Hombros', zonas: ['deltoides_anterior', 'deltoides_lateral', 'deltoides_posterior'] },
+  pecho: { nombre: 'Pecho', zonas: ['pectoral_inferior', 'pectoral_superior'] },
+  biceps: { nombre: 'Bíceps', zonas: ['biceps', 'braquial'] },
+  triceps: { nombre: 'Tríceps', zonas: ['triceps'] },
+  antebrazos: { nombre: 'Antebrazos', zonas: ['antebrazos'] },
+  espalda_alta: { nombre: 'Espalda alta', zonas: ['espalda_media'] },
+  dorsales: { nombre: 'Dorsales', zonas: ['dorsales'] },
+  lumbares: { nombre: 'Lumbares', zonas: ['lumbares'] },
+  abdominales: { nombre: 'Abdominales', zonas: ['abdomen'] },
+  oblicuos: { nombre: 'Oblicuos', zonas: ['oblicuos'] },
+  gluteos: { nombre: 'Glúteos', zonas: ['gluteo_mayor'] },
+  abductores: { nombre: 'Abductores', zonas: ['gluteo_medio'] },
+  aductores: { nombre: 'Aductores', zonas: ['aductores'] },
+  cuadriceps: { nombre: 'Cuádriceps', zonas: ['cuadriceps'] },
+  isquiotibiales: { nombre: 'Isquiotibiales', zonas: ['isquiotibiales'] },
+  gemelos: { nombre: 'Gemelos', zonas: ['gemelos', 'soleo'] },
 }
 
-export const grupoDe = (m: Musculo): Grupo => INFO_MUSCULO[m].grupo
-export const zonaDe = (m: Musculo): Zona => INFO_MUSCULO[m].zona
-export const esProfundo = (m: Musculo): boolean => INFO_MUSCULO[m].profundo === true
+export const nombreDe = (m: Musculo): string => INFO_MUSCULO[m].nombre
 
-/** Músculos profundos, en orden: su índice + 1 es la marca de la piel que tienen encima en el modelo. */
-export const PROFUNDOS: readonly Musculo[] = MUSCULOS.filter(esProfundo)
+/** Zona principal de un grupo (la que eligen las animaciones 2D de los ejercicios propios). */
+export const zonaDe = (m: Musculo): Zona => INFO_MUSCULO[m].zonas[0]!
 
-/** Músculos de cada grupo, en el orden de MUSCULOS. */
-export const MUSCULOS_DE_GRUPO: Record<Grupo, Musculo[]> = Object.fromEntries(GRUPOS.map((g) => [g, MUSCULOS.filter((m) => INFO_MUSCULO[m].grupo === g)])) as Record<Grupo, Musculo[]>
-
-/** Los que comparten músculo (las otras porciones o cabezas), sin él. */
-export function hermanos(m: Musculo): Musculo[] {
-  const padre = INFO_MUSCULO[m].musculo
-  return padre ? MUSCULOS.filter((x) => x !== m && INFO_MUSCULO[x].musculo === padre) : []
-}
-
-/** Niveles por zona 2D: cada zona toma el nivel más alto de sus músculos. */
+/** Niveles por zona 2D: cada zona toma el nivel más alto de los grupos que la pintan. */
 export function nivelesPorZona(niveles: ReadonlyMap<Musculo, number>): Map<Zona, number> {
   const r = new Map<Zona, number>()
-  for (const [m, n] of niveles) {
-    const z = zonaDe(m)
-    r.set(z, Math.max(r.get(z) ?? 0, n))
-  }
+  for (const [m, n] of niveles) for (const z of INFO_MUSCULO[m].zonas) r.set(z, Math.max(r.get(z) ?? 0, n))
   return r
 }
 
-// ── Músculos profundos ──────────────────────────────────────────────────────────────────────
+/** Nombres de una lista de grupos, sin repetir. */
+export const nombresDeMusculos = (lista: readonly Musculo[]): string[] => [...new Set(lista)].map(nombreDe)
+
+// ── Regiones de los modelos 3D ──────────────────────────────────────────────────────────────
 
 /**
- * Qué músculos de la superficie tiene encima cada músculo profundo (los que se vuelven translúcidos
- * al resaltarlo). Tiene que coincidir con la piel marcada en el modelo (ver el test de cuerpo3d).
+ * Regiones de los modelos 3D (public/modelos): las 48 de la división fina de la ronda 4, en el
+ * orden de sus ids (id = índice + 1). Los scripts de Blender usan la misma lista; no se reordena.
  */
-export const ENCIMA_DE: Partial<Record<Musculo, readonly Musculo[]>> = {
-  supraespinoso: ['trapecio_medio', 'deltoides_lateral'],
-  subescapular: ['infraespinoso', 'redondo_mayor', 'redondo_menor', 'trapecio_inferior'],
-  gluteo_menor: ['gluteo_medio', 'gluteo_mayor', 'tensor_fascia_lata'],
-  psoas_iliaco: ['recto_abdominal', 'oblicuos', 'sartorio'],
-}
-
-/** Músculos profundos que hay debajo de uno de la superficie. */
-export const debajoDe = (m: Musculo): Musculo[] => PROFUNDOS.filter((p) => ENCIMA_DE[p]?.includes(m))
-
-/** Hacia dónde girar el cuerpo para ver cada músculo profundo (0 = de frente, π = de espaldas). */
-export const ANGULO_PROFUNDO: Partial<Record<Musculo, number>> = {
-  supraespinoso: Math.PI,
-  subescapular: Math.PI,
-  gluteo_menor: Math.PI * 0.72,
-  psoas_iliaco: 0,
-}
-
-// ── Nombres ─────────────────────────────────────────────────────────────────────────────────
+export const REGIONES_MODELO = [
+  'esternocleidomastoideo',
+  'esplenio',
+  'deltoides_anterior',
+  'deltoides_lateral',
+  'deltoides_posterior',
+  'pectoral_clavicular',
+  'pectoral_esternal',
+  'pectoral_costal',
+  'serrato_anterior',
+  'trapecio_superior',
+  'trapecio_medio',
+  'trapecio_inferior',
+  'romboides',
+  'dorsal_ancho',
+  'redondo_mayor',
+  'infraespinoso',
+  'redondo_menor',
+  'supraespinoso',
+  'subescapular',
+  'erectores_espinales',
+  'biceps',
+  'braquial',
+  'braquiorradial',
+  'triceps_larga',
+  'triceps_lateral',
+  'triceps_medial',
+  'flexores_antebrazo',
+  'extensores_antebrazo',
+  'recto_abdominal',
+  'oblicuos',
+  'gluteo_mayor',
+  'gluteo_medio',
+  'gluteo_menor',
+  'tensor_fascia_lata',
+  'psoas_iliaco',
+  'recto_femoral',
+  'vasto_lateral',
+  'vasto_medial',
+  'sartorio',
+  'aductores',
+  'biceps_femoral',
+  'semitendinoso',
+  'semimembranoso',
+  'gemelo_medial',
+  'gemelo_lateral',
+  'soleo',
+  'tibial_anterior',
+  'peroneos',
+] as const
+export type RegionModelo = (typeof REGIONES_MODELO)[number]
 
 /**
- * Nombres para enseñar una lista de músculos: si están todas las porciones de un músculo, se dice
- * el músculo («Tríceps», «Cuádriceps»); si no, cada porción.
+ * Grupo de cada región del modelo. El manguito rotador profundo (supraespinoso y subescapular) va con
+ * los hombros; el que se ve sobre la escápula (infraespinoso y redondo menor), con la espalda alta.
  */
-export function nombresDeMusculos(lista: readonly Musculo[]): string[] {
-  const presentes = new Set(lista)
-  const dichos = new Set<string>()
-  const r: string[] = []
-  for (const m of lista) {
-    const padre = INFO_MUSCULO[m].musculo
-    if (padre && [m, ...hermanos(m)].every((x) => presentes.has(x))) {
-      if (!dichos.has(padre)) r.push(padre)
-      dichos.add(padre)
-    } else r.push(INFO_MUSCULO[m].corto)
-  }
-  return r
+export const GRUPO_DE_REGION: Record<RegionModelo, Musculo> = {
+  esternocleidomastoideo: 'cuello',
+  esplenio: 'cuello',
+  deltoides_anterior: 'hombros',
+  deltoides_lateral: 'hombros',
+  deltoides_posterior: 'hombros',
+  pectoral_clavicular: 'pecho',
+  pectoral_esternal: 'pecho',
+  pectoral_costal: 'pecho',
+  serrato_anterior: 'pecho',
+  trapecio_superior: 'trapecio',
+  trapecio_medio: 'espalda_alta',
+  trapecio_inferior: 'espalda_alta',
+  romboides: 'espalda_alta',
+  dorsal_ancho: 'dorsales',
+  redondo_mayor: 'dorsales',
+  infraespinoso: 'espalda_alta',
+  redondo_menor: 'espalda_alta',
+  supraespinoso: 'hombros',
+  subescapular: 'hombros',
+  erectores_espinales: 'lumbares',
+  biceps: 'biceps',
+  braquial: 'biceps',
+  braquiorradial: 'antebrazos',
+  triceps_larga: 'triceps',
+  triceps_lateral: 'triceps',
+  triceps_medial: 'triceps',
+  flexores_antebrazo: 'antebrazos',
+  extensores_antebrazo: 'antebrazos',
+  recto_abdominal: 'abdominales',
+  oblicuos: 'oblicuos',
+  gluteo_mayor: 'gluteos',
+  gluteo_medio: 'abductores',
+  gluteo_menor: 'abductores',
+  tensor_fascia_lata: 'abductores',
+  psoas_iliaco: 'abdominales',
+  recto_femoral: 'cuadriceps',
+  vasto_lateral: 'cuadriceps',
+  vasto_medial: 'cuadriceps',
+  sartorio: 'cuadriceps',
+  aductores: 'aductores',
+  biceps_femoral: 'isquiotibiales',
+  semitendinoso: 'isquiotibiales',
+  semimembranoso: 'isquiotibiales',
+  gemelo_medial: 'gemelos',
+  gemelo_lateral: 'gemelos',
+  soleo: 'gemelos',
+  tibial_anterior: 'gemelos',
+  peroneos: 'gemelos',
 }
 
-/** «Piernas › Cuádriceps» (o solo el grupo si el músculo no tiene porciones). */
-export const rutaDe = (m: Musculo): string => [NOMBRE_GRUPO[INFO_MUSCULO[m].grupo], INFO_MUSCULO[m].musculo].filter(Boolean).join(' › ')
+/** Grupo de una región del modelo por su id (1…48; null si no es ningún músculo). */
+export const grupoDeRegion = (id: number): Musculo | null => {
+  const r = REGIONES_MODELO[id - 1]
+  return r ? GRUPO_DE_REGION[r] : null
+}
+
+// ── Nombres de versiones anteriores ─────────────────────────────────────────────────────────
+
+/** Zonas (ronda 2–3) y nombres aún más antiguos (v1–v2) que no son ya un grupo. */
+const ANTERIORES: Record<string, Musculo> = {
+  pectoral_superior: 'pecho',
+  pectoral_inferior: 'pecho',
+  braquial: 'biceps',
+  espalda_media: 'espalda_alta',
+  abdomen: 'abdominales',
+  gluteo_mayor: 'gluteos',
+  gluteo_medio: 'abductores',
+  soleo: 'gemelos',
+  espalda: 'dorsales',
+}
+
+const ES_GRUPO = new Set<string>(MUSCULOS)
+
+/**
+ * Grupo de un nombre de músculo de cualquier versión: un grupo de ahora, una región de la división
+ * fina (ronda 4), una zona (rondas 2–3) o un nombre de la v1 («pecho», «espalda»…). En todas las
+ * versiones, un mismo nombre significa lo mismo, así que no hace falta saber de cuál viene.
+ */
+export function grupoDeNombre(nombre: string): Musculo | null {
+  if (ES_GRUPO.has(nombre)) return nombre as Musculo
+  if (nombre in GRUPO_DE_REGION) return GRUPO_DE_REGION[nombre as RegionModelo]
+  if (nombre.startsWith('deltoides_')) return 'hombros'
+  return ANTERIORES[nombre] ?? null
+}
+
+/**
+ * Músculos de un ejercicio de cualquier versión → grupos: sin repetidos, sin nombres desconocidos y
+ * sin secundarios que ya son principales. Es idempotente.
+ */
+export function aGrupos(principales: readonly string[], secundarios: readonly string[]): { principales: Musculo[]; secundarios: Musculo[] } {
+  const convertir = (l: readonly string[]) => [...new Set(l.map(grupoDeNombre).filter((m): m is Musculo => m !== null))]
+  const p = convertir(principales)
+  return { principales: p, secundarios: convertir(secundarios).filter((m) => !p.includes(m)) }
+}

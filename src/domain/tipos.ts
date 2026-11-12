@@ -4,65 +4,34 @@ import type { AjusteFino } from './cuerpo'
 import type { Sexo } from './nutricion'
 
 /**
- * Músculos (ronda 4): división completa, grupo → músculo → porción o cabeza (ver domain/musculos.ts).
- * Los ejercicios usan estos nombres para principales y secundarios. El orden es el de las regiones
- * del cuerpo 3D (id = índice + 1), así que solo se añaden al final.
+ * Músculos (ronda 5): 18 grupos grandes (ver domain/musculos.ts). Los ejercicios usan estos nombres
+ * para principales y secundarios. Los modelos 3D tienen 48 regiones más finas, cada una de un grupo.
  */
 export const MUSCULOS = [
-  'esternocleidomastoideo',
-  'esplenio',
-  'deltoides_anterior',
-  'deltoides_lateral',
-  'deltoides_posterior',
-  'pectoral_clavicular',
-  'pectoral_esternal',
-  'pectoral_costal',
-  'serrato_anterior',
-  'trapecio_superior',
-  'trapecio_medio',
-  'trapecio_inferior',
-  'romboides',
-  'dorsal_ancho',
-  'redondo_mayor',
-  'infraespinoso',
-  'redondo_menor',
-  'supraespinoso',
-  'subescapular',
-  'erectores_espinales',
+  'cuello',
+  'trapecio',
+  'hombros',
+  'pecho',
   'biceps',
-  'braquial',
-  'braquiorradial',
-  'triceps_larga',
-  'triceps_lateral',
-  'triceps_medial',
-  'flexores_antebrazo',
-  'extensores_antebrazo',
-  'recto_abdominal',
+  'triceps',
+  'antebrazos',
+  'espalda_alta',
+  'dorsales',
+  'lumbares',
+  'abdominales',
   'oblicuos',
-  'gluteo_mayor',
-  'gluteo_medio',
-  'gluteo_menor',
-  'tensor_fascia_lata',
-  'psoas_iliaco',
-  'recto_femoral',
-  'vasto_lateral',
-  'vasto_medial',
-  'sartorio',
+  'gluteos',
+  'abductores',
   'aductores',
-  'biceps_femoral',
-  'semitendinoso',
-  'semimembranoso',
-  'gemelo_medial',
-  'gemelo_lateral',
-  'soleo',
-  'tibial_anterior',
-  'peroneos',
+  'cuadriceps',
+  'isquiotibiales',
+  'gemelos',
 ] as const
 export type Musculo = (typeof MUSCULOS)[number]
 
 /**
  * Zonas del mapa y las animaciones 2D (las regiones de la ronda 2). Cada músculo pertenece a una
- * (`zonaDe`); también son los nombres de los músculos antes de la ronda 4, que se migran.
+ * o varias (`INFO_MUSCULO[m].zonas`); también son los nombres de los músculos de las rondas 2 y 3.
  */
 export const ZONAS = [
   'pectoral_superior',

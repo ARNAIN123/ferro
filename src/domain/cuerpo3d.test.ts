@@ -1,22 +1,26 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { anguloCercano, aspectoDeNivel, BRILLO_NIVEL, INTENSIDAD_NIVEL, colorCss, factorOclusion, idDeCanal, limitarAltura, limitarZoom, MEZCLA_NIVEL, musculoDeRegion, regionDeMusculo, ZOOM_MAX } from './cuerpo3d'
-import { MUSCULOS } from './tipos'
+import { anguloCercano, aspectoDeNivel, BRILLO_NIVEL, INTENSIDAD_NIVEL, colorCss, factorOclusion, idDeCanal, limitarAltura, limitarZoom, MEZCLA_NIVEL, musculoDeRegion, NUM_REGIONES, porRegion, ZOOM_MAX } from './cuerpo3d'
+import { REGIONES_MODELO } from './musculos'
 
 describe('cuerpo 3D', () => {
-  it('las regiones del modelo son los músculos de Ferro en el mismo orden', () => {
+  it('las regiones del modelo son las de REGIONES_MODELO, cada una de su grupo', () => {
     const info = JSON.parse(readFileSync(new URL('../../public/modelos/cuerpo.json', import.meta.url), 'utf-8')) as { regiones: string[]; triangulos: number }
-    expect(info.regiones).toEqual([...MUSCULOS])
-    for (const m of MUSCULOS) expect(musculoDeRegion(regionDeMusculo(m))).toBe(m)
+    expect(info.regiones).toEqual([...REGIONES_MODELO])
+    expect(NUM_REGIONES).toBe(48)
+    expect(musculoDeRegion(REGIONES_MODELO.indexOf('pectoral_costal') + 1)).toBe('pecho')
     expect(musculoDeRegion(0)).toBeNull()
+    const colores = porRegion((m) => m ?? 'nada')
+    expect(colores).toHaveLength(49)
+    expect(colores[0]).toBe('nada')
+    expect(colores[REGIONES_MODELO.indexOf('gemelo_lateral') + 1]).toBe('gemelos')
     // Ligero para el móvil.
     expect(info.triangulos).toBeLessThanOrEqual(150_000)
   })
 
-  it('cada músculo tiene superficie en el modelo', () => {
+  it('cada región tiene superficie en el modelo', () => {
     const info = JSON.parse(readFileSync(new URL('../../public/modelos/cuerpo.json', import.meta.url), 'utf-8')) as { caras_por_region: Record<string, number> }
-    // Los más pequeños (redondo menor, infraespinoso) tienen menos caras, pero se pueden tocar con zoom.
-    for (const m of MUSCULOS) expect(info.caras_por_region[m] ?? 0, m).toBeGreaterThan(150)
+    for (const r of REGIONES_MODELO) expect(info.caras_por_region[r] ?? 0, r).toBeGreaterThan(150)
   })
 
   it('el modelo pesa menos de 10 MB', () => {

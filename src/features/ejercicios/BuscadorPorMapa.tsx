@@ -6,8 +6,6 @@ import { db } from '../../db/db'
 import { contarUsos, ejerciciosDeMusculo } from '../../domain/biblioteca'
 import { NOMBRE_MATERIAL, NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import type { Ejercicio, Musculo } from '../../domain/tipos'
-import { EnlacesMusculos } from '../../components/mapa/EnlacesMusculos'
-import { debajoDe, esProfundo, hermanos, INFO_MUSCULO, PROFUNDOS, rutaDe } from '../../domain/musculos'
 
 interface Props {
   musculo: Musculo | null
@@ -47,24 +45,15 @@ export function BuscadorPorMapa({ musculo, onMusculo, excluir = [], fila, altoMa
         className={altoMapa}
       />
       {!musculo ? (
-        <>
-          <p className="mt-2 text-center text-sm text-muted">Toca un músculo para ver sus ejercicios. Arrastra para ver la espalda.</p>
-          <EnlacesMusculos titulo="Profundos:" lista={PROFUNDOS} alElegir={onMusculo} className="mt-2 justify-center" />
-        </>
+        <p className="mt-2 text-center text-sm text-muted">Toca un músculo para ver sus ejercicios. Arrastra para ver la espalda.</p>
       ) : (
         <div className="mt-3">
-          <p className="text-xs font-semibold tracking-wide text-muted uppercase">
-            {rutaDe(musculo)}
-            {esProfundo(musculo) && ' · profundo'}
-          </p>
           <div className="flex items-baseline justify-between gap-2">
             <h3 className="condensada text-2xl font-extrabold">{NOMBRE_MUSCULO[musculo]}</h3>
             <button type="button" onClick={() => onMusculo(null)} className="min-h-10 px-2 text-sm font-medium text-muted">
               Cambiar músculo
             </button>
           </div>
-          <EnlacesMusculos titulo={`${INFO_MUSCULO[musculo].musculo ?? 'También'}:`} lista={hermanos(musculo)} alElegir={onMusculo} className="mt-1" />
-          <EnlacesMusculos titulo="Debajo:" lista={debajoDe(musculo)} alElegir={onMusculo} className="mt-1" />
           {listas && (
             <>
               <Seccion titulo="Principal" lista={listas.principal} fila={fila} vacio="Ningún ejercicio lo trabaja como principal." />

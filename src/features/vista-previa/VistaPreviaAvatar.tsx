@@ -7,36 +7,28 @@ import { LeyendaMapa } from '../../components/mapa/MapaMuscular'
 import { Segmentado, Tarjeta } from '../../components/ui'
 import { ESCALA_SEMANA_AVATAR } from '../../domain/avatar'
 import { nivelesDeEjercicio, nivelesDeTrabajo, rotulosEscala, trabajoMuscular } from '../../domain/mapaMuscular'
-import { musculosFinos } from '../../domain/reasignacion'
 import { MUSCULOS, type Musculo, type Tema } from '../../domain/tipos'
 import { guardarAjustes, useAjustes } from '../../hooks/useAjustes'
 
 // Página de revisión del cuerpo 3D (ronda 3, fase 3): /vista-previa/avatar, enlazada desde Ajustes.
 
 type Def = { nombre: string; principales: Musculo[]; secundarios: Musculo[] }
-// Escritos con las zonas de antes; se pasan a la división completa con las mismas reglas que la biblioteca.
-const ANTES: Record<string, { nombre: string; principales: string[]; secundarios: string[] }> = {
-  banca: { nombre: 'Press de banca con barra', principales: ['pectoral_inferior'], secundarios: ['deltoides_anterior', 'triceps'] },
-  inclinado: { nombre: 'Press inclinado con mancuernas', principales: ['pectoral_inferior'], secundarios: ['deltoides_anterior', 'triceps'] },
-  remo: { nombre: 'Remo con barra', principales: ['espalda_media', 'dorsales'], secundarios: ['biceps', 'deltoides_anterior'] },
-  jalon: { nombre: 'Jalón al pecho', principales: ['dorsales'], secundarios: ['biceps'] },
-  militar: { nombre: 'Press militar de pie', principales: ['deltoides_anterior'], secundarios: ['triceps'] },
-  laterales: { nombre: 'Elevaciones laterales', principales: ['deltoides_anterior'], secundarios: [] },
+const EJERCICIOS: Record<string, Def> = {
+  banca: { nombre: 'Press de banca con barra', principales: ['pecho'], secundarios: ['hombros', 'triceps'] },
+  inclinado: { nombre: 'Press inclinado con mancuernas', principales: ['pecho'], secundarios: ['hombros', 'triceps'] },
+  remo: { nombre: 'Remo con barra', principales: ['dorsales', 'espalda_alta'], secundarios: ['biceps', 'hombros', 'lumbares'] },
+  jalon: { nombre: 'Jalón al pecho', principales: ['dorsales'], secundarios: ['biceps', 'espalda_alta'] },
+  militar: { nombre: 'Press militar de pie', principales: ['hombros'], secundarios: ['triceps', 'trapecio'] },
+  laterales: { nombre: 'Elevaciones laterales', principales: ['hombros'], secundarios: ['trapecio'] },
   curl: { nombre: 'Curl con barra', principales: ['biceps'], secundarios: ['antebrazos'] },
   frances: { nombre: 'Press francés', principales: ['triceps'], secundarios: [] },
-  sentadilla: { nombre: 'Sentadilla con barra', principales: ['cuadriceps'], secundarios: ['gluteo_mayor', 'aductores', 'lumbares'] },
-  rumano: { nombre: 'Peso muerto rumano', principales: ['isquiotibiales'], secundarios: ['gluteo_mayor', 'lumbares'] },
-  hip: { nombre: 'Hip thrust con barra', principales: ['gluteo_mayor'], secundarios: ['isquiotibiales', 'gluteo_medio'] },
+  sentadilla: { nombre: 'Sentadilla con barra', principales: ['cuadriceps', 'gluteos'], secundarios: ['aductores', 'lumbares'] },
+  rumano: { nombre: 'Peso muerto rumano', principales: ['isquiotibiales', 'gluteos'], secundarios: ['lumbares', 'antebrazos'] },
+  hip: { nombre: 'Hip thrust con barra', principales: ['gluteos'], secundarios: ['isquiotibiales', 'abductores'] },
   gemelos: { nombre: 'Elevación de talones en multipower', principales: ['gemelos'], secundarios: [] },
-  encogimientos: { nombre: 'Encogimientos con barra', principales: ['trapecio'], secundarios: ['cuello'] },
-  crunch: { nombre: 'Crunch en polea', principales: ['abdomen'], secundarios: [] },
+  encogimientos: { nombre: 'Encogimientos con barra', principales: ['trapecio'], secundarios: ['cuello', 'antebrazos'] },
+  crunch: { nombre: 'Crunch en polea', principales: ['abdominales'], secundarios: ['oblicuos'] },
 }
-const EJERCICIOS: Record<string, Def> = Object.fromEntries(
-  Object.entries(ANTES).map(([k, d]) => {
-    const r = musculosFinos({ nombre: d.nombre, material: 'barra', musculosPrincipales: d.principales, musculosSecundarios: d.secundarios })
-    return [k, { nombre: d.nombre, principales: r.principales, secundarios: r.secundarios }]
-  }),
-)
 
 const NOMBRES = new Map(Object.entries(EJERCICIOS).map(([id, d]) => [id, d.nombre]))
 

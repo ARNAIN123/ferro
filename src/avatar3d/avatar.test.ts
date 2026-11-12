@@ -1,8 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { CUERPO_POR_DEFECTO, MEDIDAS, type DatosCuerpo } from '../domain/cuerpo'
-import { MUSCULOS } from '../domain/tipos'
-import { PROFUNDOS } from '../domain/musculos'
+import { REGIONES_MODELO } from '../domain/musculos'
 import { construirForma, normalesAvatar, pesosEsquinas, volumenLitros } from './forma'
 import { medirAvatar, perimetroConvexo } from './medidas'
 import { modeloDesdeGlb, type InfoAvatar } from './modelo'
@@ -14,13 +13,12 @@ const modelo = modeloDesdeGlb(glb.buffer.slice(glb.byteOffset, glb.byteOffset + 
 const REF = { sexo: 1, edad: 0, musculo: 0.5, peso: 0.5 }
 
 describe('modelo del avatar', () => {
-  it('tiene la misma división muscular que la app, en el mismo orden', () => {
-    expect(info.regiones).toEqual([...MUSCULOS])
-    expect(info.profundos).toEqual([...PROFUNDOS])
+  it('tiene las regiones de los modelos, en el mismo orden', () => {
+    expect(info.regiones).toEqual([...REGIONES_MODELO])
   })
 
-  it('cada músculo tiene superficie en el mapa de regiones', () => {
-    MUSCULOS.forEach((m, i) => expect(info.texels_por_region[i + 1], m).toBeGreaterThan(300))
+  it('cada región tiene superficie en el mapa de regiones', () => {
+    REGIONES_MODELO.forEach((r, i) => expect(info.texels_por_region[i + 1], r).toBeGreaterThan(300))
   })
 
   it('lleva el esqueleto de 24 huesos con sus extremos y una esquina de MakeHuman por deformador', () => {

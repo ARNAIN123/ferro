@@ -84,11 +84,11 @@ describe('actualizar la base de datos de la v4 a la v5 (división muscular compl
     await nueva.open()
     expect(nueva.verno).toBeGreaterThanOrEqual(5)
     const remo = await nueva.ejercicios.get('mio-1')
-    // "Zona media de la espalda" → romboides + trapecio medio; dorsales → dorsal ancho.
-    expect(remo?.musculosPrincipales).toEqual(expect.arrayContaining(['dorsal_ancho', 'romboides', 'trapecio_medio']))
-    expect(remo?.musculosSecundarios).toEqual(expect.arrayContaining(['biceps', 'deltoides_posterior']))
+    // "Zona media de la espalda" → espalda alta; dorsales → dorsales (los grupos de la ronda 5).
+    expect(remo?.musculosPrincipales).toEqual(expect.arrayContaining(['dorsales', 'espalda_alta']))
+    expect(remo?.musculosSecundarios).toEqual(expect.arrayContaining(['biceps', 'hombros']))
     expect(remo?.notasFijas).toBe('Asiento en el 4')
-    expect((await nueva.ejercicios.get('mio-2'))?.musculosPrincipales).toEqual(['recto_femoral', 'vasto_lateral', 'vasto_medial'])
+    expect((await nueva.ejercicios.get('mio-2'))?.musculosPrincipales).toEqual(['cuadriceps'])
     // Nada más cambia.
     expect(await nueva.series.count()).toBe(2)
     expect(await nueva.pesosCorporales.get('p1')).toMatchObject({ kg: 80 })
@@ -98,21 +98,30 @@ describe('actualizar la base de datos de la v4 a la v5 (división muscular compl
     expect((await nueva.ajustes.get('ajustes'))?.versionCatalogo).toBeUndefined()
     // El historial semanal sigue siendo coherente: las series cuentan para los músculos nuevos.
     const trabajo = trabajoMuscular(await nueva.series.toArray(), new Map((await nueva.ejercicios.toArray()).map((e) => [e.id, e])))
-    expect(trabajo.get('romboides')?.series).toBe(1)
-    expect(trabajo.get('vasto_medial')?.series).toBe(1)
+    expect(trabajo.get('espalda_alta')?.series).toBe(1)
+    expect(trabajo.get('cuadriceps')?.series).toBe(1)
     nueva.close()
   })
 })
 
-// Ronda 4, avatar personalizado: de la versión 5 a la 6 solo se añaden las tablas del perfil corporal
-// (medidas con cinta y porcentaje de grasa). Nada de lo que había cambia.
-describe('actualizar la base de datos de la v5 a la v6 (perfil corporal)', () => {
-  it('conserva entrenos, nutrición, peso y ajustes, y añade las tablas nuevas vacías', async () => {
-    const nombre = 'ferro-prueba-v5'
+// Ronda 5: de la versión 6 a la 7 los músculos de los ejercicios pasan a los 18 grupos. Nada más
+// cambia (el perfil corporal de la v6 incluido), y el catálogo se vuelve a sincronizar.
+describe('actualizar la base de datos de la v6 a la v7 (grupos musculares)', () => {
+  it('agrupa los músculos de los ejercicios y conserva entrenos, nutrición, peso, perfil y ajustes', async () => {
+    const nombre = 'ferro-prueba-v6'
     const vieja = new Dexie(nombre)
-    vieja.version(5).stores({ ...TABLAS_V3, alimentos: 'id, codigo, nombre', comidas: 'id, fecha, alimentoId, [fecha+comida]', platos: 'id, nombre', agua: 'id', nutricion: 'id' })
+    vieja.version(6).stores({
+      ...TABLAS_V3,
+      alimentos: 'id, codigo, nombre',
+      comidas: 'id, fecha, alimentoId, [fecha+comida]',
+      platos: 'id, nombre',
+      agua: 'id',
+      nutricion: 'id',
+      medidas: 'id, &fecha',
+      grasas: 'id, fecha',
+    })
     await vieja.open()
-    await vieja.table('ejercicios').add({ id: 'mio-1', nombre: 'Remo', musculosPrincipales: ['dorsal_ancho', 'romboides'], musculosSecundarios: ['biceps'], material: 'maquina', notasFijas: 'Asiento en el 4', personalizado: true })
+    await vieja.table('ejercicios').add({ id: 'mio-1', nombre: 'Remo', musculosPrincipales: ['dorsal_ancho', 'romboides'], musculosSecundarios: ['biceps', 'braquial', 'redondo_mayor'], material: 'maquina', notasFijas: 'Asiento en el 4', personalizado: true })
     await vieja.table('sesiones').add({ id: 's1', estado: 'terminada', entrada: 1 })
     await vieja.table('series').add({ id: 'x1', sesionId: 's1', sesionEjercicioId: 'se1', ejercicioId: 'mio-1', peso: 50, reps: 10, completada: true, inicio: 1 })
     await vieja.table('pesosCorporales').bulkAdd([
@@ -122,13 +131,15 @@ describe('actualizar la base de datos de la v5 a la v6 (perfil corporal)', () =>
     await vieja.table('comidas').add({ id: 'c1', fecha: '2026-11-01', alimentoId: 'a1', comida: 'comida', gramos: 150 })
     await vieja.table('agua').add({ id: '2026-11-01', ml: 1500 })
     await vieja.table('nutricion').add({ id: 'perfil', sexo: 'hombre', objetivo: 'mantener', basal: 1780 })
-    await vieja.table('ajustes').add({ id: 'ajustes', objetivoMensual: 16, alturaCm: 178, edad: 28, versionCatalogo: 'abc' })
+    await vieja.table('medidas').add({ id: 'm1', fecha: '2026-11-10', cintura: 84 })
+    await vieja.table('grasas').add({ id: 'manual:2026-11-10', fecha: '2026-11-10', pct: 16, origen: 'manual' })
+    await vieja.table('ajustes').add({ id: 'ajustes', objetivoMensual: 16, alturaCm: 178, edad: 28, sexo: 'hombre', versionCatalogo: 'abc' })
     vieja.close()
 
     const nueva = new FerroDB(nombre)
     await nueva.open()
-    expect(nueva.verno).toBe(6)
-    expect(await nueva.ejercicios.get('mio-1')).toMatchObject({ musculosPrincipales: ['dorsal_ancho', 'romboides'], notasFijas: 'Asiento en el 4' })
+    expect(nueva.verno).toBe(7)
+    expect(await nueva.ejercicios.get('mio-1')).toMatchObject({ musculosPrincipales: ['dorsales', 'espalda_alta'], musculosSecundarios: ['biceps'], notasFijas: 'Asiento en el 4' })
     expect(await nueva.sesiones.count()).toBe(1)
     expect(await nueva.series.get('x1')).toMatchObject({ peso: 50, reps: 10 })
     expect(await nueva.pesosCorporales.count()).toBe(2)
@@ -136,14 +147,16 @@ describe('actualizar la base de datos de la v5 a la v6 (perfil corporal)', () =>
     expect(await nueva.comidas.get('c1')).toMatchObject({ gramos: 150 })
     expect(await nueva.agua.get('2026-11-01')).toMatchObject({ ml: 1500 })
     expect(await nueva.nutricion.get('perfil')).toMatchObject({ sexo: 'hombre', basal: 1780 })
-    // Los ajustes no se tocan (ni siquiera la versión del catálogo: no hay que volver a sincronizarlo).
-    expect(await nueva.ajustes.get('ajustes')).toMatchObject({ objetivoMensual: 16, alturaCm: 178, edad: 28, versionCatalogo: 'abc' })
-    expect(await nueva.medidas.count()).toBe(0)
-    expect(await nueva.grasas.count()).toBe(0)
-    // Las tablas nuevas funcionan.
-    await nueva.medidas.add({ id: 'm1', fecha: '2026-11-12', cintura: 84 })
-    await nueva.grasas.add({ id: 'manual:2026-11-12', fecha: '2026-11-12', pct: 16, origen: 'manual' })
-    expect(await nueva.medidas.where('fecha').equals('2026-11-12').first()).toMatchObject({ cintura: 84 })
+    expect(await nueva.medidas.where('fecha').equals('2026-11-10').first()).toMatchObject({ cintura: 84 })
+    expect(await nueva.grasas.get('manual:2026-11-10')).toMatchObject({ pct: 16 })
+    // Los ajustes se conservan; solo se olvida la versión del catálogo para volver a sincronizarlo.
+    const ajustes = await nueva.ajustes.get('ajustes')
+    expect(ajustes).toMatchObject({ objetivoMensual: 16, alturaCm: 178, edad: 28, sexo: 'hombre' })
+    expect(ajustes?.versionCatalogo).toBeUndefined()
+    // El historial semanal sigue siendo coherente: las series cuentan para los grupos nuevos.
+    const trabajo = trabajoMuscular(await nueva.series.toArray(), new Map((await nueva.ejercicios.toArray()).map((e) => [e.id, e])))
+    expect(trabajo.get('dorsales')?.series).toBe(1)
+    expect(trabajo.get('biceps')?.series).toBe(0.5)
     nueva.close()
   })
 })

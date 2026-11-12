@@ -14,35 +14,21 @@ describe('correspondencia músculo ↔ avatar', () => {
     }
   })
 
-  it('los tendones no son de ningún músculo (las porciones que el dibujo no separa comparten región)', () => {
+  it('los tendones no son de ningún músculo y cada región del dibujo es de un solo grupo', () => {
     for (const m of MUSCULOS) for (const r of REGIONES_AVATAR[m]) expect(NO_MUSCULO.has(r), r).toBe(false)
     for (const r of NO_MUSCULO) expect(musculoDeRegionAvatar(r)).toBeNull()
+    const todas = MUSCULOS.flatMap((m) => REGIONES_AVATAR[m])
+    expect(new Set(todas).size).toBe(todas.length)
+    expect(musculoDeRegionAvatar('soleo')).toBe('gemelos')
+    expect(musculoDeRegionAvatar('deltoides_posterior')).toBe('hombros')
+    expect(musculoDeRegionAvatar('antebrazo_extensores')).toBe('antebrazos')
+    expect(musculoDeRegionAvatar('trapecio_medio')).toBe('espalda_alta')
   })
 
-  it('los grupos que pide la ronda 2 están separados en el dibujo', () => {
-    for (const r of [
-      'pectoral_superior',
-      'pectoral_inferior',
-      'deltoides_anterior',
-      'deltoides_lateral',
-      'deltoides_posterior',
-      'braquial',
-      'trapecio_medio',
-      'gluteo_medio',
-      'soleo',
-    ] as RegionAvatar[])
-      expect(dibujadas.has(r), r).toBe(true)
-    expect(musculoDeRegionAvatar('soleo')).toBe('soleo')
-    expect(musculoDeRegionAvatar('deltoides_posterior')).toBe('deltoides_posterior')
-    expect(musculoDeRegionAvatar('antebrazo_extensores')).toBe('braquiorradial')
-    expect(musculoDeRegionAvatar('trapecio_medio')).toBe('trapecio_medio')
-  })
-
-  it('cada músculo pinta su región y una región compartida toma el nivel más alto', () => {
-    const r = nivelesPorRegionAvatar(new Map([['recto_femoral', 4], ['vasto_lateral', 3], ['flexores_antebrazo', 2], ['triceps_larga', 1], ['triceps_lateral', 5]]))
+  it('cada grupo pinta todas sus regiones con su nivel', () => {
+    const r = nivelesPorRegionAvatar(new Map([['cuadriceps', 4], ['antebrazos', 2], ['triceps', 5]]))
     expect(r.get('recto_femoral')).toBe(4)
-    expect(r.get('vasto_lateral')).toBe(3)
-    expect(r.get('vasto_medial')).toBeUndefined()
+    expect(r.get('vasto_medial')).toBe(4)
     expect(r.get('antebrazo_flexores')).toBe(2)
     expect(r.get('triceps')).toBe(5)
     expect(r.get('biceps')).toBeUndefined()

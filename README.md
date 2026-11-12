@@ -67,16 +67,11 @@ blender --background --factory-startup --disable-autoexec Startup.blend --python
 
 Tarda unos 8 minutos. Con `FERRO_CACHE=algo.blend` guarda el cuerpo ya simplificado y las siguientes veces solo repite las regiones y la exportación (si cambias el volumen, `INFLAR_REGION`, borra la caché). Para las animaciones añade `FERRO_RIG=public/modelos/cuerpo-rig.glb` (el cuerpo con esqueleto) y `FERRO_PUNTOS=src/animacion3d/superficie.json` (los puntos de la superficie con los que se comprueba que el cuerpo no atraviesa bancos ni cajones). El modelo resultante se distribuye con la misma licencia CC BY-SA 4.0 (créditos en **Ajustes → Créditos y licencias**). El visor está en `src/components/cuerpo3d` (three.js + react-three-fiber) y se revisa en **Ajustes → Vista previa del cuerpo 3D**.
 
-### División muscular (ronda 4)
+### División muscular (ronda 5)
 
-Los músculos están en `src/domain/tipos.ts` (`MUSCULOS`, 48: el orden es el de las regiones del modelo 3D, así que solo se añaden al final) y su organización —grupo → músculo → porción, nombres, cuáles son profundos y qué tienen encima— en `src/domain/musculos.ts`. Los músculos de cada ejercicio de la biblioteca están en `catalogo/musculos-r4.json`, que `npm run catalogo` aplica al generar el catálogo. Salen de las reglas por tipo de movimiento de `src/domain/reasignacion.ts` (las mismas que convierten los ejercicios propios al actualizar la app y las copias de seguridad antiguas). Para cambiarlos:
+Los músculos son 18 grupos grandes (`MUSCULOS` en `src/domain/tipos.ts`; nombres y zonas 2D en `src/domain/musculos.ts`): cuello, trapecio, hombros, pecho, bíceps, tríceps, antebrazos, espalda alta, dorsales, lumbares, abdominales, oblicuos, glúteos, abductores, aductores, cuádriceps, isquiotibiales y gemelos. Los modelos 3D tienen 48 regiones más finas (`REGIONES_MODELO`, en el orden de sus ids: solo se añaden al final) y cada una pertenece a un grupo (`GRUPO_DE_REGION`); todas las de un grupo se pintan y se eligen juntas.
 
-1. Retoca las reglas de `reasignacion.ts` (o, para un ejercicio suelto, su entrada en `catalogo/musculos-r4.json` y salta al paso 4).
-2. Borra `catalogo/musculos-r4.json` y ejecuta `npm run catalogo` (el catálogo vuelve a las zonas de antes).
-3. `GENERAR_REVISION=revision/r4-musculos npx vitest run scripts/musculos/generar-revision.test.ts` vuelve a crear `catalogo/musculos-r4.json` y un listado para revisar (`revision/r4-musculos/ejercicios-musculos.html`).
-4. `npm run catalogo` otra vez.
-
-Si se añade un músculo, hay que darle región en `scripts/blender/generar-cuerpo.py` (lista `REGIONES` y diccionario `MUSCULOS`) y regenerar el cuerpo; los tests comprueban que el modelo y la app tienen los mismos músculos, en el mismo orden, y que cada uno tiene superficie.
+Los grupos de cada ejercicio de la biblioteca están en `catalogo/musculos.json` (`principales` y `secundarios` por id de ejercicio), que `npm run catalogo` aplica al generar el catálogo y el listado (`catalogo/LISTADO-BIBLIOTECA.md`). Para cambiar los de un ejercicio, edita su entrada y vuelve a ejecutar `npm run catalogo`. Los ejercicios propios, los retirados y las copias de seguridad antiguas se convierten solos (`aGrupos`: un nombre de cualquier versión → su grupo).
 
 ### Avatar personalizado (ronda 4)
 

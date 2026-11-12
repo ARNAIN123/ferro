@@ -1,0 +1,8451 @@
+{
+ "Press_Sit-Up": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps",
+   "pecho"
+  ]
+ },
+ "abduccion-polea": {
+  "principales": [
+   "abductores"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Cable_Hip_Adduction": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "One-Arm_Flat_Bench_Dumbbell_Flye": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Dumbbell_Flyes": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Decline_Dumbbell_Flyes": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Flat_Bench_Cable_Flyes": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Incline_Dumbbell_Flyes_-_With_A_Twist": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Incline_Dumbbell_Flyes": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Incline_Cable_Flye": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Standing_Olympic_Plate_Hand_Squeeze": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Snatch": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Hang_Snatch": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Hang_Snatch_-_Below_Knees": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Muscle_Snatch": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Power_Snatch": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Power_Snatch_from_Blocks": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Snatch_from_Blocks": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Split_Snatch": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Good_Morning": {
+  "principales": [
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Hanging_Bar_Good_Morning": {
+  "principales": [
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Stiff_Leg_Barbell_Good_Morning": {
+  "principales": [
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Good_Morning_off_Pins": {
+  "principales": [
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Seated_Good_Mornings": {
+  "principales": [
+   "lumbares"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Hang_Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Hang_Clean_-_Below_the_Knees": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Smith_Machine_Hang_Power_Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Dumbbell_Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Power_Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Power_Clean_from_Blocks": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Clean_from_Blocks": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Split_Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Clean_and_Press": {
+  "principales": [
+   "hombros",
+   "cuadriceps",
+   "gluteos",
+   "trapecio"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "triceps",
+   "gemelos",
+   "pecho"
+  ]
+ },
+ "Single-Arm_Cable_Crossover": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Cable_Crossover": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Low_Cable_Crossover": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Rope_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "crunch-con-disco": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Standing_Rope_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Cable_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Kneeling_Cable_Crunch_With_Alternating_Oblique_Twists": {
+  "principales": [
+   "oblicuos",
+   "abdominales"
+  ],
+  "secundarios": []
+ },
+ "Cable_Reverse_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Cable_Seated_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Iron_Cross": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio",
+   "pecho",
+   "gluteos",
+   "isquiotibiales",
+   "lumbares",
+   "cuadriceps"
+  ]
+ },
+ "Cable_Iron_Cross": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Lying_Face_Down_Plate_Neck_Resistance": {
+  "principales": [
+   "cuello",
+   "trapecio"
+  ],
+  "secundarios": []
+ },
+ "Lying_Face_Up_Plate_Neck_Resistance": {
+  "principales": [
+   "cuello"
+  ],
+  "secundarios": []
+ },
+ "Standing_One-Arm_Dumbbell_Curl_Over_Incline_Bench": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Dumbbell_Alternate_Bicep_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Spider_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Drag_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "curl-bayesiano-polea": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Barbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Wide-Grip_Standing_Barbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Close-Grip_Standing_Barbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Barbell_Curls_Lying_Against_An_Incline": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "EZ-Bar_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Close-Grip_EZ_Bar_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Dumbbell_Bicep_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Concentration_Curls": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Standing_Concentration_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Seated_Close-Grip_Concentration_Barbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Standing_Biceps_Cable_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Standing_Inner-Biceps_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Seated_Dumbbell_Inner_Biceps_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Finger_Curls": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Standing_Palms-Up_Barbell_Behind_The_Back_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Cable_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Palms-Down_Wrist_Curl_Over_A_Bench": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Palms-Down_Dumbbell_Wrist_Curl_Over_A_Bench": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Seated_One-Arm_Dumbbell_Palms-Down_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Seated_Palms-Down_Barbell_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Seated_Dumbbell_Palms-Down_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Palms-Up_Barbell_Wrist_Curl_Over_A_Bench": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Seated_Two-Arm_Palms-Up_Low-Pulley_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Seated_One-Arm_Dumbbell_Palms-Up_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Seated_Palm-Up_Barbell_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Seated_Dumbbell_Palms-Up_Wrist_Curl": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Dumbbell_Prone_Incline_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Standing_One-Arm_Cable_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "High_Cable_Curls": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Overhead_Cable_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "curl-femoral-tumbado-mancuerna": {
+  "principales": [
+   "isquiotibiales"
+  ],
+  "secundarios": [
+   "gemelos"
+  ]
+ },
+ "Alternate_Incline_Dumbbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Incline_Dumbbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Flexor_Incline_Dumbbell_Curls": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Incline_Inner_Biceps_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Reverse_Barbell_Curl": {
+  "principales": [
+   "antebrazos",
+   "biceps"
+  ],
+  "secundarios": []
+ },
+ "Reverse_Plate_Curls": {
+  "principales": [
+   "antebrazos",
+   "biceps"
+  ],
+  "secundarios": []
+ },
+ "Standing_Dumbbell_Reverse_Curl": {
+  "principales": [
+   "antebrazos",
+   "biceps"
+  ],
+  "secundarios": []
+ },
+ "Reverse_Cable_Curl": {
+  "principales": [
+   "antebrazos",
+   "biceps"
+  ],
+  "secundarios": []
+ },
+ "Hammer_Curls": {
+  "principales": [
+   "biceps",
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Alternate_Hammer_Curl": {
+  "principales": [
+   "biceps",
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Cross_Body_Hammer_Curl": {
+  "principales": [
+   "biceps",
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Cable_Hammer_Curls_-_Rope_Attachment": {
+  "principales": [
+   "biceps",
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Incline_Hammer_Curls": {
+  "principales": [
+   "biceps",
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Preacher_Hammer_Dumbbell_Curl": {
+  "principales": [
+   "biceps",
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "One_Arm_Dumbbell_Preacher_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Preacher_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "curl-predicador-barra-z": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Two-Arm_Dumbbell_Preacher_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Cable_Preacher_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Reverse_Barbell_Preacher_Curls": {
+  "principales": [
+   "antebrazos",
+   "biceps"
+  ],
+  "secundarios": []
+ },
+ "Seated_Dumbbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Lying_Supine_Dumbbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Lying_High_Bench_Barbell_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Lying_Cable_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Lying_Close-Grip_Bar_Curl_On_High_Pulley": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Zottman_Curl": {
+  "principales": [
+   "biceps",
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Zottman_Preacher_Curl": {
+  "principales": [
+   "biceps",
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Clean_and_Jerk": {
+  "principales": [
+   "hombros",
+   "cuadriceps",
+   "gluteos",
+   "trapecio"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "triceps",
+   "gemelos",
+   "pecho"
+  ]
+ },
+ "Smith_Machine_Hip_Raise": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Standing_Barbell_Calf_Raise": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Standing_Dumbbell_Calf_Raise": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Barbell_Seated_Calf_Raise": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Calf_Raise_On_A_Dumbbell": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Barbell_Incline_Shoulder_Raise": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Dumbbell_Incline_Shoulder_Raise": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Smith_Incline_Shoulder_Raise": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Front_Plate_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Front_Two-Dumbbell_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Front_Dumbbell_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Single_Dumbbell_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho",
+   "antebrazos",
+   "trapecio"
+  ]
+ },
+ "Front_Cable_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Front_Incline_Dumbbell_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Standing_Front_Barbell_Raise_Over_Head": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Standing_Dumbbell_Straight-Arm_Front_Delt_Raise_Above_Head": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Front_Raise_And_Pullover": {
+  "principales": [
+   "dorsales",
+   "pecho"
+  ],
+  "secundarios": [
+   "triceps",
+   "hombros"
+  ]
+ },
+ "Side_Laterals_to_Front_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho",
+   "trapecio"
+  ]
+ },
+ "One-Arm_Side_Laterals": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "Standing_Low-Pulley_Deltoid_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "One-Arm_Incline_Lateral_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "Cable_Seated_Lateral_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio",
+   "espalda_alta"
+  ]
+ },
+ "Lying_One-Arm_Lateral_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "Straight_Raises_on_Incline_Bench": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho",
+   "trapecio"
+  ]
+ },
+ "Dumbbell_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho",
+   "biceps"
+  ]
+ },
+ "Alternating_Deltoid_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Dumbbell_Scaption": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta",
+   "pecho"
+  ]
+ },
+ "Side_Lateral_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "Seated_Side_Lateral_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "Snatch_Shrug": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos",
+   "hombros",
+   "gemelos"
+  ]
+ },
+ "Clean_Shrug": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos",
+   "hombros",
+   "gemelos"
+  ]
+ },
+ "Middle_Back_Shrug": {
+  "principales": [
+   "espalda_alta"
+  ],
+  "secundarios": []
+ },
+ "Barbell_Shrug": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Barbell_Shrug_Behind_The_Back": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos",
+   "espalda_alta"
+  ]
+ },
+ "Dumbbell_Shrug": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Cable_Shrugs": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Smith_Machine_Behind_the_Back_Shrug": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos",
+   "espalda_alta"
+  ]
+ },
+ "Power_Jerk": {
+  "principales": [
+   "hombros",
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "isquiotibiales",
+   "gemelos"
+  ]
+ },
+ "Squat_Jerk": {
+  "principales": [
+   "hombros",
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "isquiotibiales",
+   "gemelos"
+  ]
+ },
+ "Split_Jerk": {
+  "principales": [
+   "hombros",
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "isquiotibiales",
+   "gemelos"
+  ]
+ },
+ "Snatch_Balance": {
+  "principales": [
+   "cuadriceps",
+   "hombros"
+  ],
+  "secundarios": [
+   "gluteos",
+   "trapecio",
+   "espalda_alta",
+   "triceps",
+   "isquiotibiales"
+  ]
+ },
+ "Heaving_Snatch_Balance": {
+  "principales": [
+   "cuadriceps",
+   "hombros"
+  ],
+  "secundarios": [
+   "gluteos",
+   "trapecio",
+   "espalda_alta",
+   "triceps",
+   "isquiotibiales"
+  ]
+ },
+ "Jerk_Balance": {
+  "principales": [
+   "hombros",
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "isquiotibiales",
+   "gemelos"
+  ]
+ },
+ "Dumbbell_One-Arm_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Standing_One-Arm_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Cable_One_Arm_Tricep_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Triceps_Pushdown_-_V-Bar_Attachment": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Triceps_Pushdown_-_Rope_Attachment": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Dumbbell_Tricep_Extension_-Pronated_Grip": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Standing_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Decline_EZ_Bar_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Decline_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Triceps_Pushdown": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Reverse_Grip_Triceps_Pushdown": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Low_Cable_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Standing_Low-Pulley_One-Arm_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Kneeling_Cable_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Cable_Incline_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Incline_Barbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Standing_Overhead_Barbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "One_Arm_Pronated_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Seated_Triceps_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Cable_Rope_Overhead_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Triceps_Overhead_Extension_with_Rope": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "One_Arm_Supinated_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Lying_Dumbbell_Tricep_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Cable_Lying_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Lying_Close-Grip_Barbell_Triceps_Extension_Behind_The_Head": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Face_Pull": {
+  "principales": [
+   "hombros",
+   "espalda_alta"
+  ],
+  "secundarios": []
+ },
+ "Jerk_Dip_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "gemelos",
+   "abdominales"
+  ]
+ },
+ "Rocking_Standing_Calf_Raise": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Dumbbell_Seated_One-Leg_Calf_Raise": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Smith_Machine_Calf_Raise": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Plate_Twist": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "Cable_Russian_Twists": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "Seated_Barbell_Twist": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "hip-thrust-una-pierna-mancuerna": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Barbell_Hip_Thrust": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "hip-thrust-multipower": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "One-Arm_High-Pulley_Cable_Side_Bends": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "Barbell_Side_Bend": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales",
+   "lumbares"
+  ]
+ },
+ "Dumbbell_Side_Bend": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "One_Arm_Lat_Pulldown": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "Wide-Grip_Lat_Pulldown": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "Close-Grip_Front_Lat_Pulldown": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "Underhand_Cable_Pulldowns": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "Full_Range-Of-Motion_Lat_Pulldown": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "V-Bar_Pulldown": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "Rope_Straight-Arm_Pulldown": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "triceps",
+   "hombros",
+   "pecho"
+  ]
+ },
+ "Cable_Incline_Pushdown": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "triceps",
+   "hombros",
+   "pecho"
+  ]
+ },
+ "Straight-Arm_Pulldown": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "triceps",
+   "hombros",
+   "pecho"
+  ]
+ },
+ "Wide-Grip_Pulldown_Behind_The_Neck": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "Single-Arm_Linear_Jammer": {
+  "principales": [
+   "hombros",
+   "pecho"
+  ],
+  "secundarios": [
+   "triceps"
+  ]
+ },
+ "Landmine_Linear_Jammer": {
+  "principales": [
+   "hombros",
+   "pecho"
+  ],
+  "secundarios": [
+   "triceps",
+   "abdominales",
+   "gemelos",
+   "isquiotibiales",
+   "cuadriceps"
+  ]
+ },
+ "Landmine_180s": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales",
+   "gluteos",
+   "lumbares",
+   "hombros"
+  ]
+ },
+ "Spell_Caster": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales",
+   "gluteos",
+   "hombros"
+  ]
+ },
+ "Cable_Judo_Flip": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "Standing_Cable_Wood_Chop": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales",
+   "hombros"
+  ]
+ },
+ "Standing_Cable_Lift": {
+  "principales": [
+   "oblicuos",
+   "abdominales"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Bent_Over_Low-Pulley_Side_Lateral": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta",
+   "lumbares",
+   "trapecio"
+  ]
+ },
+ "Lying_Rear_Delt_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta"
+  ]
+ },
+ "Dumbbell_Lying_One-Arm_Rear_Lateral_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta"
+  ]
+ },
+ "Reverse_Flyes": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta"
+  ]
+ },
+ "Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta"
+  ]
+ },
+ "Reverse_Flyes_With_External_Rotation": {
+  "principales": [
+   "hombros",
+   "espalda_alta"
+  ],
+  "secundarios": []
+ },
+ "Cable_Rear_Delt_Fly": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta"
+  ]
+ },
+ "Seated_Bent-Over_Rear_Delt_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta"
+  ]
+ },
+ "Dumbbell_Lying_Rear_Lateral_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta"
+  ]
+ },
+ "Power_Partials": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "paseo-granjero-mancuernas": {
+  "principales": [
+   "antebrazos",
+   "trapecio"
+  ],
+  "secundarios": [
+   "oblicuos",
+   "abdominales",
+   "abductores",
+   "gluteos",
+   "cuadriceps"
+  ]
+ },
+ "One-Legged_Cable_Kickback": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores"
+  ]
+ },
+ "Tricep_Dumbbell_Kickback": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Standing_Bent-Over_One-Arm_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Standing_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "patada-triceps-polea": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Seated_Bent-Over_One-Arm_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Seated_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Barbell_Deadlift": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Trap_Bar_Deadlift": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "trapecio",
+   "antebrazos"
+  ]
+ },
+ "Deficit_Deadlift": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "peso-muerto-mancuernas": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Snatch_Deadlift": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Clean_Deadlift": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Cable_Deadlifts": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "antebrazos"
+  ]
+ },
+ "One-Arm_Side_Deadlift": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "antebrazos",
+   "oblicuos"
+  ]
+ },
+ "Stiff-Legged_Barbell_Deadlift": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Smith_Machine_Stiff-Legged_Deadlift": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Wide_Stance_Stiff_Legs": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Romanian_Deadlift": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "peso-muerto-rumano-una-pierna-mancuernas": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "abductores",
+   "lumbares",
+   "aductores"
+  ]
+ },
+ "Romanian_Deadlift_from_Deficit": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Stiff-Legged_Dumbbell_Deadlift": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Sumo_Deadlift": {
+  "principales": [
+   "gluteos",
+   "aductores",
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "trapecio",
+   "antebrazos"
+  ]
+ },
+ "Plate_Pinch": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Smith_Machine_Leg_Press": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Neck_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Anti-Gravity_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "espalda_alta"
+  ]
+ },
+ "Arnold_Dumbbell_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "See-Saw_Press_Alternating_Side_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "oblicuos"
+  ]
+ },
+ "Bradford_Rocky_Presses": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Standing_Bradford_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Decline_Close-Grip_Bench_To_Skull_Crusher": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Close-Grip_EZ-Bar_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Close-Grip_Dumbbell_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Cuban_Press": {
+  "principales": [
+   "hombros",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "One_Arm_Dumbbell_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Wide-Grip_Barbell_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Close-Grip_Barbell_Bench_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Smith_Machine_Close-Grip_Bench_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Reverse_Triceps_Bench_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Barbell_Bench_Press_-_Medium_Grip": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Dumbbell_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Dumbbell_Bench_Press_with_Neutral_Grip": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Board_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Bench_Press_-_Powerlifting": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Smith_Machine_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Standing_Palm-In_One-Arm_Dumbbell_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Dumbbell_One-Arm_Shoulder_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Standing_Alternating_Dumbbell_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Alternating_Cable_Shoulder_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Barbell_Shoulder_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Dumbbell_Shoulder_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Standing_Palms-In_Dumbbell_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Standing_Dumbbell_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Smith_Machine_Overhead_Shoulder_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Cable_Shoulder_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Seated_Dumbbell_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Seated_Cable_Shoulder_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Standing_Cable_Chest_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Cable_Chest_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Lying_Close-Grip_Barbell_Triceps_Press_To_Chin": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Wide-Grip_Decline_Barbell_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Decline_Barbell_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Decline_Dumbbell_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Decline_Smith_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Smith_Machine_Decline_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Pin_Presses": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "One_Arm_Floor_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Floor_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Dumbbell_Floor_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Lying_Triceps_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "EZ-Bar_Skullcrusher": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Barbell_Guillotine_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Barbell_Incline_Bench_Press_-_Medium_Grip": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Incline_Dumbbell_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Hammer_Grip_Incline_DB_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Incline_Dumbbell_Bench_With_Palms_Facing_In": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Smith_Machine_Incline_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Incline_Cable_Chest_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "JM_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "press-landmine-una-mano": {
+  "principales": [
+   "hombros",
+   "pecho"
+  ],
+  "secundarios": [
+   "triceps",
+   "oblicuos"
+  ]
+ },
+ "Standing_Military_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Seated_Barbell_Military_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Pallof_Press": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "Pallof_Press_With_Rotation": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "press-svend-disco": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Tate_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Standing_Barbell_Press_Behind_Neck": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Dumbbell_Lying_Pronation": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Barbell_Glute_Bridge": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Pull_Through": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares"
+  ]
+ },
+ "Bent-Arm_Barbell_Pullover": {
+  "principales": [
+   "dorsales",
+   "pecho"
+  ],
+  "secundarios": [
+   "triceps"
+  ]
+ },
+ "Bent-Arm_Dumbbell_Pullover": {
+  "principales": [
+   "dorsales",
+   "pecho"
+  ],
+  "secundarios": [
+   "triceps"
+  ]
+ },
+ "Straight-Arm_Dumbbell_Pullover": {
+  "principales": [
+   "dorsales",
+   "pecho"
+  ],
+  "secundarios": [
+   "triceps"
+  ]
+ },
+ "Wide-Grip_Decline_Barbell_Pullover": {
+  "principales": [
+   "dorsales",
+   "pecho"
+  ],
+  "secundarios": [
+   "triceps"
+  ]
+ },
+ "Push_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "cuadriceps",
+   "gluteos"
+  ]
+ },
+ "Push_Press_-_Behind_the_Neck": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "cuadriceps",
+   "gluteos"
+  ]
+ },
+ "Rack_Pulls": {
+  "principales": [
+   "lumbares",
+   "gluteos",
+   "trapecio"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Rack_Delivery": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio",
+   "antebrazos"
+  ]
+ },
+ "Dumbbell_One-Arm_Upright_Row": {
+  "principales": [
+   "hombros",
+   "trapecio"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "Smith_Machine_One-Arm_Upright_Row": {
+  "principales": [
+   "hombros",
+   "trapecio"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "Upright_Barbell_Row": {
+  "principales": [
+   "hombros",
+   "trapecio"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "Standing_Dumbbell_Upright_Row": {
+  "principales": [
+   "hombros",
+   "trapecio"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "Smith_Machine_Upright_Row": {
+  "principales": [
+   "hombros",
+   "trapecio"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "Upright_Cable_Row": {
+  "principales": [
+   "hombros",
+   "trapecio"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "Bent_Over_Barbell_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Reverse_Grip_Bent-Over_Rows": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Smith_Machine_Bent_Over_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Straight_Bar_Bench_Mid_Rows": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "One-Arm_Dumbbell_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "Dumbbell_Incline_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "Kneeling_Single-Arm_High_Pulley_Row": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "espalda_alta",
+   "biceps"
+  ]
+ },
+ "Kneeling_High_Pulley_Row": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "espalda_alta",
+   "biceps"
+  ]
+ },
+ "Seated_Cable_Rows": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "Seated_One-arm_Cable_Pulley_Rows": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "remo-polea-baja-agarre-ancho": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "Low_Pulley_Row_To_Neck": {
+  "principales": [
+   "hombros",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "trapecio",
+   "biceps"
+  ]
+ },
+ "Elevated_Cable_Rows": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "One-Arm_Long_Bar_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Bent_Over_One-Arm_Long_Bar_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Bent_Over_Two-Arm_Long_Bar_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "T-Bar_Row_with_Handle": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Shotgun_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "Bent_Over_Two-Dumbbell_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Bent_Over_Two-Dumbbell_Row_With_Palms_In": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "remo-meadows": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Barbell_Rear_Delt_Row": {
+  "principales": [
+   "hombros",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "dorsales",
+   "biceps"
+  ]
+ },
+ "Cable_Rope_Rear-Delt_Rows": {
+  "principales": [
+   "hombros",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "remo-pendlay": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Lying_Cambered_Barbell_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "Incline_Bench_Pull": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps"
+  ]
+ },
+ "Barbell_Ab_Rollout": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos",
+   "dorsales",
+   "pecho",
+   "lumbares",
+   "hombros"
+  ]
+ },
+ "Barbell_Ab_Rollout_-_On_Knees": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos",
+   "dorsales",
+   "pecho",
+   "lumbares",
+   "hombros"
+  ]
+ },
+ "Barbell_Rollout_from_Bench": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos",
+   "dorsales",
+   "pecho",
+   "gluteos",
+   "isquiotibiales",
+   "hombros"
+  ]
+ },
+ "External_Rotation": {
+  "principales": [
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "External_Rotation_with_Cable": {
+  "principales": [
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Cable_Internal_Rotation": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho",
+   "dorsales"
+  ]
+ },
+ "Wrist_Rotations_with_Straight_Bar": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Dumbbell_Squat_To_A_Bench": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "One_Leg_Barbell_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Box_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Speed_Box_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "sentadilla-bulgara-barra": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Split_Squat_with_Dumbbells": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Smith_Single-Leg_Split_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Barbell_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Barbell_Squat_To_A_Bench": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Dumbbell_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Kneeling_Squat": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "abdominales"
+  ]
+ },
+ "Smith_Machine_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Frankenstein_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales",
+   "abdominales"
+  ]
+ },
+ "Front_Barbell_Squat_To_A_Bench": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Front_Squat_Clean_Grip": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales",
+   "abdominales"
+  ]
+ },
+ "Front_Barbell_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "sentadilla-frontal-multipower": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abdominales"
+  ]
+ },
+ "sentadilla-goblet-mancuerna": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abdominales"
+  ]
+ },
+ "Barbell_Hack_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Jefferson_Squats": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "sentadilla-landmine": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abdominales"
+  ]
+ },
+ "Barbell_Side_Split_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Olympic_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Overhead_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales",
+   "abdominales",
+   "hombros",
+   "trapecio",
+   "triceps"
+  ]
+ },
+ "Narrow_Stance_Squats": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Smith_Machine_Pistol_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Barbell_Full_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Speed_Squats": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Weighted_Sissy_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": []
+ },
+ "Wide_Stance_Barbell_Squat": {
+  "principales": [
+   "cuadriceps",
+   "gluteos",
+   "aductores"
+  ],
+  "secundarios": [
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Plie_Dumbbell_Squat": {
+  "principales": [
+   "cuadriceps",
+   "gluteos",
+   "aductores"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abdominales"
+  ]
+ },
+ "Zercher_Squats": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Barbell_Step_Ups": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Dumbbell_Step_Ups": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Dumbbell_Lying_Supination": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "Snatch_Pull": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares",
+   "trapecio"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "gemelos",
+   "antebrazos"
+  ]
+ },
+ "Clean_Pull": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares",
+   "trapecio"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "gemelos",
+   "antebrazos"
+  ]
+ },
+ "Car_Drivers": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "antebrazos",
+   "oblicuos"
+  ]
+ },
+ "Around_The_Worlds": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Dumbbell_Rear_Lunge": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Elevated_Back_Lunge": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "zancada-lateral-mancuernas": {
+  "principales": [
+   "cuadriceps",
+   "aductores"
+  ],
+  "secundarios": [
+   "gluteos",
+   "abductores"
+  ]
+ },
+ "Barbell_Walking_Lunge": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Barbell_Lunge": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Dumbbell_Lunges": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "zancadas-multipower": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "3_4_Sit-Up": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "90_90_Hamstring": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Ab_Crunch_Machine": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Ab_Roller": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Adductor": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Adductor_Groin": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Advanced_Kettlebell_Windmill": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Air_Bike": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "All_Fours_Quad_Stretch": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Alternate_Heel_Touchers": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Alternate_Leg_Diagonal_Bound": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Alternating_Floor_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Alternating_Hang_Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Alternating_Kettlebell_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Alternating_Kettlebell_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Alternating_Renegade_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Ankle_Circles": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Ankle_On_The_Knee": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Anterior_Tibialis-SMR": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Arm_Circles": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Atlas_Stone_Trainer": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Atlas_Stones": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Axle_Deadlift": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Back_Flyes_-_With_Bands": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Backward_Drag": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Backward_Medicine_Ball_Throw": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Balance_Board": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Ball_Leg_Curl": {
+  "principales": [
+   "isquiotibiales"
+  ],
+  "secundarios": [
+   "gemelos"
+  ]
+ },
+ "Band_Assisted_Pull-Up": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Band_Good_Morning": {
+  "principales": [
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Band_Good_Morning_Pull_Through": {
+  "principales": [
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Band_Hip_Adductions": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Band_Pull_Apart": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Band_Skull_Crusher": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Battling_Ropes": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Bear_Crawl_Sled_Drags": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Behind_Head_Chest_Stretch": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Bench_Dips": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Bench_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Bench_Press_-_With_Bands": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Bench_Press_with_Chains": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Bench_Sprint": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Bent_Press": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Bent-Knee_Hip_Raise": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Bicycling": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Bicycling_Stationary": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Body_Tricep_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Body-Up": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Bodyweight_Flyes": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Bodyweight_Mid_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Bodyweight_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Bodyweight_Walking_Lunge": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Bosu_Ball_Cable_Crunch_With_Side_Bends": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Bottoms_Up": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Bottoms-Up_Clean_From_The_Hang_Position": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Box_Jump_Multiple_Response": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Box_Skip": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Box_Squat_with_Bands": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Box_Squat_with_Chains": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Brachialis-SMR": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Butt_Lift_Bridge": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Butt-Ups": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Butterfly": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Calf_Press": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Calf_Press_On_The_Leg_Press_Machine": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Calf_Raises_-_With_Bands": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Calf_Stretch_Elbows_Against_Wall": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Calf_Stretch_Hands_Against_Wall": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Calf-Machine_Shoulder_Shrug": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Calves-SMR": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Car_Deadlift": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "antebrazos"
+  ]
+ },
+ "Carioca_Quick_Step": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Cat_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Catch_and_Overhead_Throw": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Chain_Handle_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Chain_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Chair_Leg_Extended_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Chair_Lower_Back_Stretch": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Chair_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Chair_Upper_Body_Stretch": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Chest_And_Front_Of_Shoulder_Stretch": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Chest_Push_from_3_point_stance": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Chest_Push_multiple_response": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Chest_Push_single_response": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Chest_Push_with_Run_Release": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Chest_Stretch_on_Stability_Ball": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Childs_Pose": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Chin_To_Chest_Stretch": {
+  "principales": [
+   "cuello"
+  ],
+  "secundarios": []
+ },
+ "Chin-Up": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Circus_Bell": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Clock_Push-Up": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Close-Grip_EZ-Bar_Curl_with_Band": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Close-Grip_Push-Up_off_of_a_Dumbbell": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Cocoons": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Conans_Wheel": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "abdominales"
+  ]
+ },
+ "Cross_Over_-_With_Bands": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Cross-Body_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Crossover_Reverse_Lunge": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "lumbares",
+   "isquiotibiales",
+   "abdominales"
+  ]
+ },
+ "Crucifix": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Crunch_-_Hands_Overhead": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Crunch_-_Legs_On_Exercise_Ball": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Crunches": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "curl-femoral-tumbado-unilateral": {
+  "principales": [
+   "isquiotibiales"
+  ],
+  "secundarios": [
+   "gemelos"
+  ]
+ },
+ "Dancers_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Dead_Bug": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Deadlift_with_Bands": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Deadlift_with_Chains": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Decline_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Decline_Oblique_Crunch": {
+  "principales": [
+   "oblicuos",
+   "abdominales"
+  ],
+  "secundarios": []
+ },
+ "Decline_Push-Up": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Decline_Reverse_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Depth_Jump_Leap": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Dip_Machine": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Dips_-_Chest_Version": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Dips_-_Triceps_Version": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "dominadas-asistidas": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Donkey_Calf_Raises": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Double_Kettlebell_Alternating_Hang_Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Double_Kettlebell_Jerk": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Double_Kettlebell_Push_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "cuadriceps",
+   "gluteos"
+  ]
+ },
+ "Double_Kettlebell_Snatch": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "Double_Kettlebell_Windmill": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Double_Leg_Butt_Kick": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Downward_Facing_Balance": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Drop_Push": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Dumbbell_Seated_Box_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Dynamic_Back_Stretch": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Dynamic_Chest_Stretch": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Elbow_Circles": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Elbow_to_Knee": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Elbows_Back": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "elevaciones-laterales-maquina": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Elliptical_Trainer": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Exercise_Ball_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Exercise_Ball_Pull-In": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Extended_Range_One-Arm_Kettlebell_Floor_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "extension-lumbar-maquina": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "External_Rotation_with_Band": {
+  "principales": [
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Farmers_Walk": {
+  "principales": [
+   "antebrazos",
+   "trapecio"
+  ],
+  "secundarios": [
+   "oblicuos",
+   "abdominales",
+   "abductores",
+   "gluteos",
+   "cuadriceps"
+  ]
+ },
+ "Fast_Skipping": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Flat_Bench_Leg_Pull-In": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Flat_Bench_Lying_Leg_Raise": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Floor_Glute-Ham_Raise": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Floor_Press_with_Chains": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Flutter_Kicks": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "fondos-asistidos": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Foot-SMR": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Forward_Drag_with_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Freehand_Jump_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Frog_Hops": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Frog_Sit-Ups": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Front_Box_Jump": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Front_Cone_Hops_or_hurdle_hops": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Front_Leg_Raises": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho"
+  ]
+ },
+ "Front_Squats_With_Two_Kettlebells": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Gironda_Sternum_Chins": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Glute_Ham_Raise": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Glute_Kickback": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Goblet_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Gorilla_Chin_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Groin_and_Back_Stretch": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Groiners": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Hack_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Hamstring_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Hamstring-SMR": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Handstand_Push-Ups": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Hanging_Leg_Raise": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Hanging_Pike": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Heavy_Bag_Thrust": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Hip_Circles_prone": {
+  "principales": [
+   "abductores"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Hip_Extension_with_Bands": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Hip_Flexion_with_Band": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Hip_Lift_with_Band": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "hip-thrust-maquina": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Hug_A_Ball": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Hug_Knees_To_Chest": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Hurdle_Hops": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Hyperextensions_Back_Extensions": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Hyperextensions_With_No_Hyperextension_Bench": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Iliotibial_Tract-SMR": {
+  "principales": [
+   "abductores"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Inchworm": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Incline_Push-Up": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Incline_Push-Up_Close-Grip": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Incline_Push-Up_Depth_Jump": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Incline_Push-Up_Medium": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Incline_Push-Up_Reverse_Grip": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Incline_Push-Up_Wide": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Intermediate_Groin_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Intermediate_Hip_Flexor_and_Quad_Stretch": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Internal_Rotation_with_Band": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "pecho",
+   "dorsales"
+  ]
+ },
+ "Inverted_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Inverted_Row_with_Straps": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Iron_Crosses_stretch": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "Isometric_Chest_Squeezes": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Isometric_Neck_Exercise_-_Front_And_Back": {
+  "principales": [
+   "cuello"
+  ],
+  "secundarios": []
+ },
+ "Isometric_Neck_Exercise_-_Sides": {
+  "principales": [
+   "cuello"
+  ],
+  "secundarios": []
+ },
+ "Isometric_Wipers": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "IT_Band_and_Glute_Stretch": {
+  "principales": [
+   "abductores"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Jackknife_Sit-Up": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "jalon-maquina": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "Janda_Sit-Up": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Jogging_Treadmill": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Keg_Load": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Kettlebell_Arnold_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Kettlebell_Dead_Clean": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Kettlebell_Figure_8": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Kettlebell_Halo": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Kettlebell_Halo_With_Overhead_Extension": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Kettlebell_Hang_Clean": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "biceps"
+  ]
+ },
+ "Kettlebell_One-Legged_Deadlift": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "abductores",
+   "lumbares",
+   "aductores"
+  ]
+ },
+ "Kettlebell_Overhead_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Kettlebell_Pass_Between_The_Legs": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Kettlebell_Pirate_Ships": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Kettlebell_Pistol_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Kettlebell_Seated_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Kettlebell_Seesaw_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Kettlebell_Sumo_High_Pull": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Kettlebell_Thruster": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Kettlebell_Turkish_Get-Up_Lunge_style": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales",
+   "abdominales"
+  ]
+ },
+ "Kettlebell_Turkish_Get-Up_Squat_style": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales",
+   "abdominales"
+  ]
+ },
+ "Kettlebell_Windmill": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Kipping_Muscle_Up": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Knee_Across_The_Body": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Knee_Circles": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Knee_Hip_Raise_On_Parallel_Bars": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Knee_Tuck_Jump": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Kneeling_Arm_Drill": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Kneeling_Forearm_Stretch": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Kneeling_Hip_Flexor": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Kneeling_Jump_Squat": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Lateral_Bound": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Lateral_Box_Jump": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Lateral_Cone_Hops": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Lateral_Raise_-_With_Bands": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "Latissimus_Dorsi-SMR": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Leg_Extensions": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Leg_Lift": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Leg_Press": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Leg_Pull-In": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Leg-Over_Floor_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Leg-Up_Hamstring_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Leverage_Chest_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Leverage_Deadlift": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "antebrazos"
+  ]
+ },
+ "Leverage_Decline_Chest_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Leverage_High_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Leverage_Incline_Chest_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Leverage_Iso_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Leverage_Shoulder_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Leverage_Shrug": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Linear_3-Part_Start_Technique": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Linear_Acceleration_Wall_Drill": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Linear_Depth_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Log_Lift": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "London_Bridges": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Looking_At_Ceiling": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Lower_Back_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Lower_Back-SMR": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Lunge_Pass_Through": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Lunge_Sprint": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Lying_Bent_Leg_Groin": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Lying_Crossover": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Lying_Glute": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Lying_Hamstring": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Lying_Leg_Curls": {
+  "principales": [
+   "isquiotibiales"
+  ],
+  "secundarios": [
+   "gemelos"
+  ]
+ },
+ "Lying_Machine_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Lying_Prone_Quadriceps": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Lying_T-Bar_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Machine_Bench_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Machine_Bicep_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Machine_Preacher_Curls": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Machine_Shoulder_Military_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Machine_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Medicine_Ball_Chest_Pass": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Medicine_Ball_Full_Twist": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales",
+   "hombros"
+  ]
+ },
+ "Medicine_Ball_Scoop_Throw": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Middle_Back_Stretch": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Mixed_Grip_Chin": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Monster_Walk": {
+  "principales": [
+   "abductores"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Mountain_Climbers": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Moving_Claw_Series": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Muscle_Up": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Narrow_Stance_Hack_Squats": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Narrow_Stance_Leg_Press": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Natural_Glute_Ham_Raise": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Neck-SMR": {
+  "principales": [
+   "cuello"
+  ],
+  "secundarios": []
+ },
+ "Oblique_Crunches": {
+  "principales": [
+   "oblicuos",
+   "abdominales"
+  ],
+  "secundarios": []
+ },
+ "Oblique_Crunches_-_On_The_Floor": {
+  "principales": [
+   "oblicuos",
+   "abdominales"
+  ],
+  "secundarios": []
+ },
+ "On_Your_Side_Quad_Stretch": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "On-Your-Back_Quad_Stretch": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "One_Arm_Against_Wall": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "One_Arm_Chin-Up": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "One_Half_Locust": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abdominales"
+  ]
+ },
+ "One_Handed_Hang": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "One_Knee_To_Chest": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "One-Arm_Kettlebell_Clean": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "One-Arm_Kettlebell_Clean_and_Jerk": {
+  "principales": [
+   "hombros",
+   "cuadriceps",
+   "gluteos",
+   "trapecio"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "triceps",
+   "gemelos",
+   "pecho"
+  ]
+ },
+ "One-Arm_Kettlebell_Floor_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "One-Arm_Kettlebell_Jerk": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "One-Arm_Kettlebell_Military_Press_To_The_Side": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "One-Arm_Kettlebell_Para_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "One-Arm_Kettlebell_Push_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "cuadriceps",
+   "gluteos"
+  ]
+ },
+ "One-Arm_Kettlebell_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "One-Arm_Kettlebell_Snatch": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "One-Arm_Kettlebell_Split_Jerk": {
+  "principales": [
+   "hombros",
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho",
+   "isquiotibiales",
+   "gemelos"
+  ]
+ },
+ "One-Arm_Kettlebell_Split_Snatch": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "cuadriceps",
+   "trapecio"
+  ],
+  "secundarios": [
+   "lumbares",
+   "gemelos",
+   "hombros",
+   "antebrazos",
+   "espalda_alta",
+   "triceps"
+  ]
+ },
+ "One-Arm_Kettlebell_Swings": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "One-Arm_Medicine_Ball_Slam": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "One-Arm_Open_Palm_Kettlebell_Clean": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "One-Arm_Overhead_Kettlebell_Squats": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales",
+   "hombros",
+   "trapecio",
+   "triceps"
+  ]
+ },
+ "Open_Palm_Kettlebell_Clean": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Otis-Up": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Overhead_Lat": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Overhead_Slam": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Overhead_Stretch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Overhead_Triceps": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Parallel_Bar_Dip": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "patada-gluteo-maquina": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Pelvic_Tilt_Into_Bridge": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Peroneals_Stretch": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Peroneals-SMR": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Physioball_Hip_Bridge": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Piriformis-SMR": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Plank": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Platform_Hamstring_Slides": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Plyo_Kettlebell_Pushups": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Plyo_Push-up": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Posterior_Tibialis_Stretch": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Power_Stairs": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "prensa-horizontal": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "press-pecho-convergente": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Prone_Manual_Hamstring": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Prowler_Sprint": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Pullups": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Push_Up_to_Side_Plank": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Push-Up_Wide": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Push-Ups_-_Close_Triceps_Position": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Push-Ups_With_Feet_Elevated": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Push-Ups_With_Feet_On_An_Exercise_Ball": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Pushups": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Pushups_Close_and_Wide_Hand_Positions": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Pyramid": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Quad_Stretch": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Quadriceps-SMR": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Quick_Leap": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Rack_Pull_with_Bands": {
+  "principales": [
+   "lumbares",
+   "gluteos",
+   "trapecio"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Rear_Leg_Raises": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Recumbent_Bike": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "remo-pecho-apoyado-maquina": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Return_Push_from_Stance": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Reverse_Band_Bench_Press": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": [
+   "pecho",
+   "hombros"
+  ]
+ },
+ "Reverse_Band_Box_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Reverse_Band_Deadlift": {
+  "principales": [
+   "gluteos",
+   "isquiotibiales",
+   "lumbares"
+  ],
+  "secundarios": [
+   "cuadriceps",
+   "aductores",
+   "trapecio",
+   "dorsales",
+   "antebrazos"
+  ]
+ },
+ "Reverse_Band_Power_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Reverse_Band_Sumo_Deadlift": {
+  "principales": [
+   "gluteos",
+   "aductores",
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "trapecio",
+   "antebrazos"
+  ]
+ },
+ "Reverse_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Reverse_Hyperextension": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Reverse_Machine_Flyes": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Rhomboids-SMR": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Rickshaw_Carry": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Rickshaw_Deadlift": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "antebrazos"
+  ]
+ },
+ "Ring_Dips": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Rocket_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Rocky_Pull-Ups_Pulldowns": {
+  "principales": [
+   "dorsales"
+  ],
+  "secundarios": [
+   "biceps",
+   "espalda_alta",
+   "hombros"
+  ]
+ },
+ "Rope_Climb": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Rope_Jumping": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "rotacion-tronco-maquina": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Round_The_World_Shoulder_Stretch": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Rowing_Stationary": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Runners_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Running_Treadmill": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Russian_Twist": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales",
+   "lumbares"
+  ]
+ },
+ "Sandbag_Load": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales",
+   "abdominales"
+  ]
+ },
+ "Scapular_Pull-Up": {
+  "principales": [
+   "trapecio"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Scissor_Kick": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Scissors_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Seated_Band_Hamstring_Curl": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Seated_Biceps": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Seated_Calf_Raise": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Seated_Calf_Stretch": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Seated_Flat_Bench_Leg_Pull-In": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Seated_Floor_Hamstring_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Seated_Front_Deltoid": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Seated_Glute": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Seated_Hamstring": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Seated_Hamstring_and_Calf_Stretch": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Seated_Head_Harness_Neck_Resistance": {
+  "principales": [
+   "cuello"
+  ],
+  "secundarios": []
+ },
+ "Seated_Leg_Curl": {
+  "principales": [
+   "isquiotibiales"
+  ],
+  "secundarios": [
+   "gemelos"
+  ]
+ },
+ "Seated_Leg_Tucks": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Seated_Overhead_Stretch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "sentadilla-pendulo": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Shoulder_Circles": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Shoulder_Press_-_With_Bands": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Shoulder_Raise": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Shoulder_Stretch": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Side_Bridge": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Side_Hop-Sprint": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Side_Jackknife": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Side_Leg_Raises": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Side_Lying_Groin_Stretch": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Side_Neck_Stretch": {
+  "principales": [
+   "cuello"
+  ],
+  "secundarios": []
+ },
+ "Side_Standing_Long_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Side_to_Side_Box_Shuffle": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Side_To_Side_Chins": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Side_Wrist_Pull": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "trapecio"
+  ]
+ },
+ "Side-Lying_Floor_Stretch": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Single_Leg_Butt_Kick": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Single_Leg_Glute_Bridge": {
+  "principales": [
+   "gluteos"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "abductores",
+   "aductores"
+  ]
+ },
+ "Single_Leg_Push-off": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Single-Arm_Push-Up": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Single-Cone_Sprint_Drill": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Single-Leg_High_Box_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Single-Leg_Hop_Progression": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Single-Leg_Lateral_Hop": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Single-Leg_Leg_Extension": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Single-Leg_Stride_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Sit_Squats": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Sit-Up": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Skating": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Sled_Drag_-_Harness": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Sled_Overhead_Backward_Walk": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Sled_Overhead_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Sled_Push": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Sled_Reverse_Flye": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "espalda_alta"
+  ]
+ },
+ "Sled_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Sledgehammer_Swings": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Smith_Machine_Reverse_Calf_Raises": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Speed_Band_Overhead_Triceps": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Spider_Crawl": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Spinal_Stretch": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Split_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Split_Squats": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Squat_with_Bands": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Squat_with_Chains": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Squat_with_Plate_Movers": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Squats_-_With_Bands": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Stairmaster": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Standing_Biceps_Stretch": {
+  "principales": [
+   "biceps"
+  ],
+  "secundarios": [
+   "antebrazos"
+  ]
+ },
+ "Standing_Calf_Raises": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Standing_Elevated_Quad_Stretch": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Standing_Gastrocnemius_Calf_Stretch": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Standing_Hamstring_and_Calf_Stretch": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Standing_Hip_Circles": {
+  "principales": [
+   "abductores"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Standing_Hip_Flexors": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores"
+  ]
+ },
+ "Standing_Lateral_Stretch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Standing_Leg_Curl": {
+  "principales": [
+   "isquiotibiales"
+  ],
+  "secundarios": [
+   "gemelos"
+  ]
+ },
+ "Standing_Long_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Standing_Pelvic_Tilt": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Standing_Soleus_And_Achilles_Stretch": {
+  "principales": [
+   "gemelos"
+  ],
+  "secundarios": []
+ },
+ "Standing_Toe_Touches": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Standing_Towel_Triceps_Extension": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Standing_Two-Arm_Overhead_Throw": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Star_Jump": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Step_Mill": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Step-up_with_Knee_Raise": {
+  "principales": [
+   "cuadriceps",
+   "gluteos"
+  ],
+  "secundarios": [
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Stomach_Vacuum": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Stride_Jump_Crossover": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "Sumo_Deadlift_with_Bands": {
+  "principales": [
+   "gluteos",
+   "aductores",
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "trapecio",
+   "antebrazos"
+  ]
+ },
+ "Sumo_Deadlift_with_Chains": {
+  "principales": [
+   "gluteos",
+   "aductores",
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "isquiotibiales",
+   "lumbares",
+   "trapecio",
+   "antebrazos"
+  ]
+ },
+ "Superman": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Supine_Chest_Throw": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Supine_One-Arm_Overhead_Throw": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Supine_Two-Arm_Overhead_Throw": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Suspended_Fallout": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Suspended_Push-Up": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros",
+   "triceps"
+  ]
+ },
+ "Suspended_Reverse_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Suspended_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Suspended_Split_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "abductores",
+   "isquiotibiales"
+  ]
+ },
+ "Svend_Press": {
+  "principales": [
+   "pecho"
+  ],
+  "secundarios": [
+   "hombros"
+  ]
+ },
+ "The_Straddle": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Thigh_Abductor": {
+  "principales": [
+   "abductores"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Thigh_Adductor": {
+  "principales": [
+   "aductores"
+  ],
+  "secundarios": []
+ },
+ "Tire_Flip": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Toe_Touchers": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Torso_Rotation": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Trail_Running_Walking": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Tricep_Side_Stretch": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Triceps_Stretch": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Tuck_Crunch": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Two-Arm_Kettlebell_Clean": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Two-Arm_Kettlebell_Jerk": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Two-Arm_Kettlebell_Military_Press": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "Two-Arm_Kettlebell_Row": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Upper_Back_Stretch": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Upper_Back-Leg_Grab": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Upright_Row_-_With_Bands": {
+  "principales": [
+   "hombros",
+   "trapecio"
+  ],
+  "secundarios": [
+   "biceps"
+  ]
+ },
+ "Upward_Stretch": {
+  "principales": [
+   "hombros"
+  ],
+  "secundarios": [
+   "triceps",
+   "trapecio",
+   "pecho"
+  ]
+ },
+ "V-Bar_Pullup": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Vertical_Swing": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Walking_Treadmill": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Weighted_Ball_Hyperextension": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Weighted_Ball_Side_Bend": {
+  "principales": [
+   "oblicuos"
+  ],
+  "secundarios": [
+   "abdominales"
+  ]
+ },
+ "Weighted_Bench_Dip": {
+  "principales": [
+   "triceps"
+  ],
+  "secundarios": []
+ },
+ "Weighted_Crunches": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Weighted_Jump_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales"
+  ]
+ },
+ "Weighted_Pull_Ups": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Weighted_Sit-Ups_-_With_Bands": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Weighted_Squat": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "isquiotibiales"
+  ]
+ },
+ "Wide-Grip_Rear_Pull-Up": {
+  "principales": [
+   "dorsales",
+   "espalda_alta"
+  ],
+  "secundarios": [
+   "hombros",
+   "biceps",
+   "lumbares"
+  ]
+ },
+ "Wind_Sprints": {
+  "principales": [
+   "abdominales"
+  ],
+  "secundarios": [
+   "oblicuos"
+  ]
+ },
+ "Windmills": {
+  "principales": [
+   "abductores"
+  ],
+  "secundarios": [
+   "gluteos"
+  ]
+ },
+ "Worlds_Greatest_Stretch": {
+  "principales": [
+   "isquiotibiales",
+   "gluteos"
+  ],
+  "secundarios": [
+   "lumbares",
+   "aductores",
+   "antebrazos"
+  ]
+ },
+ "Wrist_Circles": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Wrist_Roller": {
+  "principales": [
+   "antebrazos"
+  ],
+  "secundarios": []
+ },
+ "Yoke_Walk": {
+  "principales": [
+   "cuadriceps"
+  ],
+  "secundarios": [
+   "gluteos",
+   "aductores",
+   "lumbares",
+   "isquiotibiales",
+   "abdominales"
+  ]
+ }
+}

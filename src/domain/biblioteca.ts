@@ -61,23 +61,7 @@ export function equivalenteMasParecido<T extends Comparable>(retirado: Comparabl
   return mejor
 }
 
-const MUSCULOS_GRANDES: readonly Musculo[] = [
-  'pectoral_clavicular',
-  'pectoral_esternal',
-  'pectoral_costal',
-  'dorsal_ancho',
-  'romboides',
-  'trapecio_medio',
-  'deltoides_anterior',
-  'recto_femoral',
-  'vasto_lateral',
-  'vasto_medial',
-  'biceps_femoral',
-  'semitendinoso',
-  'semimembranoso',
-  'gluteo_mayor',
-  'erectores_espinales',
-]
+const MUSCULOS_GRANDES: readonly Musculo[] = ['pecho', 'dorsales', 'espalda_alta', 'hombros', 'cuadriceps', 'isquiotibiales', 'gluteos', 'lumbares']
 const MATERIAL_PESADO: readonly Material[] = ['barra', 'barra_z', 'barra_hexagonal', 'landmine', 'mancuernas', 'multipower', 'maquina', 'kettlebell']
 
 /** Compuesto grande: multiarticular, de un grupo grande y con carga importante (sentadilla, press de banca, remo…). */

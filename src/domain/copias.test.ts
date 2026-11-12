@@ -31,15 +31,22 @@ describe('copias de versiones anteriores', () => {
     expect(validarCopia({ app: 'ferro', version: 1, esquema: ESQUEMA_ACTUAL + 1, datos: {} }).ok).toBe(false)
   })
 
-  it('una copia de la PWA 0.2.0 (sin esquema) se reconoce como esquema 2 y sus músculos pasan a la división completa', () => {
+  it('una copia de la PWA 0.2.0 (sin esquema) se reconoce como esquema 2 y sus músculos pasan a los grupos', () => {
     const ejercicio = { id: 'Dumbbell_Flyes', musculosPrincipales: ['pecho'], musculosSecundarios: ['hombros'] } as { id: string }
     const copia: Copia = { app: 'ferro', version: 1, exportado: '', datos: { ...vacio(), ejercicios: [ejercicio] } }
     expect(esquemaDeCopia(copia)).toBe(2)
     const m = migrarCopia(copia)
-    expect(m.esquema).toBe(5)
-    expect(m.datos.ejercicios).toEqual([
-      { id: 'Dumbbell_Flyes', musculosPrincipales: ['pectoral_esternal'], musculosSecundarios: ['pectoral_clavicular', 'pectoral_costal', 'deltoides_anterior'] },
-    ])
+    expect(m.esquema).toBe(7)
+    expect(m.datos.ejercicios).toEqual([{ id: 'Dumbbell_Flyes', musculosPrincipales: ['pecho'], musculosSecundarios: ['hombros'] }])
+  })
+
+  it('una copia de la ronda 4 (esquema 6) agrupa los músculos y no toca nada más', () => {
+    const ejercicio = { id: 'mio', musculosPrincipales: ['vasto_lateral', 'vasto_medial'], musculosSecundarios: ['gluteo_mayor', 'gluteo_medio'], notasFijas: 'pies juntos' } as { id: string }
+    const copia: Copia = { app: 'ferro', version: 1, esquema: 6, exportado: '', datos: { ...vacio(), ejercicios: [ejercicio], pesosCorporales: [{ id: 'p', kg: 78 } as { id: string }] } }
+    const m = migrarCopia(copia)
+    expect(m.esquema).toBe(7)
+    expect(m.datos.ejercicios).toEqual([{ id: 'mio', musculosPrincipales: ['cuadriceps'], musculosSecundarios: ['gluteos', 'abductores'], notasFijas: 'pies juntos' }])
+    expect(m.datos.pesosCorporales).toEqual([{ id: 'p', kg: 78 }])
   })
 
   it('una copia del esquema actual no se toca', () => {
@@ -63,8 +70,8 @@ describe('copias de versiones anteriores', () => {
     }
     expect(esquemaDeCopia(copia)).toBe(1)
     const m = migrarCopia(copia)
-    expect(m.esquema).toBe(5)
-    expect(m.datos.ejercicios).toMatchObject([{ id: 'Barbell_Bench_Press_-_Medium_Grip', notasFijas: 'Banco 3', musculosPrincipales: ['pectoral_esternal'] }])
+    expect(m.esquema).toBe(7)
+    expect(m.datos.ejercicios).toMatchObject([{ id: 'Barbell_Bench_Press_-_Medium_Grip', notasFijas: 'Banco 3', musculosPrincipales: ['pecho'] }])
     expect(m.datos.rutinaEjercicios).toEqual([{ id: 're', ejercicioId: 'Barbell_Bench_Press_-_Medium_Grip' }])
     expect(m.datos.series).toEqual([{ id: 'x', ejercicioId: 'Barbell_Bench_Press_-_Medium_Grip', peso: 80 }])
     expect(m.datos.pesosCorporales).toEqual([{ id: 'p', kg: 78 }])

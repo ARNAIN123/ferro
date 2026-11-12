@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import type { TrabajoMuscular } from '../../domain/mapaMuscular'
-import { debajoDe, ENCIMA_DE, esProfundo, hermanos, INFO_MUSCULO, PROFUNDOS, rutaDe } from '../../domain/musculos'
+import { INFO_MUSCULO } from '../../domain/musculos'
 import type { Musculo } from '../../domain/tipos'
 import { fmtKg, plural } from '../../lib/formato'
-import { EnlacesMusculos } from './EnlacesMusculos'
 import { LeyendaMapa, MapaMuscular } from './MapaMuscular'
 
 interface Props {
@@ -45,39 +44,19 @@ interface PropsFicha {
   alElegir: (m: Musculo | null) => void
 }
 
-/**
- * Ficha de un músculo: el grupo y el músculo al que pertenece, sus series en el periodo y los
- * ejercicios que lo han trabajado. Desde ella se pasa a sus otras porciones y a los músculos
- * profundos que tiene debajo (o a los que tiene encima, si es profundo).
- */
+/** Ficha de un músculo: sus series en el periodo y los ejercicios que lo han trabajado. */
 export function FichaMusculo({ sel, trabajo, nombres, periodo, alElegir }: PropsFicha) {
   const t = sel ? trabajo.get(sel) : undefined
-  const series = (m: Musculo) => trabajo.get(m)?.series ?? 0
-  const enlaces = (titulo: string, lista: readonly Musculo[]) => (
-    <EnlacesMusculos titulo={titulo} lista={lista} alElegir={alElegir} detalle={(m) => series(m) > 0 && <span className="num ml-1 text-accent">{fmtKg(series(m))}</span>} />
-  )
 
   return (
     <div className="mt-3 min-h-16 rounded-2xl bg-surface-2 px-4 py-3" aria-live="polite">
       {!sel ? (
-        <>
-          <p className="text-sm text-muted">Toca un músculo para ver su ficha: sus series y qué ejercicios lo han trabajado.</p>
-          {enlaces('Profundos:', PROFUNDOS)}
-        </>
+        <p className="text-sm text-muted">Toca un músculo para ver su ficha: sus series y qué ejercicios lo han trabajado.</p>
       ) : (
         <>
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-xs font-semibold tracking-wide text-muted uppercase">
-              {rutaDe(sel)}
-              {esProfundo(sel) && ' · profundo'}
-            </p>
-            <button type="button" onClick={() => alElegir(null)} aria-label="Cerrar la ficha" className="-mt-2 -mr-2 grid size-9 shrink-0 place-items-center rounded-full text-lg leading-none text-muted active:bg-surface">
-              ×
-            </button>
-          </div>
-          <p className="mt-0.5 flex items-baseline justify-between gap-2">
+          <p className="flex items-baseline justify-between gap-2">
             <span className="font-bold">{INFO_MUSCULO[sel].nombre}</span>
-            <span className="shrink-0 text-sm text-muted">
+            <span className="ml-auto shrink-0 text-sm text-muted">
               {t ? (
                 <>
                   <span className="num text-lg text-fg">{fmtKg(t.series)}</span> {plural(t.series, 'serie')} {periodo}
@@ -86,6 +65,9 @@ export function FichaMusculo({ sel, trabajo, nombres, periodo, alElegir }: Props
                 `Sin trabajar ${periodo}`
               )}
             </span>
+            <button type="button" onClick={() => alElegir(null)} aria-label="Cerrar la ficha" className="-my-2 -mr-2 grid size-9 shrink-0 place-items-center rounded-full text-lg leading-none text-muted active:bg-surface">
+              ×
+            </button>
           </p>
           {t && (
             <ul className="mt-1.5 space-y-0.5 text-sm">
@@ -99,9 +81,6 @@ export function FichaMusculo({ sel, trabajo, nombres, periodo, alElegir }: Props
                 ))}
             </ul>
           )}
-          {enlaces(`${INFO_MUSCULO[sel].musculo ?? 'También'}:`, hermanos(sel))}
-          {enlaces('Debajo:', debajoDe(sel))}
-          {esProfundo(sel) && enlaces('Encima:', ENCIMA_DE[sel] ?? [])}
         </>
       )}
     </div>

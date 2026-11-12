@@ -1,9 +1,8 @@
 // Escena de un ejercicio en three.js puro (sin React): la usan el visor 3D y las miniaturas.
-import { BufferAttribute, Color, DoubleSide, Group, MeshStandardMaterial, Object3D, Quaternion, SkinnedMesh, Vector3, Vector4, type BufferGeometry } from 'three'
+import { BufferAttribute, Color, Group, MeshStandardMaterial, Object3D, Quaternion, Vector3, Vector4, type BufferGeometry, type SkinnedMesh } from 'three'
 import { clone as clonarConEsqueleto } from 'three/examples/jsm/utils/SkeletonUtils.js'
-import { aspectoDeNivel, idDeCanal, type RGB } from '../domain/cuerpo3d'
-import { PROFUNDOS } from '../domain/musculos'
-import { MUSCULOS, type Musculo } from '../domain/tipos'
+import { aspectoDeNivel, idDeCanal, NUM_REGIONES, porRegion, type RGB } from '../domain/cuerpo3d'
+import type { Musculo } from '../domain/tipos'
 import { enConcentrica, momento, type AgarrePolea, type Definicion3D, type EstadoMaterial } from './ejercicios'
 import { interpolar } from './ik'
 import {
@@ -29,69 +28,47 @@ import {
 } from './material'
 import { Rig } from './rig'
 
-/** Región, oclusión y marca de músculo profundo de cada vértice (del canal de color del modelo), una vez por geometría. */
+/** Región y oclusión de cada vértice (del canal de color del modelo), una vez por geometría. */
 function prepararGeometria(g: BufferGeometry): void {
   if (g.getAttribute('region')) return
   const datos = g.getAttribute('color')
   const n = g.getAttribute('position').count
   const region = new Float32Array(n)
   const oclusion = new Float32Array(n)
-  const marca = new Float32Array(n)
   for (let i = 0; i < n; i++) {
     region[i] = idDeCanal(datos.getX(i))
     oclusion[i] = datos.getY(i)
-    marca[i] = idDeCanal(datos.getZ(i))
   }
   g.setAttribute('region', new BufferAttribute(region, 1))
   g.setAttribute('oclusion', new BufferAttribute(oclusion, 1))
-  g.setAttribute('marca', new BufferAttribute(marca, 1))
 }
 
-const REGIONES = MUSCULOS.length + 1
+const REGIONES = NUM_REGIONES + 1
 
-/** Opacidad de la piel sobre un músculo profundo del ejercicio: principal o secundario. */
-const OPACIDAD_SOBRE = { principal: 0.35, secundario: 0.6 } as const
-
-/**
- * Material de arcilla con un color y un brillo por región que se cambian en la GPU. Si el ejercicio
- * trabaja algún músculo profundo (`conVentana`), la piel que tiene encima se dibuja aparte y
- * translúcida (`velo`), y por esa ventana se ve el interior del cuerpo, más oscuro, y el músculo.
- */
-function materialPorRegiones(conVentana: boolean) {
+/** Material de arcilla con un color y un brillo por región que se cambian en la GPU. */
+function materialPorRegiones() {
   // Por región: color (rgb) y brillo (a).
   const regiones = Array.from({ length: REGIONES }, () => new Vector4())
-  const sobre = { value: PROFUNDOS.map(() => 1) }
   const acento = { value: new Color() }
-  const crear = (esVelo: boolean) => {
-    const m = new MeshStandardMaterial({ roughness: 0.85, metalness: 0, envMapIntensity: 0.1, transparent: esVelo, depthWrite: !esVelo })
-    if (conVentana && !esVelo) m.side = DoubleSide
-    m.onBeforeCompile = (s) => {
-      s.uniforms.uRegiones = { value: regiones }
-      s.uniforms.uSobre = sobre
-      s.uniforms.uAcento = acento
-      s.vertexShader = s.vertexShader
-        .replace(
-          '#include <common>',
-          `#include <common>\nattribute float region;\nattribute float oclusion;\nattribute float marca;\nuniform vec4 uRegiones[${REGIONES}];\nuniform float uSobre[${PROFUNDOS.length}];\nvarying vec3 vBase;\nvarying float vBrillo;\nvarying float vOpacidad;`,
-        )
-        .replace(
-          '#include <begin_vertex>',
-          '#include <begin_vertex>\nvec4 deRegion = uRegiones[int(region + 0.5)];\nvBase = deRegion.rgb * (0.55 + 0.45 * pow(clamp(oclusion, 0.0, 1.0), 1.5));\nvBrillo = deRegion.a;\nint profundo = int(marca + 0.5);\nvOpacidad = profundo > 0 ? uSobre[profundo - 1] : 1.0;',
-        )
-      const ventana = !conVentana ? '' : esVelo ? '\nif (vOpacidad >= 0.995) discard;\ndiffuseColor.a *= vOpacidad;' : '\nif (vOpacidad < 0.995) discard;\nif (!gl_FrontFacing) diffuseColor.rgb *= 0.72;'
-      s.fragmentShader = s.fragmentShader
-        .replace('#include <common>', '#include <common>\nuniform vec3 uAcento;\nvarying vec3 vBase;\nvarying float vBrillo;\nvarying float vOpacidad;')
-        .replace('#include <color_fragment>', `#include <color_fragment>\ndiffuseColor.rgb *= vBase;${ventana}`)
-        .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += uAcento * vBrillo;')
-    }
-    return m
+  const material = new MeshStandardMaterial({ roughness: 0.85, metalness: 0, envMapIntensity: 0.1 })
+  material.onBeforeCompile = (s) => {
+    s.uniforms.uRegiones = { value: regiones }
+    s.uniforms.uAcento = acento
+    s.vertexShader = s.vertexShader
+      .replace('#include <common>', `#include <common>\nattribute float region;\nattribute float oclusion;\nuniform vec4 uRegiones[${REGIONES}];\nvarying vec3 vBase;\nvarying float vBrillo;`)
+      .replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\nvec4 deRegion = uRegiones[int(region + 0.5)];\nvBase = deRegion.rgb * (0.55 + 0.45 * pow(clamp(oclusion, 0.0, 1.0), 1.5));\nvBrillo = deRegion.a;',
+      )
+    s.fragmentShader = s.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform vec3 uAcento;\nvarying vec3 vBase;\nvarying float vBrillo;')
+      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= vBase;')
+      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += uAcento * vBrillo;')
   }
   return {
-    material: crear(false),
-    velo: conVentana ? crear(true) : null,
-    pintar: (porRegion: readonly { color: RGB; brillo: number }[], acentoRGB: RGB, opacidadSobre: readonly number[]) => {
-      porRegion.forEach((a, i) => regiones[i]!.set(a.color[0], a.color[1], a.color[2], a.brillo))
-      sobre.value = [...opacidadSobre]
+    material,
+    pintar: (deRegion: readonly { color: RGB; brillo: number }[], acentoRGB: RGB) => {
+      deRegion.forEach((a, i) => regiones[i]!.set(a.color[0], a.color[1], a.color[2], a.brillo))
       acento.value.setRGB(acentoRGB[0], acentoRGB[1], acentoRGB[2])
     },
   }
@@ -129,9 +106,7 @@ export class EscenaEjercicio {
     this.musculos = musculos
     this.colores = colores
     const cuerpo = clonarConEsqueleto(modelo)
-    const profundos = [...musculos.principales, ...musculos.secundarios].filter((m) => PROFUNDOS.includes(m))
-    this.pintor = materialPorRegiones(profundos.length > 0)
-    const mallas: SkinnedMesh[] = []
+    this.pintor = materialPorRegiones()
     cuerpo.traverse((o) => {
       const m = o as SkinnedMesh
       if (m.isSkinnedMesh || (m as unknown as { isMesh?: boolean }).isMesh) {
@@ -139,22 +114,8 @@ export class EscenaEjercicio {
         m.material = this.pintor.material
         // Los huesos se mueven lejos de su postura de reposo: que three.js no lo recorte.
         m.frustumCulled = false
-        if (m.isSkinnedMesh) mallas.push(m)
       }
     })
-    // La piel translúcida sobre los músculos profundos del ejercicio: la misma malla, con el mismo
-    // esqueleto, dibujada después.
-    if (this.pintor.velo)
-      for (const m of mallas) {
-        const velo = new SkinnedMesh(m.geometry, this.pintor.velo)
-        velo.bind(m.skeleton, m.bindMatrix)
-        velo.position.copy(m.position)
-        velo.quaternion.copy(m.quaternion)
-        velo.scale.copy(m.scale)
-        velo.frustumCulled = false
-        velo.renderOrder = 1
-        m.parent?.add(velo)
-      }
     this.raiz.add(cuerpo)
     this.rig = new Rig(cuerpo)
     this.def.preparar?.(this.rig)
@@ -281,14 +242,11 @@ export class EscenaEjercicio {
     if (this.ultimoConcentrico === concentrico) return
     this.ultimoConcentrico = concentrico
     const { arcilla, acento } = this.colores
-    const porRegion = [aspectoDeNivel(0, arcilla, acento)]
-    for (const m of MUSCULOS) {
-      if (this.musculos.principales.includes(m)) porRegion.push(aspectoDeNivel(concentrico ? 5 : 4, arcilla, acento))
-      else if (this.musculos.secundarios.includes(m)) porRegion.push(aspectoDeNivel(2, arcilla, acento))
-      else porRegion.push(aspectoDeNivel(0, arcilla, acento))
-    }
-    const sobre = PROFUNDOS.map((m) => (this.musculos.principales.includes(m) ? OPACIDAD_SOBRE.principal : this.musculos.secundarios.includes(m) ? OPACIDAD_SOBRE.secundario : 1))
-    this.pintor.pintar(porRegion, acento, sobre)
+    const nivel = (m: Musculo | null) => (!m ? 0 : this.musculos.principales.includes(m) ? (concentrico ? 5 : 4) : this.musculos.secundarios.includes(m) ? 2 : 0)
+    this.pintor.pintar(
+      porRegion((m) => aspectoDeNivel(nivel(m), arcilla, acento)),
+      acento,
+    )
   }
 
   cambiarColores(colores: { arcilla: RGB; acento: RGB }): void {

@@ -7,8 +7,6 @@ import { crearEjercicio } from '../../db/ejercicios'
 import { NOMBRE_MATERIAL, NOMBRE_MUSCULO } from '../../domain/etiquetas'
 import { MATERIALES_BIBLIOTECA, type Material, type Musculo } from '../../domain/tipos'
 import { nombresDeMusculos } from '../../domain/musculos'
-import { EnlacesMusculos } from '../../components/mapa/EnlacesMusculos'
-import { PROFUNDOS } from '../../domain/musculos'
 
 type Papel = 'principal' | 'secundario'
 
@@ -74,13 +72,6 @@ export function NuevoEjercicioPage() {
               onTocar={tocar}
               describir={(m) => `${NOMBRE_MUSCULO[m]}: ${musculos.get(m) ?? 'sin marcar'}`}
               className="h-80"
-            />
-            <EnlacesMusculos
-              titulo="Profundos:"
-              lista={PROFUNDOS}
-              alElegir={tocar}
-              activo={(m) => musculos.has(m)}
-              detalle={(m) => musculos.get(m) && <span className="ml-1 text-muted">({musculos.get(m)})</span>}
             />
           </div>
           <p className="mt-2 text-sm">

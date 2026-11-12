@@ -1,2 +1,2 @@
 // Generado por scripts/generar-catalogo.mjs. No editar a mano.
-export const VERSION_CATALOGO = 'ebe8b69100b6'
+export const VERSION_CATALOGO = 'f9e458b4ad6c'
