@@ -2,8 +2,9 @@ import { readFileSync } from 'node:fs'
 import { BufferAttribute, BufferGeometry, MeshBasicMaterial, Quaternion, SkinnedMesh, Vector3 } from 'three'
 import { describe, expect, it } from 'vitest'
 import type { DatosCuerpo } from '../domain/cuerpo'
+import { REGIONES_MODELO } from '../domain/musculos'
 import { aplicarPostura, crearEsqueleto, ponerEnReposo } from './esqueleto'
-import { difuminar, reducir } from './mapaColor'
+import { difuminar, fuerzaRelieve, reducir } from './mapaColor'
 import { modeloDesdeGlb, PARTES, type InfoAvatar } from './modelo'
 import { posturaRelajada, RESPIRACION_S, respirar } from './postura'
 import { resolverForma } from './resolver'
@@ -97,6 +98,25 @@ describe('postura relajada del avatar', () => {
     }
   })
 
+  it('puños cerrados que apuntan hacia dentro, con el pulgar por fuera', () => {
+    for (const d of CUERPOS) {
+      const { e, forma, pos } = montar(d)
+      for (const [lado, s] of [['L', 1], ['R', -1]] as const) {
+        const largo = new Vector3(...forma.articulaciones[`mano.${lado}`]!).distanceTo(new Vector3(...forma.articulaciones[`dedos3.${lado}`]!))
+        // La última falange vuelve hacia la muñeca: mucho más cerca que con la mano abierta.
+        expect(pos(`dedos3.${lado}`).distanceTo(pos(`mano.${lado}`)), `${d.kg} kg, ${lado}`).toBeLessThan(largo * 0.6)
+        // De la muñeca a los nudillos, hacia abajo y hacia el cuerpo.
+        const mano = pos(`dedos.${lado}`).sub(pos(`mano.${lado}`))
+        expect(mano.y).toBeLessThan(0)
+        expect(mano.x * s, `${d.kg} kg, ${lado}`).toBeLessThan(0)
+        // El pulgar, delante de los dedos cerrados (del lado de la palma) y no metido en ellos.
+        const pulgar = e.porNombre.get(`pulgar.${lado}`)!
+        const punta = pulgar.localToWorld(new Vector3(...forma.articulaciones[`yema_pulgar.${lado}`]!).sub(new Vector3(...forma.articulaciones[`pulgar.${lado}`]!)))
+        expect(punta.distanceTo(pos(`dedos3.${lado}`)), `${d.kg} kg, pulgar ${lado}`).toBeLessThan(0.05)
+      }
+    }
+  })
+
   it('pecho fuera y hombros atrás', () => {
     const { pos, forma } = montar(CUERPOS[0]!)
     // Los hombros, más atrás que en reposo.
@@ -171,6 +191,16 @@ describe('colores con bordes suaves', () => {
     expect(en(3, 16)).toBeCloseTo(0, 5)
     expect(en(27, 16)).toBeCloseTo(1, 5)
     expect(en(28, 16)).toBeCloseTo(1, 5)
+  })
+
+  it('el relieve del pecho casi no se usa; el de los demás músculos, entero', () => {
+    const pecho = REGIONES_MODELO.indexOf('pectoral_esternal') + 1
+    const muslo = REGIONES_MODELO.indexOf('vasto_lateral') + 1
+    const r2 = new Uint8Array(lado * lado)
+    for (let y = 4; y < 28; y++) for (let x = 4; x < 28; x++) r2[y * lado + x] = x < 16 ? pecho : muslo
+    const f = fuerzaRelieve(r2, dentro, lado)
+    expect(f[16 * lado + 5]!).toBeLessThan(0.25)
+    expect(f[16 * lado + 26]!).toBeGreaterThan(0.9)
   })
 
   it('reduce un mapa eligiendo un texel por bloque', () => {

@@ -11,6 +11,11 @@ export interface EsqueletoAvatar {
   huesos: THREE.Bone[]
   porNombre: Map<string, THREE.Bone>
   esqueleto: THREE.Skeleton
+  /**
+   * Las puntas (coronilla, yemas, uñas…): huesos sin peso colgados del suyo, solo para saber hacia
+   * dónde apunta cada hueso (el rig las usa, p. ej., para el pulgar). No están en `esqueleto`.
+   */
+  puntas: Map<string, THREE.Bone>
 }
 
 export function crearEsqueleto(modelo: ModeloAvatar): EsqueletoAvatar {
@@ -26,7 +31,15 @@ export function crearEsqueleto(modelo: ModeloAvatar): EsqueletoAvatar {
   })
   const raiz = huesos[padres.indexOf(null)]
   if (!raiz) throw new Error('El esqueleto del avatar no tiene raíz')
-  return { raiz, huesos, porNombre: new Map(nombres.map((n, i) => [n, huesos[i]!])), esqueleto: new THREE.Skeleton(huesos) }
+  const puntas = new Map<string, THREE.Bone>()
+  for (const [hueso, cola] of Object.entries(modelo.info.colas)) {
+    if (nombres.includes(cola)) continue
+    const b = new THREE.Bone()
+    b.name = cola
+    huesos[nombres.indexOf(hueso)]!.add(b)
+    puntas.set(cola, b)
+  }
+  return { raiz, huesos, porNombre: new Map(nombres.map((n, i) => [n, huesos[i]!])), esqueleto: new THREE.Skeleton(huesos), puntas }
 }
 
 /** Pone los huesos en la postura de reposo de una forma: cada uno en su articulación y sin giro. */
@@ -42,6 +55,12 @@ export function ponerEnReposo(e: EsqueletoAvatar, modelo: ModeloAvatar, articula
     h.quaternion.identity()
     h.scale.set(1, 1, 1)
   })
+  for (const [hueso, cola] of Object.entries(modelo.info.colas)) {
+    const b = e.puntas.get(cola)
+    const a = articulaciones[cola]
+    const p = articulaciones[hueso]
+    if (b && a && p) b.position.set(a[0] - p[0], a[1] - p[1], a[2] - p[2])
+  }
   e.raiz.updateMatrixWorld(true)
 }
 

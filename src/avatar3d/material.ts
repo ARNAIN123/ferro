@@ -4,7 +4,7 @@
 // definición del cuerpo, y su canal azul lleva la oclusión ambiental. Funciona con piel (SkinnedMesh).
 import * as THREE from 'three'
 import type { RGB } from '../domain/cuerpo3d'
-import { crearMapaColor } from './mapaColor'
+import { crearMapaColor, crearMapaRelieve } from './mapaColor'
 import type { TexturasAvatar } from './texturas'
 
 /** Parte del relieve muscular horneado que se usa (con la definición de cada cuerpo). */
@@ -21,8 +21,10 @@ export interface MaterialesAvatar {
 
 export function crearMaterialesAvatar(texturas: TexturasAvatar): MaterialesAvatar {
   const mapa = crearMapaColor(texturas)
+  const relieveRegion = crearMapaRelieve(texturas)
   const uniformes = {
     mapaColor: { value: mapa.textura },
+    mapaRelieve: { value: relieveRegion },
     colorBrillo: { value: new THREE.Color() },
   }
   const relieve = new THREE.Vector2(1, 1)
@@ -31,15 +33,21 @@ export function crearMaterialesAvatar(texturas: TexturasAvatar): MaterialesAvata
   material.onBeforeCompile = (s) => {
     Object.assign(s.uniforms, uniformes)
     s.fragmentShader = s.fragmentShader
-      .replace('#include <common>', '#include <common>\nuniform sampler2D mapaColor;\nuniform vec3 colorBrillo;')
+      .replace('#include <common>', '#include <common>\nuniform sampler2D mapaColor;\nuniform sampler2D mapaRelieve;\nuniform vec3 colorBrillo;')
       .replace(
         '#include <color_fragment>',
         `#include <color_fragment>
 vec4 aspecto = texture2D( mapaColor, vNormalMapUv );
 diffuseColor.rgb = aspecto.rgb * ( 0.55 + 0.45 * pow( texture2D( normalMap, vNormalMapUv ).b, 1.5 ) );`,
       )
-      // El mapa solo lleva x e y de la normal (el azul es la oclusión): la z se reconstruye.
-      .replace('#include <normal_fragment_maps>', THREE.ShaderChunk.normal_fragment_maps.replace('#if defined( USE_PACKED_NORMALMAP )', '#if 1'))
+      // El mapa solo lleva x e y de la normal (el azul es la oclusión): la z se reconstruye. Su fuerza
+      // depende también de la zona (en el pecho, el relieve horneado no encaja con la forma: casi nada).
+      .replace(
+        '#include <normal_fragment_maps>',
+        THREE.ShaderChunk.normal_fragment_maps
+          .replace('#if defined( USE_PACKED_NORMALMAP )', '#if 1')
+          .replace('mapN.xy *= normalScale;', 'mapN.xy *= normalScale * texture2D( mapaRelieve, vNormalMapUv ).r;'),
+      )
       .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += colorBrillo * aspecto.a;')
   }
   material.customProgramCacheKey = () => 'avatar-r5'
@@ -57,6 +65,7 @@ diffuseColor.rgb = aspecto.rgb * ( 0.55 + 0.45 * pow( texture2D( normalMap, vNor
     liberar() {
       material.dispose()
       mapa.liberar()
+      relieveRegion.dispose()
     },
   }
 }

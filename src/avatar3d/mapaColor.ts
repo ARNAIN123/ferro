@@ -5,6 +5,7 @@
 // fuera en las costuras). Se rehace cuando cambian los niveles, el músculo elegido o el tema.
 import * as THREE from 'three'
 import type { RGB } from '../domain/cuerpo3d'
+import { REGIONES_MODELO, type RegionModelo } from '../domain/musculos'
 import type { TexturasAvatar } from './texturas'
 
 /** Lado del mapa de color (texeles). */
@@ -145,4 +146,38 @@ export function crearMapaColor(texturas: TexturasAvatar): MapaColor {
     },
     liberar: () => textura.dispose(),
   }
+}
+
+/**
+ * Cuánto relieve horneado se usa en cada región (1 = todo). En el pecho, el relieve de Z-Anatomy no
+ * coincide con el pectoral musculado de MakeHuman y dibuja un surco raro de la axila al esternón.
+ */
+export const RELIEVE_REGION: Partial<Record<RegionModelo, number>> = {
+  pectoral_clavicular: 0.15,
+  pectoral_esternal: 0.15,
+  pectoral_costal: 0.15,
+  serrato_anterior: 0.35,
+  deltoides_anterior: 0.6,
+}
+
+/** Fuerza del relieve de cada punto del mapa UV (de 0 a 1), con los cambios entre regiones difuminados. */
+export function fuerzaRelieve(region: Uint8Array, dentro: Uint8Array, lado: number): Float32Array {
+  const factores = new Float32Array((REGIONES_MODELO.length + 1) * 4).fill(1)
+  REGIONES_MODELO.forEach((r, i) => factores.fill(RELIEVE_REGION[r] ?? 1, (i + 1) * 4, (i + 2) * 4))
+  const f = difuminar(region, dentro, lado, factores, 6, 2)
+  const r = new Float32Array(lado * lado)
+  for (let i = 0; i < lado * lado; i++) r[i] = f[i * 4]!
+  return r
+}
+
+/** Textura con la fuerza del relieve (canal rojo). */
+export function crearMapaRelieve(texturas: TexturasAvatar): THREE.DataTexture {
+  const f = fuerzaRelieve(reducir(texturas.region, texturas.lado, LADO_COLOR), reducir(texturas.dentro, texturas.lado, LADO_COLOR), LADO_COLOR)
+  const datos = new Uint8Array(LADO_COLOR * LADO_COLOR * 4)
+  for (let i = 0; i < LADO_COLOR * LADO_COLOR; i++) datos[i * 4] = Math.round(Math.min(1, Math.max(0, f[i]!)) * 255)
+  const t = new THREE.DataTexture(datos, LADO_COLOR, LADO_COLOR, THREE.RGBAFormat, THREE.UnsignedByteType)
+  t.magFilter = t.minFilter = THREE.LinearFilter
+  t.generateMipmaps = false
+  t.needsUpdate = true
+  return t
 }

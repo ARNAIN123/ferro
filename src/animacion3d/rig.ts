@@ -33,6 +33,30 @@ export const PADRES: Record<string, string | null> = {
   ),
 }
 
+/**
+ * Las falanges de cada dedo (las del corazón: «dedos», «dedos2» y «dedos3»). El cuerpo de Z-Anatomy
+ * solo tiene «dedos» (los cuatro dedos juntos); el avatar, desde la ronda 5, las tres de cada dedo.
+ */
+export const CADENAS_DEDOS: readonly (readonly [string, string, string])[] = [
+  ['dedos', 'dedos2', 'dedos3'],
+  ['indice1', 'indice2', 'indice3'],
+  ['anular1', 'anular2', 'anular3'],
+  ['menique1', 'menique2', 'menique3'],
+]
+
+/**
+ * Huesos que no todos los cuerpos tienen: las falanges de cada dedo, el pulgar y su punta (un hueso
+ * sin peso que dice hacia dónde apunta). Si están, cierran la mano.
+ */
+export const OPCIONALES: readonly string[] = LADOS.flatMap((l) => [
+  ...CADENAS_DEDOS.flat()
+    .filter((h) => h !== 'dedos')
+    .map((h) => `${h}.${l}`),
+  `pulgar.${l}`,
+  `pulgar2.${l}`,
+  `yema_pulgar.${l}`,
+])
+
 /** three.js quita los puntos de los nombres al cargar el glTF ('brazo.L' → 'brazoL'). */
 const clave = (nombre: string) => nombre.replace(/[.\s:/[\]]/g, '')
 
@@ -105,7 +129,7 @@ export class Rig {
     raiz.traverse((o) => {
       if ((o as { isBone?: boolean }).isBone) this.huesos.set(clave(o.name), o)
     })
-    for (const nombre of Object.keys(PADRES)) {
+    for (const nombre of [...Object.keys(PADRES), ...OPCIONALES.filter((n) => this.tiene(n))]) {
       const h = this.hueso(nombre)
       this.reposo.set(nombre, {
         posLocal: h.position.clone(),
@@ -114,6 +138,11 @@ export class Rig {
         quatMundo: h.getWorldQuaternion(new Quaternion()),
       })
     }
+  }
+
+  /** Si el cuerpo tiene ese hueso (los de OPCIONALES pueden faltar). */
+  tiene(nombre: string): boolean {
+    return this.huesos.has(clave(nombre))
   }
 
   hueso(nombre: string): Object3D {
@@ -198,7 +227,12 @@ export class Rig {
     }
   }
 
-  /** Brazos, piernas y dedos (después de `aplicarTronco`). `dedos`: 0 abiertos, 1 cerrados. */
+  /**
+   * Brazos, piernas y dedos (después de `aplicarTronco`). `dedos`: 0 abiertos, 1 cerrados. Con las
+   * falanges y el pulgar (si el cuerpo los tiene), 1 es un puño: en cada dedo, los nudillos a unos
+   * 80°, la segunda falange a unos 95° y la tercera a unos 60° (cada uno sobre sus articulaciones), y
+   * el pulgar cruzado por fuera de los dedos índice y corazón.
+   */
   aplicarExtremos(manos: Record<Lado, Extremo>, pies: Record<Lado, Extremo>, dedos = 0.85): Resultado {
     const r: Resultado = { codo: {} as Record<Lado, Vector3>, muneca: {} as Record<Lado, Vector3>, rodilla: {} as Record<Lado, Vector3>, tobillo: {} as Record<Lado, Vector3>, alcanzado: {} }
     for (const lado of LADOS) {
@@ -221,6 +255,24 @@ export class Rig {
       this.orientar(`mano.${lado}`, qMano)
       const eje = new Vector3().crossVectors(v(m.dir), perpendicular(v(m.normal), v(m.dir))).normalize()
       this.orientar(`dedos.${lado}`, new Quaternion().setFromAxisAngle(eje, dedos * 1.4).multiply(qMano))
+      // Giro acumulado de cada falange (nudillo, segunda y tercera).
+      const giros = [dedos * 1.4, dedos * 3.05, dedos * 4.1]
+      for (const cadena of CADENAS_DEDOS)
+        cadena.forEach((h, k) => {
+          if (h === 'dedos' || !this.tiene(`${h}.${lado}`)) return
+          this.orientar(`${h}.${lado}`, new Quaternion().setFromAxisAngle(eje, giros[k]!).multiply(qMano))
+        })
+      if (this.tiene(`pulgar.${lado}`) && this.tiene(`dedos3.${lado}`) && this.tiene(`yema_pulgar.${lado}`)) {
+        // El pulgar, cruzado por fuera (del lado de la palma) sobre la segunda falange de los dedos
+        // índice y corazón ya cerrados; con la mano abierta, en su sitio.
+        const base = this.pos(`pulgar.${lado}`)
+        const ahora = this.pos(`yema_pulgar.${lado}`).sub(base).normalize()
+        const sobre = this.tiene(`indice3.${lado}`) ? this.pos(`dedos3.${lado}`).lerp(this.pos(`indice3.${lado}`), 0.5) : this.pos(`dedos3.${lado}`)
+        const destino = sobre.add(v(m.normal).multiplyScalar(0.02)).sub(base).normalize()
+        const k = Math.min(1, Math.max(0, dedos))
+        const giro = new Quaternion().setFromUnitVectors(ahora, ahora.clone().lerp(destino, k).normalize())
+        this.orientar(`pulgar.${lado}`, giro.multiply(qMano))
+      }
       r.codo[lado] = ik.medio
       r.muneca[lado] = this.pos(`mano.${lado}`)
       r.alcanzado[`mano.${lado}`] = ik.alcanzado

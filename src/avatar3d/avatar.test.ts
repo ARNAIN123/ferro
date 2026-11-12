@@ -21,8 +21,10 @@ describe('modelo del avatar', () => {
     REGIONES_MODELO.forEach((r, i) => expect(info.texels_por_region[i + 1], r).toBeGreaterThan(300))
   })
 
-  it('lleva el esqueleto de 24 huesos con sus extremos y una esquina de MakeHuman por deformador', () => {
-    expect(info.huesos).toHaveLength(24)
+  it('lleva el esqueleto de 50 huesos (los 24 de las animaciones y las falanges de cada dedo y del pulgar) con sus extremos y una esquina de MakeHuman por deformador', () => {
+    expect(info.huesos).toHaveLength(50)
+    for (const l of ['L', 'R'])
+      for (const h of ['dedos2', 'dedos3', 'pulgar', 'pulgar2', 'indice1', 'indice3', 'anular2', 'menique3']) expect(info.huesos).toContain(`${h}.${l}`)
     for (const h of info.huesos) expect(info.articulaciones[h], h).toBeDefined()
     for (const cola of Object.values(info.colas)) expect(info.articulaciones[cola], cola).toBeDefined()
     expect(info.macro.esquinas).toHaveLength(36)

@@ -39,7 +39,7 @@ export const PARTES = ['tronco', 'brazo.L', 'brazo.R', 'pierna.L', 'pierna.R'] a
 
 function parteDeHueso(hueso: string): number {
   const [base, lado] = hueso.split('.')
-  if (base === 'brazo' || base === 'antebrazo' || base === 'mano' || base === 'dedos') return lado === 'L' ? 1 : 2
+  if (/^(brazo|antebrazo|mano|dedos\d?|pulgar\d?|indice\d|anular\d|menique\d)$/.test(base ?? '')) return lado === 'L' ? 1 : 2
   if (base === 'muslo' || base === 'pierna' || base === 'pie' || base === 'punta') return lado === 'L' ? 3 : 4
   return 0
 }

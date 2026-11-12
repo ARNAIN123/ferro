@@ -1,8 +1,9 @@
 // Postura del avatar en el mapa muscular (ronda 5): de pie, recto y simétrico, como en el gimnasio,
 // no en la postura anatómica rígida del modelo. Pecho fuera y hombros atrás, piernas a la anchura de
 // las caderas con las puntas algo abiertas y las rodillas sin bloquear, los brazos algo abiertos (como
-// con los dorsales marcados) con los codos un poco doblados, las palmas hacia dentro y los dedos
-// medio cerrados. Encima, la respiración: el pecho y los hombros suben y bajan muy poco.
+// con los dorsales marcados) con los codos un poco doblados y los puños cerrados, con las palmas y los
+// nudillos hacia dentro (hacia los muslos). Encima, la respiración: el pecho y los hombros suben y
+// bajan muy poco.
 import { Object3D, Quaternion, Vector3 } from 'three'
 import { perpendicular, type V3 } from '../animacion3d/ik'
 import { Rig, type Extremo, type Lado } from '../animacion3d/rig'
@@ -21,6 +22,8 @@ const LADOS: readonly [Lado, number][] = [
 export const ESTIRADO_BRAZO = 0.988
 /** Lo que se abren los brazos (grados) además de lo que ya se abren en reposo. */
 export const APERTURA_BRAZOS = 8
+/** Hacia dentro que apunta la mano (tangente respecto a la vertical): unos 9°. */
+const MANO_HACIA_DENTRO = 0.16
 
 /**
  * Postura de gimnasio para una forma: el giro de cada hueso respecto a su padre. Se calcula con el
@@ -68,12 +71,13 @@ export function posturaRelajada(modelo: ModeloAvatar, articulaciones: Record<str
       .applyAxisAngle(V(1, 0, 0), -rad(2))
       .normalize()
     const muneca = hombro.clone().add(dir.multiplyScalar(largo * ESTIRADO_BRAZO))
-    // Palma hacia dentro (hacia el muslo), con el pulgar delante; nudillos hacia abajo y un poco hacia dentro.
+    // Palma hacia dentro (hacia el muslo), con el pulgar delante; la mano apunta hacia abajo y hacia
+    // dentro (de la muñeca a los nudillos), aunque el antebrazo vaya algo abierto.
     const palma = V(-s, 0, 0.05).normalize()
-    const nudillos = V(-0.12 * s, -1, 0.05).normalize()
+    const nudillos = V(-MANO_HACIA_DENTRO * s, -1, 0.06).normalize()
     manos[lado] = { pos: t3(muneca), polo: t3(V(0.5 * s, -0.05, -1)), dir: t3(nudillos), normal: t3(perpendicular(palma, nudillos)) }
   }
-  rig.aplicarExtremos(manos, pies, 0.45)
+  rig.aplicarExtremos(manos, pies, 1)
   return leerPostura(e)
 }
 

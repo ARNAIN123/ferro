@@ -14,8 +14,10 @@
 #      cada combinación sexo × edad × músculo × peso es una «esquina» y entre ellas se interpola.
 #   2. Postura anatómica: los brazos y las piernas se llevan, con el esqueleto y los pesos de MakeHuman,
 #      a la postura del cuerpo de Z-Anatomy (brazos abajo, palmas al frente). Es la postura de reposo.
-#   3. Esqueleto de Ferro (24 huesos): sus articulaciones son medias de vértices de la malla, así que se
-#      recalculan con cualquier forma. Los pesos salen de juntar los de MakeHuman.
+#   3. Esqueleto de Ferro (50 huesos: los 24 de las animaciones y, en cada mano, las tres falanges de
+#      cada dedo —«dedos», «dedos2» y «dedos3» son las del corazón— y dos del pulgar, para cerrar el
+#      puño y agarrar): sus articulaciones son medias de vértices de la malla, así que se recalculan
+#      con cualquier forma. Los pesos salen de juntar los de MakeHuman.
 #   4. Transferencia: la malla, ajustada hueso a hueso al cuerpo de Z-Anatomy y envuelta sobre él, sirve
 #      para hornear en su mapa UV las regiones, la piel sobre los músculos profundos, la oclusión y el
 #      relieve muscular (mapa de normales).
@@ -189,6 +191,11 @@ def aplicar(m, p):
 
 # Cada articulación de Ferro es una mezcla de cubos de articulación de MakeHuman (se mueven con la
 # malla) y va con un hueso de MakeHuman (el que la arrastra al cambiar de postura).
+# Dedos además del corazón (que son «dedos», «dedos2» y «dedos3»), con su número en MakeHuman.
+OTROS_DEDOS = (('indice', 2), ('anular', 4), ('menique', 5))
+DEDOS = {'dedos', 'dedos2', 'dedos3', 'pulgar', 'pulgar2', *(f'{d}{f}' for d, _ in OTROS_DEDOS for f in (1, 2, 3))}
+
+
 def _lado(l):
     k = l.lower()
     return {
@@ -197,7 +204,15 @@ def _lado(l):
         f'antebrazo.{l}': ([(f'joint-{k}-elbow', 1.0)], f'upperarm02.{l}'),
         f'mano.{l}': ([(f'joint-{k}-hand', 1.0)], f'lowerarm02.{l}'),
         f'dedos.{l}': ([(f'joint-{k}-finger-3-1', 1.0)], f'wrist.{l}'),
+        # Las falanges de cada dedo (las del corazón son «dedos», «dedos2» y «dedos3») y el pulgar.
+        f'dedos2.{l}': ([(f'joint-{k}-finger-3-2', 1.0)], f'wrist.{l}'),
+        f'dedos3.{l}': ([(f'joint-{k}-finger-3-3', 1.0)], f'wrist.{l}'),
         f'yema.{l}': ([(f'joint-{k}-finger-3-4', 1.0)], f'wrist.{l}'),
+        **{f'{dedo}{f}.{l}': ([(f'joint-{k}-finger-{n}-{f}', 1.0)], f'wrist.{l}') for dedo, n in OTROS_DEDOS for f in (1, 2, 3)},
+        **{f'yema_{dedo}.{l}': ([(f'joint-{k}-finger-{n}-4', 1.0)], f'wrist.{l}') for dedo, n in OTROS_DEDOS},
+        f'pulgar.{l}': ([(f'joint-{k}-finger-1-2', 1.0)], f'wrist.{l}'),
+        f'pulgar2.{l}': ([(f'joint-{k}-finger-1-3', 1.0)], f'wrist.{l}'),
+        f'yema_pulgar.{l}': ([(f'joint-{k}-finger-1-4', 1.0)], f'wrist.{l}'),
         f'muslo.{l}': ([(f'joint-{k}-upper-leg', 1.0)], f'pelvis.{l}'),
         f'pierna.{l}': ([(f'joint-{k}-knee', 1.0)], f'upperleg02.{l}'),
         f'pie.{l}': ([(f'joint-{k}-ankle', 1.0)], f'lowerleg02.{l}'),
@@ -217,19 +232,23 @@ ARTICULACIONES = {
     **_lado('L'), **_lado('R'),
 }
 _CADENA = (('clavicula', 'pecho'), ('brazo', 'clavicula'), ('antebrazo', 'brazo'), ('mano', 'antebrazo'), ('dedos', 'mano'),
-           ('muslo', 'cadera'), ('pierna', 'muslo'), ('pie', 'pierna'), ('punta', 'pie'))
+           ('muslo', 'cadera'), ('pierna', 'muslo'), ('pie', 'pierna'), ('punta', 'pie'),
+           ('dedos2', 'dedos'), ('dedos3', 'dedos2'), ('pulgar', 'mano'), ('pulgar2', 'pulgar'),
+           *((f'{d}{f}', f'{d}{f - 1}' if f > 1 else 'mano') for d, _ in OTROS_DEDOS for f in (1, 2, 3)))
 PADRES = {'cadera': None, 'lumbar': 'cadera', 'dorsal': 'lumbar', 'pecho': 'dorsal', 'cuello': 'pecho', 'cabeza': 'cuello',
           **{f'{h}.{l}': (p if p in ('pecho', 'cadera') else f'{p}.{l}') for l in 'LR' for h, p in _CADENA}}
 # Dónde acaba cada hueso (para dibujarlo y para medir): la articulación siguiente o un extremo.
 COLAS = {'cadera': 'lumbar', 'lumbar': 'dorsal', 'dorsal': 'pecho', 'pecho': 'cuello', 'cuello': 'cabeza', 'cabeza': 'coronilla',
-         **{f'{h}.{l}': f'{c}.{l}' for l in 'LR' for h, c in (('clavicula', 'brazo'), ('brazo', 'antebrazo'), ('antebrazo', 'mano'), ('mano', 'dedos'), ('dedos', 'yema'),
-                                                               ('muslo', 'pierna'), ('pierna', 'pie'), ('pie', 'punta'), ('punta', 'uña'))}}
+         **{f'{h}.{l}': f'{c}.{l}' for l in 'LR' for h, c in (('clavicula', 'brazo'), ('brazo', 'antebrazo'), ('antebrazo', 'mano'), ('mano', 'dedos'), ('dedos', 'dedos2'),
+                                                               ('muslo', 'pierna'), ('pierna', 'pie'), ('pie', 'punta'), ('punta', 'uña'),
+                                                               ('dedos2', 'dedos3'), ('dedos3', 'yema'), ('pulgar', 'pulgar2'), ('pulgar2', 'yema_pulgar'),
+                                                               *((f'{d}{f}', f'{d}{f + 1}' if f < 3 else f'yema_{d}') for d, _ in OTROS_DEDOS for f in (1, 2, 3)))}}
 HUESOS = list(PADRES.keys())
 EXTREMOS = [a for a in ARTICULACIONES if a not in PADRES]
 
 
 def hueso_ferro(h):
-    """Hueso de Ferro (de los 24) al que van los pesos de un hueso de MakeHuman."""
+    """Hueso de Ferro (de los 50) al que van los pesos de un hueso de MakeHuman."""
     lado = h[-1] if h.endswith(('.L', '.R')) else None
     b = h[:-2] if lado else h
     con = lambda nombre: f'{nombre}.{lado}'
@@ -241,8 +260,12 @@ def hueso_ferro(h):
     if b in ('clavicle', 'shoulder01'): return con('clavicula')
     if b.startswith('upperarm'): return con('brazo')
     if b.startswith('lowerarm'): return con('antebrazo')
-    if b == 'wrist' or b.startswith('metacarpal') or b.startswith('finger1'): return con('mano')
-    if b.startswith('finger'): return con('dedos')
+    if b == 'wrist' or b.startswith('metacarpal') or b == 'finger1-1': return con('mano')
+    if b == 'finger1-2': return con('pulgar')
+    if b == 'finger1-3': return con('pulgar2')
+    if b.startswith('finger3'): return con({'1': 'dedos', '2': 'dedos2', '3': 'dedos3'}[b[-1]])
+    if b.startswith('finger'):
+        return con({n: d for d, n in OTROS_DEDOS}[int(b[6])] + b[-1])
     if b.startswith('upperleg'): return con('muslo')
     if b.startswith('lowerleg'): return con('pierna')
     if b == 'foot': return con('pie')
@@ -264,7 +287,7 @@ PARTES = ('tronco', 'brazo.L', 'brazo.R', 'pierna.L', 'pierna.R')
 
 def parte_de(hueso):
     b, _, lado = hueso.partition('.')
-    if b in ('brazo', 'antebrazo', 'mano', 'dedos'): return f'brazo.{lado}'
+    if b in ('brazo', 'antebrazo', 'mano') or b in DEDOS: return f'brazo.{lado}'
     if b in ('muslo', 'pierna', 'pie', 'punta'): return f'pierna.{lado}'
     return 'tronco'
 
@@ -310,7 +333,8 @@ def postura(v, abrir_brazos=0.0, abrir_piernas=0.0):
         muneca2 = aplicar(acumulada, muneca)
         eje = (muneca2 - codo1) / np.linalg.norm(muneca2 - codo1)
         # Supinación: la palma mira al frente. Se reparte por el antebrazo (un cuarto en su primera mitad).
-        palma = acumulada[:3, :3] @ (np.cross(indice - muneca, menique - muneca) * s)
+        # (índice − muñeca) × (meñique − muñeca) sale del dorso: la palma es el contrario.
+        palma = acumulada[:3, :3] @ (np.cross(indice - muneca, menique - muneca) * -s)
         palma -= eje * (palma @ eje)
         frente = np.array([0.0, -1.0, 0.0]) - eje * (np.array([0.0, -1.0, 0.0]) @ eje)
         angulo = math.atan2(np.cross(palma, frente) @ eje, palma @ frente)
@@ -631,6 +655,9 @@ def ajuste_por_huesos(art, alto_mh, alto_za, radial):
     F = {}
     for h in HUESOS:
         cola, a = COLAS[h], art[h]
+        if h not in ZA:  # falanges y pulgar (el cuerpo de Z-Anatomy no los tiene): como su padre
+            F[h] = F[PADRES[h]].copy()
+            continue
         if cola in ZA:
             eje_m, eje_z = art[cola] - a, ZA[cola] - ZA[h]
             u = eje_m / np.linalg.norm(eje_m)
@@ -795,7 +822,7 @@ def hornear(piel, q, tx):
     # Sin relieve donde la correspondencia no es fiable (pliegues) ni en las manos, los pies y la cabeza
     # (ahí manda la forma de MakeHuman).
     fiable = np.clip((coseno[:, 0] - 0.5) / 0.3, 0, 1)
-    sin = W_TODO[:, [col(f'{h}.{l}') for h in ('mano', 'dedos', 'punta') for l in 'LR'] + [col('cabeza')]].sum(axis=1) + 0.6 * W_TODO[:, [col('pie.L'), col('pie.R')]].sum(axis=1)
+    sin = W_TODO[:, [col(f'{h}.{l}') for h in ('mano', 'punta', *sorted(DEDOS)) for l in 'LR'] + [col('cabeza')]].sum(axis=1) + 0.6 * W_TODO[:, [col('pie.L'), col('pie.R')]].sum(axis=1)
     fuerza = fiable * (1 - np.clip(por_texel(sin), 0, 1))
     relieve = np.zeros((lado, lado, 2))
     relieve[y, x] = np.clip(tangente[:, :2] * fuerza[:, None], -0.7, 0.7)
