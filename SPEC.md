@@ -4,12 +4,13 @@
 
 Su trabajo es este ciclo: **detectar cuándo entro y salgo del gimnasio → saber qué rutina me toca → dejarme registrar el entreno lo más rápido posible → decirme qué peso usar la próxima vez → enseñarme mi progreso, mis músculos de la semana, mis pasos y mi objetivo del mes.**
 
-> Este documento ya incluye las **rondas 1, 2, 3 y 4 de mejoras** (`MEJORAS-1.md` … `MEJORAS-4.md`). Donde se contradicen, manda la más reciente. Lo que está en "Cosas que no deben volver" se quitó a propósito: no lo reintroduzcas.
+> Este documento ya incluye las **rondas 1, 2, 3 y 4 de mejoras** y es la única referencia de cómo tiene que ser la app. Lo que está en "Cosas que no deben volver" se quitó a propósito: no lo reintroduzcas.
 
 ---
 
 ## Cómo quiero que trabajes
 
+- Las mejoras nuevas te las pido **directamente por el chat**; ya no hay documentos de mejoras. Cuando hagas un cambio, actualiza este documento para que quede recogido (y, si quito algo, añádelo a "Cosas que no deben volver").
 - Antes de escribir código, lee este documento entero y hazme solo las preguntas imprescindibles.
 - Construye por fases (ver "Fases" al final). Al acabar cada fase: compila, pasa los tests, haz commit, **publica una versión nueva del APK** y dime exactamente qué probar en el móvil.
 - Si necesito descargar o instalar algo a mano (por ejemplo Blender), dímelo con pasos concretos.
@@ -298,7 +299,7 @@ Pestaña propia en la navegación. Como pollo, carne, huevos, pasta, arroz y lá
 - **Revisión de los lunes**: media de kcal y proteína frente al objetivo, tendencia del peso, gasto recalculado y ajuste aplicado. Historial en "Tu objetivo".
 - **Tono**: nada de rojo de "fracaso", rachas de dieta ni alimentos "prohibidos". Si llevo varios días por debajo del 70 % del objetivo, un mensaje amable recomendando comer más (nunca se celebra).
 - En **Hoy**, debajo de pasos y calorías: «Te quedan 640 kcal · 52 g de proteína».
-- Escribir las comidas en Health Connect: no se hace por ahora (opcional en MEJORAS-3).
+- Escribir las comidas en Health Connect: no se hace por ahora (era opcional).
 
 ---
 
@@ -337,7 +338,7 @@ Pestaña propia en la navegación. Como pollo, carne, huevos, pasta, arroz y lá
 - **Postura de reposo**: la anatómica del cuerpo de Z-Anatomy (brazos abajo, palmas al frente), a la que se lleva cada esquina con su propio esqueleto. Si un cuerpo es tan ancho que los brazos o los muslos se meterían en el tronco, se abren lo justo (se comprueba en el script con la malla).
 - **Regiones y relieve transferidos**: el cuerpo de MakeHuman se ajusta hueso a hueso al de Z-Anatomy y luego se pega a su piel; con esa correspondencia se hornean en el mapa UV de MakeHuman la región muscular (canal rojo), la marca de músculo profundo (verde) y un mapa de normales con el relieve de los músculos (lo que se aparta la piel de Z-Anatomy de su versión suavizada), con la oclusión ambiental en el canal azul. La cabeza, las manos y los pies se quedan con la forma de MakeHuman. Los músculos profundos son las piezas de Z-Anatomy, que se mueven con la piel que tienen más cerca. El visor elige el color de cada punto en la textura (no en los vértices), así que los bordes entre músculos son limpios con cualquier forma.
 - **Del perfil a la forma** (`src/avatar3d/resolver.ts`): se buscan el músculo y el peso de MakeHuman que dan el peso real (volumen de la malla × densidad del cuerpo según la grasa, Siri) y el porcentaje de grasa (cada esquina tiene el suyo: el «músculo» mínimo de MakeHuman es un cuerpo blando y el máximo uno seco); la edad va de 25 a 90 años y la altura escala el cuerpo entero. Si hay medidas con cinta, cada deformador de medida se mueve hasta que el avatar mida lo mismo: se mide como una cinta (`medidas.ts`: perímetro de la envolvente convexa del corte del cuerpo por donde se mide a una persona). Sin dato de grasa se estima con el IMC (Deurenberg) solo para el avatar. Con menos grasa, el relieve muscular es más fuerte (definición).
-- **Perfil corporal** (Ajustes → Pasos y calorías → Perfil corporal, `/ajustes/cuerpo`): el avatar en grande; sexo (si no se ha puesto, el del asistente de nutrición), edad y altura; el peso sale del registro y se usa la **tendencia** (media de los 7 días hasta la fecha), no el dato de un día; **medidas con cinta** opcionales con fecha (cuello, hombros, pecho, cintura, cadera, brazo, antebrazo, muslo y gemelo; con «Cómo medir», lo que mide ahora el avatar en gris y la evolución); **grasa corporal** de Health Connect si una báscula la registra (permiso de lectura de grasa corporal), con el método de la Marina de EE. UU. (cuello, cintura y altura; en mujeres, también la cadera) o escrita a mano. Manda la báscula si su dato es de los últimos 3 meses; si no, lo más reciente. Las medidas y la grasa de hace más de 4 meses dejan de dar forma al avatar. **Ajuste fino** con cuatro deslizadores (anchura de hombros, cintura, largo de piernas y de brazos) que se ven en directo y no cambian la altura. Los peinados (opcionales en MEJORAS-4) no se han hecho.
+- **Perfil corporal** (Ajustes → Pasos y calorías → Perfil corporal, `/ajustes/cuerpo`): el avatar en grande; sexo (si no se ha puesto, el del asistente de nutrición), edad y altura; el peso sale del registro y se usa la **tendencia** (media de los 7 días hasta la fecha), no el dato de un día; **medidas con cinta** opcionales con fecha (cuello, hombros, pecho, cintura, cadera, brazo, antebrazo, muslo y gemelo; con «Cómo medir», lo que mide ahora el avatar en gris y la evolución); **grasa corporal** de Health Connect si una báscula la registra (permiso de lectura de grasa corporal), con el método de la Marina de EE. UU. (cuello, cintura y altura; en mujeres, también la cadera) o escrita a mano. Manda la báscula si su dato es de los últimos 3 meses; si no, lo más reciente. Las medidas y la grasa de hace más de 4 meses dejan de dar forma al avatar. **Ajuste fino** con cuatro deslizadores (anchura de hombros, cintura, largo de piernas y de brazos) que se ven en directo y no cambian la altura. Los peinados (opcionales) no se han hecho.
 - **Evolución**: el avatar se calcula con los datos de cada día, así que cambia solo cuando cambian el peso (su tendencia), las medidas o la grasa. **Antes / Ahora**: mi avatar de hace 1, 3 o 6 meses al lado del de hoy, girando a la vez, con el cambio de peso, grasa y medidas.
 - **Nutrición**: si hay porcentaje de grasa, el metabolismo basal se calcula con **Katch-McArdle** (370 + 21,6 × masa magra); si no, con Mifflin-St Jeor. Se pone al día al guardar grasa o medidas y en la revisión de cada lunes; el objetivo nunca baja del basal.
 - **En toda la app**: el visor `Cuerpo3D` (mapa muscular de Hoy, buscador por mapa, fichas, progreso…) dibuja mi avatar con los niveles de cada músculo. Si el 3D falla en el móvil (el modelo no carga o el sombreador no compila en su tarjeta gráfica), se ve el mapa 2D con el motivo debajo (v0.11.1); un fallo de carga se recuerda hasta reabrir la app, para no pedir el modelo sin parar. La app entera tiene además un límite de errores: una pantalla que falla muestra «Algo ha fallado» con el motivo, nunca una pantalla vacía. Las animaciones de los ejercicios siguen con el cuerpo de la ronda 3 hasta la fase 3.
@@ -421,19 +422,19 @@ Hechas: 1–5 (base, rutinas y entreno, check-in, progresión y estadísticas, p
 
 **Ronda 2:** hecha (app Android, detección, avatar, biblioteca y buscador por mapa, pantalla principal, animaciones).
 
-**Ronda 3** (`MEJORAS-3.md`):
+**Ronda 3:**
 
 1. **Registro de peso rápido** y acceso directo del icono. *(Hecha, v0.5.0.)*
 2. *(Hecha, v0.6.0.)* **Nutrición:** asistente, objetivos adaptativos, registro rápido, escáner, Open Food Facts, base genérica, mis platos, "Cerrar el día", reto de fruta y verdura, revisión semanal y tarjeta en Hoy.
 3. *(Hecha, v0.7.0.)* **Modelo 3D y avatar:** flujo con Blender, vista previa para revisión y sustitución de todas las vistas del mapa.
 4. *(Hecha, v0.9.0.)* **Animaciones 3D:** piloto de 10 ejercicios (v0.8.0, aprobado) y después toda la biblioteca, en la ficha (escena en vivo) y en las listas (miniaturas animadas). En v0.9.1, cuerpo con más volumen y animaciones que no atraviesan bancos ni cajones, con el material bien agarrado.
 
-**Ronda 4** (`MEJORAS-4.md`):
+**Ronda 4:**
 
 1. *(Hecha, v0.10.0.)* **División muscular completa:** lista completa, auditoría, músculos profundos, reasignación de ejercicios (con el listado para revisión) y migración.
 2. *(Hecha, v0.11.0.)* **Avatar personalizado:** base MakeHuman/MPFB (CC0) con morph targets, esqueleto recalculado, perfil corporal (sexo, edad, altura, peso del registro, medidas con fecha, grasa corporal de Health Connect, de la fórmula de la Marina de EE. UU. o a mano), definición muscular según la grasa, ajuste fino con deslizadores, peinados opcionales, evolución con la tendencia del peso, "Antes / Ahora" y Katch-McArdle en nutrición si hay porcentaje de grasa.
 3. **Ejercicios con mi avatar:** las animaciones usan mi avatar y se adaptan a mis proporciones (agarre, banco, rack, polea, pies) con cinemática inversa sobre el esqueleto recalculado; las miniaturas se regeneran en segundo plano al cambiar el perfil.
-4. **Físicas:** motor de físicas (Rapier) con paso fijo, cápsulas en cada hueso del avatar, barra y mancuernas como cuerpos rígidos, cable de polea como cuerda inextensible que pasa por las ruedas y colisiona, pila de discos en su guía con el recorrido exacto del cable, multipower con guías y ganchos, banco y suelo estáticos; escenas colocadas como en un gimnasio real; test automático de penetraciones con tres tamaños de cuerpo y su informe; física solo en pantalla y 60 fps.
+4. **Físicas:** motor de físicas (Rapier) con paso fijo, cápsulas en cada hueso del avatar, barra y mancuernas como cuerpos rígidos, cable de polea como cuerda inextensible que pasa por las ruedas y colisiona con el cuerpo y el banco, agarres (cuerda, barra, triángulo, estribo) que cuelgan con su peso, pila de discos en su guía con el recorrido exacto del cable, multipower con guías y ganchos, banco y suelo estáticos; escenas colocadas como en un gimnasio real (p. ej. en la extensión de tríceps con cuerda el cable baja por delante del cuerpo); test automático de penetraciones con tres tamaños de cuerpo y su informe; física solo en pantalla y 60 fps.
 
 **Ronda 2 (detalle):**
 
