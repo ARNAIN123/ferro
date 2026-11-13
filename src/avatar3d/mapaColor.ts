@@ -5,7 +5,8 @@
 // fuera en las costuras). Se rehace cuando cambian los niveles, el músculo elegido o el tema.
 import * as THREE from 'three'
 import type { RGB } from '../domain/cuerpo3d'
-import { REGIONES_MODELO, type RegionModelo } from '../domain/musculos'
+import { grupoDeRegion, REGIONES_MODELO, type RegionModelo } from '../domain/musculos'
+import { MUSCULOS } from '../domain/tipos'
 import type { TexturasAvatar } from './texturas'
 
 /** Lado del mapa de color (texeles). */
@@ -116,6 +117,51 @@ export function suavizar(entrada: Float32Array<ArrayBuffer>, dentro: Uint8Array,
   return a
 }
 
+/**
+ * Alisado de los contornos de cada grupo (texeles del mapa de 512 y pasadas): unos 3 cm a cada lado.
+ * Lo justo para quitar los picos estrechos y redondear las esquinas sin cambiar la forma de los músculos.
+ */
+export const RADIO_CONTORNO = 6
+const PASADAS_CONTORNO = 2
+
+/**
+ * Contornos de los grupos más naturales (ronda 5): las regiones de Z-Anatomy, juntas en 18 grupos,
+ * dejaban picos (el sartorio subiendo hasta la ingle desde el cuádriceps) y esquinas. Cada punto con
+ * piel se queda con el grupo que más hay a su alrededor (lo que pesa cada grupo, difuminado dentro de
+ * la piel): los picos más estrechos que el difuminado desaparecen, las esquinas se redondean y los
+ * dientes del mapa se alisan. Devuelve, para cada punto, una región de ese grupo (la primera), que se
+ * pinta igual que todas las suyas; lo que no es de ningún grupo, la región 0.
+ */
+export function alisarContornos(region: Uint8Array, dentro: Uint8Array, lado: number, radio = RADIO_CONTORNO, pasadas = PASADAS_CONTORNO): Uint8Array {
+  // Etiqueta de cada región: 0, ningún grupo; 1…18, el grupo. Y la región que representa a cada una.
+  const etiquetas = Array.from({ length: REGIONES_MODELO.length + 1 }, (_, id) => {
+    const g = grupoDeRegion(id)
+    return g ? MUSCULOS.indexOf(g) + 1 : 0
+  })
+  const representante = Array.from({ length: MUSCULOS.length + 1 }, (_, e) => (e === 0 ? 0 : Math.max(0, etiquetas.indexOf(e))))
+  const n = lado * lado
+  const mejor = new Float32Array(n).fill(-1)
+  const ganador = new Uint8Array(n)
+  // De cuatro en cuatro etiquetas (los cuatro canales de un mapa rgba).
+  for (let primera = 0; primera <= MUSCULOS.length; primera += 4) {
+    const campo = new Float32Array(n * 4)
+    for (let i = 0; i < n; i++) {
+      const c = (etiquetas[region[i]!] ?? 0) - primera
+      if (c >= 0 && c < 4) campo[i * 4 + c] = 1
+    }
+    const f = suavizar(campo, dentro, lado, radio, pasadas, 0)
+    for (let i = 0; i < n; i++)
+      for (let c = 0; c < 4 && primera + c <= MUSCULOS.length; c++)
+        if (f[i * 4 + c]! > mejor[i]!) {
+          mejor[i] = f[i * 4 + c]!
+          ganador[i] = primera + c
+        }
+  }
+  const r = Uint8Array.from(region)
+  for (let i = 0; i < n; i++) if (dentro[i]) r[i] = representante[ganador[i]!]!
+  return r
+}
+
 const aSrgb = (c: number) => {
   const v = Math.min(1, Math.max(0, c))
   return Math.round((v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055) * 255)
@@ -129,7 +175,7 @@ export interface MapaColor {
 }
 
 export function crearMapaColor(texturas: TexturasAvatar): MapaColor {
-  const region = reducir(texturas.region, texturas.lado, LADO_COLOR)
+  const region = reducir(texturas.pintado, texturas.lado, LADO_COLOR)
   const dentro = reducir(texturas.dentro, texturas.lado, LADO_COLOR)
   const datos = new Uint8Array(LADO_COLOR * LADO_COLOR * 4)
   const textura = new THREE.DataTexture(datos, LADO_COLOR, LADO_COLOR, THREE.RGBAFormat, THREE.UnsignedByteType)

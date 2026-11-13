@@ -1,6 +1,7 @@
-// Texturas del avatar: regiones musculares (rojo: región del modelo) y relieve (rojo y verde:
-// normal; azul: oclusión ambiental). Las regiones se leen en la CPU para saber qué músculo se toca y
-// para pintar el mapa de color (mapaColor.ts); la oclusión dice dónde hay piel en el mapa UV.
+// Texturas del avatar: regiones musculares (rojo: región del modelo; azul: la que se pinta, con los
+// contornos de cada grupo alisados) y relieve (rojo y verde: normal; azul: oclusión ambiental). Las
+// regiones se leen en la CPU para saber qué músculo se toca y para pintar el mapa de color
+// (mapaColor.ts); la oclusión dice dónde hay piel en el mapa UV.
 import * as THREE from 'three'
 import { reducir, suavizar } from './mapaColor'
 import type { ModeloAvatar } from './modelo'
@@ -56,6 +57,11 @@ export interface TexturasAvatar {
   lado: number
   region: Uint8Array
   dentro: Uint8Array
+  /**
+   * La región que se pinta (y se toca) en cada punto: la de su grupo con los contornos alisados (ver
+   * alisarContornos; horneada en el canal azul de la textura de regiones), a la resolución de `region`.
+   */
+  pintado: Uint8Array
 }
 
 let cargando: Promise<TexturasAvatar> | null = null
@@ -90,7 +96,11 @@ export function cargarTexturasAvatar(modelo: ModeloAvatar): Promise<TexturasAvat
     }
     const px = leer(ids.image)
     const region = new Uint8Array(lado * lado)
-    for (let i = 0; i < lado * lado; i++) region[i] = px[i * 4]!
+    const pintado = new Uint8Array(lado * lado)
+    for (let i = 0; i < lado * lado; i++) {
+      region[i] = px[i * 4]!
+      pintado[i] = px[i * 4 + 2]!
+    }
     // Fuera de las islas del mapa UV la oclusión horneada es 0: ahí no hay piel.
     const ao = leer(relieve.image)
     const dentro = new Uint8Array(lado * lado)
@@ -105,16 +115,16 @@ export function cargarTexturasAvatar(modelo: ModeloAvatar): Promise<TexturasAvat
     suave.anisotropy = 4
     suave.needsUpdate = true
     relieve.dispose()
-    return { ids, relieve: suave, lado, region, dentro }
+    return { ids, relieve: suave, lado, region, dentro, pintado }
   })()
   // Si falla, se queda el fallo (ver cargarModeloAvatar).
   cargando.catch(() => undefined)
   return cargando
 }
 
-/** Región del modelo (1…48; 0 = ninguna) en un punto del mapa UV. */
+/** Región del modelo (1…48; 0 = ninguna) que se ve en un punto del mapa UV (la de su grupo, alisada). */
 export function regionEn(t: TexturasAvatar, u: number, v: number): number {
   const x = Math.min(t.lado - 1, Math.max(0, Math.floor(u * t.lado)))
   const y = Math.min(t.lado - 1, Math.max(0, Math.floor(v * t.lado)))
-  return t.region[y * t.lado + x] ?? 0
+  return t.pintado[y * t.lado + x] ?? 0
 }

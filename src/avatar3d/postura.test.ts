@@ -2,11 +2,11 @@ import { readFileSync } from 'node:fs'
 import { BufferAttribute, BufferGeometry, MeshBasicMaterial, Quaternion, SkinnedMesh, Vector3 } from 'three'
 import { describe, expect, it } from 'vitest'
 import type { DatosCuerpo } from '../domain/cuerpo'
-import { REGIONES_MODELO } from '../domain/musculos'
+import { grupoDeRegion, REGIONES_MODELO } from '../domain/musculos'
 import { aplicarPostura, crearEsqueleto, ponerEnReposo } from './esqueleto'
-import { distanciaSegmentos, RADIO_DEDO, RADIO_PULGAR, RADIO_PULGAR_PUNTA } from '../animacion3d/pulgar'
+import { distanciaSegmentos } from '../animacion3d/pulgar'
 import { suavizarRelieve } from './texturas'
-import { difuminar, fuerzaRelieve, reducir } from './mapaColor'
+import { alisarContornos, difuminar, fuerzaRelieve, reducir } from './mapaColor'
 import { modeloDesdeGlb, PARTES, type InfoAvatar } from './modelo'
 import { posturaRelajada, RESPIRACION_S, respirar } from './postura'
 import { resolverForma } from './resolver'
@@ -139,30 +139,64 @@ describe('postura relajada del avatar', () => {
     }
   })
 
-  it('el pulgar pasa por encima de los otros dedos, sin meterse en ninguno, con la punta sobre el segundo nudillo del corazón', () => {
+  it('el pulgar va por encima de los otros dedos, apoyado en ellos de punta a punta sin meterse, cruzado del índice al corazón', () => {
     for (const d of CUERPOS) {
-      const { e, pos } = montar(d)
+      const { e, pos, malla } = montar(d)
+      // La piel ya posada, con sus normales: para saber a qué distancia (y de qué lado) de la piel de los
+      // dedos queda cada punto del pulgar.
+      const p = new Float32Array(modelo.vertices * 3)
+      const v = new Vector3()
+      for (let i = 0; i < modelo.vertices; i++) p.set(malla.getVertexPosition(i, v).toArray(), i * 3)
+      const g = new BufferGeometry()
+      g.setAttribute('position', new BufferAttribute(p, 3))
+      g.setIndex(new BufferAttribute(modelo.indices.slice(0, info.triangulos_piel * 3), 1))
+      g.computeVertexNormals()
+      const normal = g.getAttribute('normal')
+      const P = (i: number) => new Vector3(p[i * 3]!, p[i * 3 + 1]!, p[i * 3 + 2]!)
       for (const lado of ['L', 'R'] as const) {
-        const punta = (h: string) => e.puntas.get(`${h}.${lado}`)!.getWorldPosition(new Vector3())
-        const dedos: [Vector3, Vector3][] = []
-        for (const cadena of [['dedos', 'dedos2', 'dedos3', 'yema'], ['indice1', 'indice2', 'indice3', 'yema_indice'], ['anular1', 'anular2', 'anular3', 'yema_anular'], ['menique1', 'menique2', 'menique3', 'yema_menique']]) {
-          const p = cadena.map((h, i) => (i === 3 ? punta(h) : pos(`${h}.${lado}`)))
-          for (let i = 0; i < 3; i++) dedos.push([p[i]!, p[i + 1]!])
+        const dedos: number[] = []
+        const pulgar: number[] = []
+        for (let i = 0; i < info.vertices_forma; i++) {
+          const h = info.huesos[modelo.hueso[i]!]!
+          if (new RegExp(`^(indice|dedos|anular|menique)[0-9]?\\.${lado}$`).test(h)) dedos.push(i)
+          if (new RegExp(`^pulgar2?\\.${lado}$`).test(h)) pulgar.push(i)
         }
-        const pulgar: [Vector3, Vector3, number][] = [
-          [pos(`pulgar.${lado}`), pos(`pulgar2.${lado}`), RADIO_PULGAR],
-          [pos(`pulgar2.${lado}`), punta('yema_pulgar'), RADIO_PULGAR_PUNTA],
-        ]
-        // Sin meterse en ningún dedo (con medio milímetro de margen por los pasos de la búsqueda).
-        for (const [a, b, r] of pulgar)
-          for (const [p, q] of dedos) expect(distanciaSegmentos(a, b, p, q), `${d.kg} kg, ${lado}`).toBeGreaterThan(r + RADIO_DEDO - 0.0015)
-        // Por fuera del puño (del lado de la palma, más allá del segundo nudillo del corazón) y con la punta
-        // junto a ese nudillo: a menos de 1 cm de tocarlo.
+        /** Distancia con signo a la piel de los dedos (al plano del vértice más cercano; negativa, dentro). */
+        const aPiel = (x: Vector3) => {
+          let j = dedos[0]!
+          for (const k of dedos) if (x.distanceToSquared(P(k)) < x.distanceToSquared(P(j))) j = k
+          return x.clone().sub(P(j)).dot(new Vector3(normal.getX(j), normal.getY(j), normal.getZ(j)))
+        }
+        // A lo largo del pulgar (diez trozos: cinco de cada falange), lo más cerca que queda de los dedos.
+        const a0 = pos(`pulgar.${lado}`)
+        const a1 = pos(`pulgar2.${lado}`)
+        const a2 = e.puntas.get(`yema_pulgar.${lado}`)!.getWorldPosition(new Vector3())
+        const perfil = new Array<number>(10).fill(Infinity)
+        let dentro = 0
+        for (const i of pulgar) {
+          const x = P(i)
+          const sd = aPiel(x)
+          if (sd < -0.002) dentro++
+          const t1 = x.clone().sub(a0).dot(a1.clone().sub(a0)) / a1.distanceToSquared(a0)
+          const t2 = x.clone().sub(a1).dot(a2.clone().sub(a1)) / a2.distanceToSquared(a1)
+          const k = t1 < 1 ? Math.floor(Math.max(0, t1) * 5) : 5 + Math.min(4, Math.floor(Math.max(0, t2) * 5))
+          perfil[k] = Math.min(perfil[k]!, sd)
+        }
+        const quien = `${d.kg} kg, ${lado}: ${perfil.map((x) => (x * 1000).toFixed(1)).join(' ')} mm`
+        // Apoyado: desde poco después de la base hasta la punta, cada trozo a menos de 5 mm de la piel de
+        // los dedos (antes, la segunda falange quedaba a 3–12 mm).
+        for (let k = 1; k < 10; k++) expect(perfil[k]!, quien).toBeLessThan(0.005)
+        // Y sin meterse: como mucho un par de milímetros (la piel cede) y en muy pocos puntos.
+        for (let k = 0; k < 10; k++) expect(perfil[k]!, quien).toBeGreaterThan(-0.0035)
+        expect(dentro, quien).toBeLessThan(8)
+        // Cruzado: la última falange va del índice hacia el meñique (no hacia abajo, a lo largo de los
+        // dedos), y la punta queda sobre la segunda falange del corazón (más cerca de ella que de la del
+        // índice) y por fuera del puño.
+        const cruzado = pos(`menique1.${lado}`).sub(pos(`indice1.${lado}`)).normalize()
+        expect(a2.clone().sub(a1).normalize().dot(cruzado), quien).toBeGreaterThan(0.45)
+        expect(distanciaSegmentos(a2, a2, pos(`dedos2.${lado}`), pos(`dedos3.${lado}`)), quien).toBeLessThan(distanciaSegmentos(a2, a2, pos(`indice2.${lado}`), pos(`indice3.${lado}`)))
         const n = new Vector3(0, 0, 1).applyQuaternion(e.porNombre.get(`mano.${lado}`)!.getWorldQuaternion(new Quaternion()))
-        const nudillo = pos(`dedos2.${lado}`)
-        const yema = punta('yema_pulgar')
-        expect(yema.clone().sub(nudillo).dot(n), `${d.kg} kg, ${lado}`).toBeGreaterThan(0.005)
-        expect(yema.distanceTo(nudillo), `${d.kg} kg, ${lado}`).toBeLessThan(RADIO_PULGAR_PUNTA + RADIO_DEDO + 0.01)
+        expect(a2.clone().sub(pos(`dedos2.${lado}`)).dot(n), quien).toBeGreaterThan(0.008)
       }
     }
   })
@@ -287,6 +321,30 @@ describe('colores con bordes suaves', () => {
     // El borde de la isla no se oscurece con lo de fuera, y fuera se rellena con lo de al lado.
     expect(ao(4)).toBeGreaterThan(190)
     expect(ao(3)).toBeGreaterThan(190)
+  })
+
+  it('los contornos de cada grupo se alisan: sin picos estrechos, y lo grande y lo de fuera, igual', () => {
+    // Mitad izquierda, cuádriceps; derecha, isquiotibiales; un pico de cuádriceps de 2 texeles de ancho
+    // que se mete 20 en la otra mitad, y una franja sin piel abajo.
+    const L = 64
+    const cuadriceps = REGIONES_MODELO.indexOf('vasto_medial') + 1
+    const isquios = REGIONES_MODELO.indexOf('biceps_femoral') + 1
+    const region = new Uint8Array(L * L)
+    const dentro = new Uint8Array(L * L)
+    for (let y = 0; y < L; y++)
+      for (let x = 0; x < L; x++) {
+        const i = y * L + x
+        dentro[i] = y < 56 ? 1 : 0
+        region[i] = x < 32 || (y >= 20 && y < 22 && x < 52) ? cuadriceps : isquios
+      }
+    const r = alisarContornos(region, dentro, L, 4)
+    const grupo = (x: number, y: number) => grupoDeRegion(r[y * L + x]!)
+    // El pico desaparece; el borde entre las mitades sigue en su sitio.
+    for (let x = 36; x < 52; x++) expect(grupo(x, 20), `x = ${x}`).toBe('isquiotibiales')
+    expect(grupo(28, 40)).toBe('cuadriceps')
+    expect(grupo(35, 40)).toBe('isquiotibiales')
+    // Fuera de la piel no se toca nada.
+    for (let x = 0; x < L; x++) expect(r[60 * L + x]).toBe(region[60 * L + x])
   })
 
   it('reduce un mapa eligiendo un texel por bloque', () => {
