@@ -70,7 +70,7 @@ function caja(entrada: Float32Array, dentro: Uint8Array, lado: number, radio: nu
  * `colores` tiene 4 valores por región (la 0 incluida). Los texeles sin piel toman el de su vecino.
  */
 export function difuminar(region: Uint8Array, dentro: Uint8Array, lado: number, colores: Float32Array, radio = RADIO, pasadas = PASADAS): Float32Array {
-  let a = new Float32Array(lado * lado * 4)
+  const a = new Float32Array(lado * lado * 4)
   for (let i = 0; i < lado * lado; i++) {
     const r = region[i]! * 4
     a[i * 4] = colores[r] ?? 0
@@ -78,6 +78,12 @@ export function difuminar(region: Uint8Array, dentro: Uint8Array, lado: number, 
     a[i * 4 + 2] = colores[r + 2] ?? 0
     a[i * 4 + 3] = colores[r + 3] ?? 0
   }
+  return suavizar(a, dentro, lado, radio, pasadas)
+}
+
+/** Difumina un mapa rgba dentro de la piel y rellena lo de fuera con el valor de al lado. */
+function suavizar(entrada: Float32Array<ArrayBuffer>, dentro: Uint8Array, lado: number, radio: number, pasadas: number): Float32Array<ArrayBuffer> {
+  let a = entrada
   let b = new Float32Array(a.length)
   for (let p = 0; p < pasadas; p++) {
     caja(a, dentro, lado, radio, true, b)
@@ -150,21 +156,49 @@ export function crearMapaColor(texturas: TexturasAvatar): MapaColor {
 
 /**
  * Cuánto relieve horneado se usa en cada región (1 = todo). En el pecho, el relieve de Z-Anatomy no
- * coincide con el pectoral musculado de MakeHuman y dibuja un surco raro de la axila al esternón.
+ * coincide con el pectoral musculado de MakeHuman y dibuja un surco raro bajo el pectoral, de la axila
+ * al esternón: ahí no se usa nada (la forma del pectoral ya la da la malla).
  */
 export const RELIEVE_REGION: Partial<Record<RegionModelo, number>> = {
-  pectoral_clavicular: 0.15,
-  pectoral_esternal: 0.15,
-  pectoral_costal: 0.15,
-  serrato_anterior: 0.35,
-  deltoides_anterior: 0.6,
+  pectoral_clavicular: 0,
+  pectoral_esternal: 0,
+  pectoral_costal: 0,
+  serrato_anterior: 0.2,
+  deltoides_anterior: 0.5,
+}
+
+/** Lo que se extiende (texeles del mapa de 512) la falta de relieve más allá de su región: unos 3 cm. */
+const EXTENDER_RELIEVE = 9
+
+/** Mínimo en una ventana (en un sentido) entre los texeles con piel: extiende las zonas de valor bajo. */
+function minimo(campo: Float32Array, dentro: Uint8Array, lado: number, radio: number, horizontal: boolean): Float32Array<ArrayBuffer> {
+  const r = Float32Array.from(campo)
+  for (let a = 0; a < lado; a++)
+    for (let b = 0; b < lado; b++) {
+      const i = horizontal ? a * lado + b : b * lado + a
+      if (!dentro[i]) continue
+      let m = campo[i]!
+      for (let k = Math.max(0, b - radio); k <= Math.min(lado - 1, b + radio); k++) {
+        const j = horizontal ? a * lado + k : k * lado + a
+        if (dentro[j] && campo[j]! < m) m = campo[j]!
+      }
+      r[i] = m
+    }
+  return r
 }
 
 /** Fuerza del relieve de cada punto del mapa UV (de 0 a 1), con los cambios entre regiones difuminados. */
 export function fuerzaRelieve(region: Uint8Array, dentro: Uint8Array, lado: number): Float32Array {
   const factores = new Float32Array((REGIONES_MODELO.length + 1) * 4).fill(1)
   REGIONES_MODELO.forEach((r, i) => factores.fill(RELIEVE_REGION[r] ?? 1, (i + 1) * 4, (i + 2) * 4))
-  const f = difuminar(region, dentro, lado, factores, 6, 2)
+  // Primero la zona sin relieve se extiende un poco por las regiones de al lado (el surco cae justo en
+  // la frontera) y después el cambio se difumina.
+  let campo: Float32Array = new Float32Array(lado * lado)
+  for (let i = 0; i < lado * lado; i++) campo[i] = factores[region[i]! * 4]!
+  campo = minimo(minimo(campo, dentro, lado, EXTENDER_RELIEVE, true), dentro, lado, EXTENDER_RELIEVE, false)
+  const a = new Float32Array(lado * lado * 4)
+  for (let i = 0; i < lado * lado; i++) a[i * 4] = campo[i]!
+  const f = suavizar(a, dentro, lado, 6, 2)
   const r = new Float32Array(lado * lado)
   for (let i = 0; i < lado * lado; i++) r[i] = f[i * 4]!
   return r

@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import type { DatosCuerpo } from '../domain/cuerpo'
 import { REGIONES_MODELO } from '../domain/musculos'
 import { aplicarPostura, crearEsqueleto, ponerEnReposo } from './esqueleto'
+import { distanciaSegmentos, RADIO_DEDO, RADIO_PULGAR } from '../animacion3d/pulgar'
 import { difuminar, fuerzaRelieve, reducir } from './mapaColor'
 import { modeloDesdeGlb, PARTES, type InfoAvatar } from './modelo'
 import { posturaRelajada, RESPIRACION_S, respirar } from './postura'
@@ -98,9 +99,9 @@ describe('postura relajada del avatar', () => {
     }
   })
 
-  it('puños cerrados que apuntan hacia dentro, con el pulgar por fuera', () => {
+  it('puños cerrados que apuntan hacia dentro', () => {
     for (const d of CUERPOS) {
-      const { e, forma, pos } = montar(d)
+      const { forma, pos } = montar(d)
       for (const [lado, s] of [['L', 1], ['R', -1]] as const) {
         const largo = new Vector3(...forma.articulaciones[`mano.${lado}`]!).distanceTo(new Vector3(...forma.articulaciones[`dedos3.${lado}`]!))
         // La última falange vuelve hacia la muñeca: mucho más cerca que con la mano abierta.
@@ -109,10 +110,6 @@ describe('postura relajada del avatar', () => {
         const mano = pos(`dedos.${lado}`).sub(pos(`mano.${lado}`))
         expect(mano.y).toBeLessThan(0)
         expect(mano.x * s, `${d.kg} kg, ${lado}`).toBeLessThan(0)
-        // El pulgar, delante de los dedos cerrados (del lado de la palma) y no metido en ellos.
-        const pulgar = e.porNombre.get(`pulgar.${lado}`)!
-        const punta = pulgar.localToWorld(new Vector3(...forma.articulaciones[`yema_pulgar.${lado}`]!).sub(new Vector3(...forma.articulaciones[`pulgar.${lado}`]!)))
-        expect(punta.distanceTo(pos(`dedos3.${lado}`)), `${d.kg} kg, pulgar ${lado}`).toBeLessThan(0.05)
       }
     }
   })
@@ -137,6 +134,28 @@ describe('postura relajada del avatar', () => {
           const media = pos(`${f3}.${lado}`).sub(pos(`${f2}.${lado}`)).normalize()
           expect((media.angleTo(corazon) * 180) / Math.PI, `${d.kg} kg, ${dedo} ${lado}`).toBeLessThan(12)
         }
+      }
+    }
+  })
+
+  it('el pulgar cruza por fuera del puño sin meterse en ningún dedo', () => {
+    for (const d of CUERPOS) {
+      const { e, pos } = montar(d)
+      for (const lado of ['L', 'R'] as const) {
+        const punta = (h: string) => e.puntas.get(`${h}.${lado}`)!.getWorldPosition(new Vector3())
+        const dedos: [Vector3, Vector3][] = []
+        for (const cadena of [['dedos', 'dedos2', 'dedos3', 'yema'], ['indice1', 'indice2', 'indice3', 'yema_indice'], ['anular1', 'anular2', 'anular3', 'yema_anular'], ['menique1', 'menique2', 'menique3', 'yema_menique']]) {
+          const p = cadena.map((h, i) => (i === 3 ? punta(h) : pos(`${h}.${lado}`)))
+          for (let i = 0; i < 3; i++) dedos.push([p[i]!, p[i + 1]!])
+        }
+        const pulgar: [Vector3, Vector3][] = [
+          [pos(`pulgar.${lado}`), pos(`pulgar2.${lado}`)],
+          [pos(`pulgar2.${lado}`), punta('yema_pulgar')],
+        ]
+        for (const [a, b] of pulgar)
+          for (const [p, q] of dedos) expect(distanciaSegmentos(a, b, p, q), `${d.kg} kg, ${lado}`).toBeGreaterThan(RADIO_PULGAR + RADIO_DEDO - 0.0005)
+        // Y pegado al puño: cada falange del pulgar, apoyada en algún dedo (a menos de 5 mm más que lo justo).
+        for (const [a, b] of pulgar) expect(Math.min(...dedos.map(([p, q]) => distanciaSegmentos(a, b, p, q))), `${d.kg} kg, ${lado}`).toBeLessThan(RADIO_PULGAR + RADIO_DEDO + 0.005)
       }
     }
   })
@@ -217,14 +236,26 @@ describe('colores con bordes suaves', () => {
     expect(en(28, 16)).toBeCloseTo(1, 5)
   })
 
-  it('el relieve del pecho casi no se usa; el de los demás músculos, entero', () => {
+  it('el relieve del pecho no se usa, ni unos centímetros alrededor; el de los demás músculos, entero', () => {
+    const L = 96
     const pecho = REGIONES_MODELO.indexOf('pectoral_esternal') + 1
     const muslo = REGIONES_MODELO.indexOf('vasto_lateral') + 1
-    const r2 = new Uint8Array(lado * lado)
-    for (let y = 4; y < 28; y++) for (let x = 4; x < 28; x++) r2[y * lado + x] = x < 16 ? pecho : muslo
-    const f = fuerzaRelieve(r2, dentro, lado)
-    expect(f[16 * lado + 5]!).toBeLessThan(0.25)
-    expect(f[16 * lado + 26]!).toBeGreaterThan(0.9)
+    const r2 = new Uint8Array(L * L)
+    const piel = new Uint8Array(L * L)
+    for (let y = 4; y < L - 4; y++)
+      for (let x = 4; x < L - 4; x++) {
+        piel[y * L + x] = 1
+        r2[y * L + x] = x < 30 ? pecho : muslo
+      }
+    const f = fuerzaRelieve(r2, piel, L)
+    const en = (x: number) => f[(L / 2) * L + x]!
+    expect(en(10)).toBeLessThan(0.01)
+    // La frontera (donde caía el surco) y un poco más allá, aún casi sin relieve.
+    expect(en(31)).toBeLessThan(0.15)
+    expect(en(36)).toBeLessThan(0.4)
+    // Lejos, todo el relieve; y pasa de uno a otro sin saltos.
+    expect(en(70)).toBeGreaterThan(0.99)
+    for (let x = 10; x < 70; x++) expect(en(x + 1)).toBeGreaterThanOrEqual(en(x) - 1e-6)
   })
 
   it('reduce un mapa eligiendo un texel por bloque', () => {
