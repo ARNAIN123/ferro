@@ -2,7 +2,50 @@
 // normal; azul: oclusión ambiental). Las regiones se leen en la CPU para saber qué músculo se toca y
 // para pintar el mapa de color (mapaColor.ts); la oclusión dice dónde hay piel en el mapa UV.
 import * as THREE from 'three'
+import { reducir, suavizar } from './mapaColor'
 import type { ModeloAvatar } from './modelo'
+
+/**
+ * Relieve suavizado (ronda 5): las sombras que separan los músculos (el mapa de normales y la oclusión
+ * horneados) tenían bordes muy marcados. Se difuminan una vez al cargar, solo dentro de la piel, a
+ * la mitad de resolución (512): unos 1,5 cm de transición en el cuerpo, sin perder el dibujo.
+ */
+export const LADO_RELIEVE = 512
+const RADIO_RELIEVE = 2
+const PASADAS_RELIEVE = 1
+
+/** Normales (rojo y verde) y oclusión (azul) de 0 a 255, difuminadas dentro de la piel. */
+export function suavizarRelieve(px: Uint8ClampedArray | Uint8Array, lado: number, dentro: Uint8Array, nuevo = LADO_RELIEVE): Uint8Array {
+  // Media de cada bloque (no un texel suelto: así no salen dientes) y, fuera de la piel, nada.
+  const k = lado / nuevo
+  const dentroNuevo = reducir(dentro, lado, nuevo)
+  const a = new Float32Array(nuevo * nuevo * 4)
+  for (let y = 0; y < nuevo; y++)
+    for (let x = 0; x < nuevo; x++) {
+      let r = 0
+      let g = 0
+      let b = 0
+      let n = 0
+      for (let dy = 0; dy < k; dy++)
+        for (let dx = 0; dx < k; dx++) {
+          const i = (y * k + dy) * lado + x * k + dx
+          if (!dentro[i]) continue
+          r += px[i * 4]!
+          g += px[i * 4 + 1]!
+          b += px[i * 4 + 2]!
+          n++
+        }
+      const j = (y * nuevo + x) * 4
+      a[j] = n ? r / n : 128
+      a[j + 1] = n ? g / n : 128
+      a[j + 2] = n ? b / n : 0
+      a[j + 3] = 255
+    }
+  const f = suavizar(a, dentroNuevo, nuevo, RADIO_RELIEVE, PASADAS_RELIEVE, 8)
+  const r = new Uint8Array(nuevo * nuevo * 4)
+  for (let i = 0; i < r.length; i++) r[i] = Math.round(Math.min(255, Math.max(0, f[i]!)))
+  return r
+}
 
 const BASE = import.meta.env.BASE_URL
 
@@ -52,7 +95,17 @@ export function cargarTexturasAvatar(modelo: ModeloAvatar): Promise<TexturasAvat
     const ao = leer(relieve.image)
     const dentro = new Uint8Array(lado * lado)
     for (let i = 0; i < lado * lado; i++) dentro[i] = region[i]! > 0 || ao[i * 4 + 2]! > 0 ? 1 : 0
-    return { ids, relieve, lado, region, dentro }
+    // El relieve que se usa es el suavizado.
+    const suave = new THREE.DataTexture(suavizarRelieve(ao, lado, dentro), LADO_RELIEVE, LADO_RELIEVE, THREE.RGBAFormat, THREE.UnsignedByteType)
+    suave.colorSpace = THREE.NoColorSpace
+    suave.flipY = false
+    suave.magFilter = THREE.LinearFilter
+    suave.minFilter = THREE.LinearMipmapLinearFilter
+    suave.generateMipmaps = true
+    suave.anisotropy = 4
+    suave.needsUpdate = true
+    relieve.dispose()
+    return { ids, relieve: suave, lado, region, dentro }
   })()
   // Si falla, se queda el fallo (ver cargarModeloAvatar).
   cargando.catch(() => undefined)

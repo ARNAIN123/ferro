@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest'
 import type { DatosCuerpo } from '../domain/cuerpo'
 import { REGIONES_MODELO } from '../domain/musculos'
 import { aplicarPostura, crearEsqueleto, ponerEnReposo } from './esqueleto'
-import { distanciaSegmentos, RADIO_DEDO, RADIO_PULGAR } from '../animacion3d/pulgar'
+import { distanciaSegmentos, RADIO_DEDO, RADIO_PULGAR, RADIO_PULGAR_PUNTA } from '../animacion3d/pulgar'
+import { suavizarRelieve } from './texturas'
 import { difuminar, fuerzaRelieve, reducir } from './mapaColor'
 import { modeloDesdeGlb, PARTES, type InfoAvatar } from './modelo'
 import { posturaRelajada, RESPIRACION_S, respirar } from './postura'
@@ -138,7 +139,7 @@ describe('postura relajada del avatar', () => {
     }
   })
 
-  it('el pulgar cruza por fuera del puño sin meterse en ningún dedo', () => {
+  it('el pulgar pasa por encima de los otros dedos, sin meterse en ninguno, con la punta sobre el segundo nudillo del corazón', () => {
     for (const d of CUERPOS) {
       const { e, pos } = montar(d)
       for (const lado of ['L', 'R'] as const) {
@@ -148,14 +149,20 @@ describe('postura relajada del avatar', () => {
           const p = cadena.map((h, i) => (i === 3 ? punta(h) : pos(`${h}.${lado}`)))
           for (let i = 0; i < 3; i++) dedos.push([p[i]!, p[i + 1]!])
         }
-        const pulgar: [Vector3, Vector3][] = [
-          [pos(`pulgar.${lado}`), pos(`pulgar2.${lado}`)],
-          [pos(`pulgar2.${lado}`), punta('yema_pulgar')],
+        const pulgar: [Vector3, Vector3, number][] = [
+          [pos(`pulgar.${lado}`), pos(`pulgar2.${lado}`), RADIO_PULGAR],
+          [pos(`pulgar2.${lado}`), punta('yema_pulgar'), RADIO_PULGAR_PUNTA],
         ]
-        for (const [a, b] of pulgar)
-          for (const [p, q] of dedos) expect(distanciaSegmentos(a, b, p, q), `${d.kg} kg, ${lado}`).toBeGreaterThan(RADIO_PULGAR + RADIO_DEDO - 0.0005)
-        // Y pegado al puño: cada falange del pulgar, apoyada en algún dedo (a menos de 5 mm más que lo justo).
-        for (const [a, b] of pulgar) expect(Math.min(...dedos.map(([p, q]) => distanciaSegmentos(a, b, p, q))), `${d.kg} kg, ${lado}`).toBeLessThan(RADIO_PULGAR + RADIO_DEDO + 0.005)
+        // Sin meterse en ningún dedo (con medio milímetro de margen por los pasos de la búsqueda).
+        for (const [a, b, r] of pulgar)
+          for (const [p, q] of dedos) expect(distanciaSegmentos(a, b, p, q), `${d.kg} kg, ${lado}`).toBeGreaterThan(r + RADIO_DEDO - 0.0015)
+        // Por fuera del puño (del lado de la palma, más allá del segundo nudillo del corazón) y con la punta
+        // junto a ese nudillo: a menos de 1 cm de tocarlo.
+        const n = new Vector3(0, 0, 1).applyQuaternion(e.porNombre.get(`mano.${lado}`)!.getWorldQuaternion(new Quaternion()))
+        const nudillo = pos(`dedos2.${lado}`)
+        const yema = punta('yema_pulgar')
+        expect(yema.clone().sub(nudillo).dot(n), `${d.kg} kg, ${lado}`).toBeGreaterThan(0.005)
+        expect(yema.distanceTo(nudillo), `${d.kg} kg, ${lado}`).toBeLessThan(RADIO_PULGAR_PUNTA + RADIO_DEDO + 0.01)
       }
     }
   })
@@ -256,6 +263,30 @@ describe('colores con bordes suaves', () => {
     // Lejos, todo el relieve; y pasa de uno a otro sin saltos.
     expect(en(70)).toBeGreaterThan(0.99)
     for (let x = 10; x < 70; x++) expect(en(x + 1)).toBeGreaterThanOrEqual(en(x) - 1e-6)
+  })
+
+  it('las sombras entre músculos se suavizan sin perderse, solo dentro de la piel', () => {
+    // Un surco de un texel (oclusión 60 entre piel a 200) en una isla, y fuera nada.
+    const L = 64
+    const px = new Uint8Array(L * L * 4)
+    const piel = new Uint8Array(L * L)
+    for (let y = 8; y < 56; y++)
+      for (let x = 8; x < 56; x++) {
+        const i = y * L + x
+        piel[i] = 1
+        px[i * 4] = x === 32 || x === 33 ? 40 : 128
+        px[i * 4 + 1] = 128
+        px[i * 4 + 2] = x === 32 || x === 33 ? 60 : 200
+      }
+    const r = suavizarRelieve(px, L, piel, 32)
+    const ao = (x: number) => r[(16 * 32 + x) * 4 + 2]!
+    // El surco sigue ahí (más oscuro que la piel de al lado), pero más ancho y menos brusco.
+    expect(ao(16)).toBeLessThan(ao(10) - 20)
+    expect(ao(16)).toBeGreaterThan(60 + 20)
+    expect(ao(15)).toBeLessThan(ao(10))
+    // El borde de la isla no se oscurece con lo de fuera, y fuera se rellena con lo de al lado.
+    expect(ao(4)).toBeGreaterThan(190)
+    expect(ao(3)).toBeGreaterThan(190)
   })
 
   it('reduce un mapa eligiendo un texel por bloque', () => {

@@ -41,25 +41,41 @@ export function distanciaSegmentos(p1: Vector3, q1: Vector3, p2: Vector3, q2: Ve
   return p1.clone().add(d1.multiplyScalar(s)).distanceTo(p2.clone().add(d2.multiplyScalar(t)))
 }
 
-/** Radio (m) de las cápsulas de las falanges del pulgar y de los dedos. */
-export const RADIO_PULGAR = 0.012
-export const RADIO_DEDO = 0.0095
+/** Radio (m) de las cápsulas del pulgar (la base y la primera falange, más gruesas; la punta) y de los dedos. */
+export const RADIO_PULGAR = 0.0105
+export const RADIO_PULGAR_PUNTA = 0.0085
+export const RADIO_DEDO = 0.009
 
-export interface PulgarEnPuno {
-  /** Articulación de la base del pulgar (donde empieza su primera falange). */
-  base: Vector3
-  /** Largo de sus dos falanges. */
-  largos: readonly [number, number]
-  /** Falanges de los dedos, ya cerrados (segmentos). */
-  dedos: readonly (readonly [Vector3, Vector3])[]
-  /** Hacia dónde debería ir cada falange (puntos): la primera idea, que se corrige si choca. */
-  objetivos: readonly [Vector3, Vector3]
+/** Un tramo del pulgar (el metacarpiano o una falange). */
+export interface TramoPulgar {
+  largo: number
+  radio: number
+  /**
+   * Dirección de partida: la búsqueda mira en un cono alrededor de ella. Sin ella, hacia el objetivo
+   * del tramo desde donde empieza (o hacia la punta, si no tiene objetivo).
+   */
+  idea?: Vector3
+  /** Abertura del cono (grados): lo que puede girar ese tramo. */
+  cono: number
+  /** Dónde debería acabar el tramo (opcional) y cuánto pesa acercarse. */
+  objetivo?: Vector3
+  peso?: number
 }
 
-/** Lo que se mete una cápsula del pulgar en las de los dedos (m, sumado). */
-function choque(a: Vector3, b: Vector3, dedos: PulgarEnPuno['dedos']): number {
+export interface PulgarEnPuno {
+  /** Donde empieza el primer tramo. */
+  base: Vector3
+  tramos: readonly TramoPulgar[]
+  /** Falanges de los dedos, ya cerrados (segmentos). */
+  dedos: readonly (readonly [Vector3, Vector3])[]
+  /** Dónde debería quedar la punta del pulgar. */
+  punta: Vector3
+}
+
+/** Lo que se mete una cápsula del pulgar (de radio `radio`) en las de los dedos (m, sumado). */
+function choque(a: Vector3, b: Vector3, dedos: PulgarEnPuno['dedos'], radio: number): number {
   let total = 0
-  for (const [p, q] of dedos) total += Math.max(0, RADIO_PULGAR + RADIO_DEDO - distanciaSegmentos(a, b, p, q))
+  for (const [p, q] of dedos) total += Math.max(0, radio + RADIO_DEDO - distanciaSegmentos(a, b, p, q))
   return total
 }
 
@@ -76,35 +92,75 @@ function cono(eje: Vector3, maximo: number, paso: number): Vector3[] {
   return r
 }
 
+/** Paso (grados) de las direcciones que se prueban al mirar cómo seguirían los tramos siguientes. */
+const PASO_PREVIO = 9
+const PASO_FINO = 5
+
 /**
- * Direcciones de las dos falanges del pulgar: entre las del cono alrededor de la primera idea, la que
- * no choca con ningún dedo (o choca lo menos posible) y deja la punta de cada falange más cerca de su
- * objetivo (es decir, pegada al puño).
+ * Dirección de cada tramo del pulgar, uno tras otro. Para cada dirección posible de un tramo (en el
+ * cono alrededor de su idea) se mira también cómo seguirían los siguientes (eligiendo cada uno lo mejor
+ * para él), y se queda la que deja el pulgar entero mejor: sin meterse en ningún dedo, con la punta en
+ * su sitio y cada tramo cerca de su objetivo, si tiene. Así el metacarpiano gira lo justo para que las
+ * falanges lleguen por fuera del puño.
  */
-export function colocarPulgar(p: PulgarEnPuno): [Vector3, Vector3] {
-  const elegir = (desde: Vector3, largo: number, objetivo: Vector3): Vector3 => {
-    const idea = objetivo.clone().sub(desde).normalize()
+export function colocarPulgar(p: PulgarEnPuno): Vector3[] {
+  const ideaDe = (t: TramoPulgar, desde: Vector3) => (t.idea ?? (t.objetivo ?? p.punta).clone().sub(desde)).clone().normalize()
+  /** Puntuación de un tramo (sin la punta): choque y objetivo. */
+  const deTramo = (t: TramoPulgar, desde: Vector3, fin: Vector3) => 1000 * choque(desde, fin, p.dedos, t.radio) + (t.objetivo ? (t.peso ?? 1) * fin.distanceTo(t.objetivo) : 0)
+  /** Lo mejor que pueden hacer los tramos desde `i`, cada uno por su cuenta: su puntuación y su punta. */
+  const seguir = (i: number, desde: Vector3, paso: number): { puntos: number; fin: Vector3 } => {
+    let puntos = 0
+    let actual = desde
+    for (let k = i; k < p.tramos.length; k++) {
+      const t = p.tramos[k]!
+      const idea = ideaDe(t, actual)
+      let mejor = { puntos: Infinity, fin: actual }
+      for (const dir of cono(idea, t.cono, paso)) {
+        const fin = actual.clone().add(dir.multiplyScalar(t.largo))
+        const pt = deTramo(t, actual, fin) + (k === p.tramos.length - 1 ? fin.distanceTo(p.punta) : 0)
+        if (pt < mejor.puntos) mejor = { puntos: pt, fin }
+      }
+      puntos += mejor.puntos
+      actual = mejor.fin
+    }
+    return { puntos, fin: actual }
+  }
+  const dirs: Vector3[] = []
+  let desde = p.base.clone()
+  p.tramos.forEach((t, i) => {
+    const idea = ideaDe(t, desde)
+    const ultimo = i === p.tramos.length - 1
     let mejor = idea
     let puntos = Infinity
-    for (const dir of cono(idea, 40, 5)) {
-      const fin = desde.clone().add(dir.clone().multiplyScalar(largo))
-      const puntuacion = 1000 * choque(desde, fin, p.dedos) + fin.distanceTo(objetivo)
+    for (const dir of cono(idea, t.cono, ultimo ? PASO_FINO : PASO_PREVIO)) {
+      const fin = desde.clone().add(dir.clone().multiplyScalar(t.largo))
+      const resto = ultimo ? { puntos: fin.distanceTo(p.punta) } : seguir(i + 1, fin, PASO_PREVIO * 1.5)
+      // A igualdad, lo que menos se aparta de la idea.
+      const puntuacion = deTramo(t, desde, fin) + resto.puntos + 0.002 * dir.angleTo(idea)
       if (puntuacion < puntos) {
         puntos = puntuacion
         mejor = dir
       }
     }
-    return mejor
-  }
-  const dir1 = elegir(p.base, p.largos[0], p.objetivos[0])
-  const medio = p.base.clone().add(dir1.clone().multiplyScalar(p.largos[0]))
-  const dir2 = elegir(medio, p.largos[1], p.objetivos[1])
-  return [dir1, dir2]
+    dirs.push(mejor)
+    desde = desde.add(mejor.clone().multiplyScalar(t.largo))
+  })
+  return dirs
 }
 
 /** Lo que se mete el pulgar en los dedos con esas direcciones (para los tests). */
-export function choquePulgar(p: PulgarEnPuno, dirs: readonly [Vector3, Vector3]): number {
-  const medio = p.base.clone().add(dirs[0].clone().multiplyScalar(p.largos[0]))
-  const punta = medio.clone().add(dirs[1].clone().multiplyScalar(p.largos[1]))
-  return choque(p.base, medio, p.dedos) + choque(medio, punta, p.dedos)
+export function choquePulgar(p: PulgarEnPuno, dirs: readonly Vector3[]): number {
+  let desde = p.base.clone()
+  let total = 0
+  p.tramos.forEach((t, i) => {
+    const fin = desde.clone().add(dirs[i]!.clone().multiplyScalar(t.largo))
+    total += choque(desde, fin, p.dedos, t.radio)
+    desde = fin
+  })
+  return total
+}
+
+/** Dónde queda la punta del pulgar con esas direcciones. */
+export function puntaPulgar(p: PulgarEnPuno, dirs: readonly Vector3[]): Vector3 {
+  return p.tramos.reduce((desde, t, i) => desde.add(dirs[i]!.clone().multiplyScalar(t.largo)), p.base.clone())
 }

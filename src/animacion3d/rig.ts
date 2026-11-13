@@ -3,10 +3,7 @@
 // colocados, brazos y piernas por cinemática inversa hacia manos y pies.
 import { Euler, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
 import { dosHuesos, giroEntreBases, perpendicular, v, type V3 } from './ik'
-import { colocarPulgar, RADIO_DEDO, RADIO_PULGAR } from './pulgar'
-
-/** Lo que se aparta el pulgar de las falanges de los dedos, por delante: justo lo que miden los dos. */
-const DELANTE_PULGAR = RADIO_PULGAR + RADIO_DEDO + 0.001
+import { colocarPulgar, RADIO_DEDO, RADIO_PULGAR, RADIO_PULGAR_PUNTA, type TramoPulgar } from './pulgar'
 // Puntos de la superficie del cuerpo (cada 3 cm), por hueso, en reposo y en coordenadas de three.js.
 // Los genera scripts/blender/generar-cuerpo.py (FERRO_PUNTOS) junto con el rig.
 import SUPERFICIE from './superficie.json'
@@ -60,6 +57,7 @@ export const OPCIONALES: readonly string[] = LADOS.flatMap((l) => [
     .filter((h) => h !== 'dedos')
     .map((h) => `${h}.${l}`),
   ...Object.values(PUNTA_DEDO).map((h) => `${h}.${l}`),
+  `pulgar0.${l}`,
   `pulgar.${l}`,
   `pulgar2.${l}`,
   `yema_pulgar.${l}`,
@@ -295,9 +293,10 @@ export class Rig {
         }
       }
       if (this.tiene(`pulgar.${lado}`) && this.tiene(`pulgar2.${lado}`) && this.tiene(`yema_pulgar.${lado}`) && this.tiene(`indice2.${lado}`)) {
-        // El pulgar, por fuera del puño (del lado de la palma): la primera falange hacia delante de la
-        // segunda del índice y la segunda sobre la segunda del corazón, corregidas para no meterse en
-        // ningún dedo (ver pulgar.ts).
+        // El pulgar pasa por encima de los otros dedos (por fuera del puño, sobre la segunda falange del
+        // índice) y su punta queda sobre el segundo nudillo del corazón, sin meterse en ningún dedo. Si el
+        // cuerpo tiene su metacarpiano, también gira (hacia la palma, como en un puño de verdad, para que
+        // la punta llegue). Ver pulgar.ts.
         const n = v(m.normal).normalize()
         const k = Math.min(1, Math.max(0, dedos))
         const dedosCerrados: [Vector3, Vector3][] = []
@@ -305,25 +304,26 @@ export class Rig {
           const puntos = [...cadena, PUNTA_DEDO[cadena[0]]!].map((h) => `${h}.${lado}`)
           if (puntos.every((h) => this.tiene(h))) for (let i = 0; i < 3; i++) dedosCerrados.push([this.pos(puntos[i]!), this.pos(puntos[i + 1]!)])
         }
-        const largo1 = this.longitud(`pulgar.${lado}`, `pulgar2.${lado}`)
-        const largo2 = this.longitud(`pulgar2.${lado}`, `yema_pulgar.${lado}`)
-        const [dir1, dir2] = colocarPulgar({
-          base: this.pos(`pulgar.${lado}`),
-          largos: [largo1, largo2],
-          dedos: dedosCerrados,
-          objetivos: [
-            this.pos(`indice2.${lado}`).lerp(this.pos(`indice3.${lado}`), 0.2).add(n.clone().multiplyScalar(DELANTE_PULGAR)),
-            this.pos(`anular2.${lado}`).lerp(this.pos(`anular3.${lado}`), 0.4).add(n.clone().multiplyScalar(DELANTE_PULGAR)),
-          ],
+        const cadena = [...(this.tiene(`pulgar0.${lado}`) ? ['pulgar0'] : []), 'pulgar', 'pulgar2', 'yema_pulgar'].map((h) => `${h}.${lado}`)
+        const medio = this.pos(`indice2.${lado}`).lerp(this.pos(`indice3.${lado}`), 0.4).add(n.clone().multiplyScalar(RADIO_PULGAR + RADIO_DEDO + 0.001))
+        const punta = this.pos(`dedos2.${lado}`).add(v(m.dir).normalize().add(n).normalize().multiplyScalar(RADIO_PULGAR_PUNTA + RADIO_DEDO + 0.001))
+        // Direcciones de ahora (siguiendo a la mano), para la idea de cada tramo.
+        const ahora = (i: number) => this.dirReposo(cadena[i]!, cadena[i + 1]!).normalize().applyQuaternion(qMano)
+        const ultimo = cadena.length - 2
+        const tramos: TramoPulgar[] = cadena.slice(0, -1).map((h, i) => {
+          const largo = this.longitud(h, cadena[i + 1]!)
+          // El metacarpiano gira poco (hacia la palma); las falanges, hacia su objetivo.
+          if (h.startsWith('pulgar0')) return { largo, radio: 0.004, idea: ahora(i), cono: 60 }
+          if (i < ultimo) return { largo, radio: RADIO_PULGAR, cono: 50, objetivo: medio, peso: 0.3 }
+          return { largo, radio: RADIO_PULGAR_PUNTA, cono: 50, objetivo: punta, peso: 1 }
         })
-        const tramo = (hueso: string, siguiente: string, dir: Vector3, delta: Quaternion) => {
-          const ahora = this.dirReposo(hueso, siguiente).normalize().applyQuaternion(delta)
-          const q = new Quaternion().slerp(new Quaternion().setFromUnitVectors(ahora, dir), k).multiply(delta)
-          this.orientar(hueso, q)
-          return q
-        }
-        const q1 = tramo(`pulgar.${lado}`, `pulgar2.${lado}`, dir1, qMano)
-        tramo(`pulgar2.${lado}`, `yema_pulgar.${lado}`, dir2, q1)
+        const dirs = colocarPulgar({ base: this.pos(cadena[0]!), tramos, dedos: dedosCerrados, punta })
+        let delta = qMano.clone()
+        cadena.slice(0, -1).forEach((h, i) => {
+          const actual = this.dirReposo(h, cadena[i + 1]!).normalize().applyQuaternion(delta)
+          delta = new Quaternion().slerp(new Quaternion().setFromUnitVectors(actual, dirs[i]!), k).multiply(delta)
+          this.orientar(h, delta)
+        })
       }
       r.codo[lado] = ik.medio
       r.muneca[lado] = this.pos(`mano.${lado}`)

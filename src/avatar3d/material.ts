@@ -8,7 +8,7 @@ import { crearMapaColor, crearMapaRelieve } from './mapaColor'
 import type { TexturasAvatar } from './texturas'
 
 /** Parte del relieve muscular horneado que se usa (con la definición de cada cuerpo). */
-const FUERZA_RELIEVE = 0.45
+const FUERZA_RELIEVE = 0.7
 
 export interface MaterialesAvatar {
   material: THREE.MeshStandardMaterial

@@ -82,16 +82,17 @@ export function difuminar(region: Uint8Array, dentro: Uint8Array, lado: number, 
 }
 
 /** Difumina un mapa rgba dentro de la piel y rellena lo de fuera con el valor de al lado. */
-function suavizar(entrada: Float32Array<ArrayBuffer>, dentro: Uint8Array, lado: number, radio: number, pasadas: number): Float32Array<ArrayBuffer> {
+export function suavizar(entrada: Float32Array<ArrayBuffer>, dentro: Uint8Array, lado: number, radio: number, pasadas: number, anillos = 2): Float32Array<ArrayBuffer> {
   let a = entrada
   let b = new Float32Array(a.length)
   for (let p = 0; p < pasadas; p++) {
     caja(a, dentro, lado, radio, true, b)
     caja(b, dentro, lado, radio, false, a)
   }
-  // Fuera de la piel: el color del vecino con piel más cercano (dos anillos bastan para el filtrado).
+  // Fuera de la piel: el color del vecino con piel más cercano (dos anillos bastan para el filtrado;
+  // con mipmaps hacen falta más).
   let relleno = Uint8Array.from(dentro)
-  for (let vuelta = 0; vuelta < 2; vuelta++) {
+  for (let vuelta = 0; vuelta < anillos; vuelta++) {
     b.set(a)
     const siguiente = Uint8Array.from(relleno)
     for (let y = 0; y < lado; y++)
