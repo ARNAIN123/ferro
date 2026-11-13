@@ -1,7 +1,7 @@
 // Postura del avatar en el mapa muscular (ronda 5): de pie, recto y simétrico, como en el gimnasio,
 // no en la postura anatómica rígida del modelo. Pecho fuera y hombros atrás, piernas a la anchura de
-// las caderas con las puntas algo abiertas y las rodillas sin bloquear, los brazos algo abiertos (como
-// con los dorsales marcados) con los codos un poco doblados y los puños cerrados, con las palmas y los
+// las caderas con las puntas algo abiertas y las rodillas sin bloquear, los brazos colgando cerca del
+// cuerpo sin tocarlo, con los codos un poco doblados y los puños cerrados, con las palmas y los
 // nudillos hacia dentro (hacia los muslos). Encima, la respiración: el pecho y los hombros suben y
 // bajan muy poco.
 import { Object3D, Quaternion, Vector3 } from 'three'
@@ -20,8 +20,11 @@ const LADOS: readonly [Lado, number][] = [
 
 /** Lo que se estira cada brazo respecto a su largo (con el codo un poco doblado, unos 18°). */
 export const ESTIRADO_BRAZO = 0.988
-/** Lo que se abren los brazos (grados) además de lo que ya se abren en reposo. */
-export const APERTURA_BRAZOS = 8
+/**
+ * Lo que se abren los brazos (grados) respecto al reposo, que ya se abre lo justo para no meterse en el
+ * cuerpo: un poco menos, para que cuelguen cerca del cuerpo sin tocarlo.
+ */
+export const APERTURA_BRAZOS = -3
 /** Hacia dentro que apunta la mano (tangente respecto a la vertical): unos 9°. */
 const MANO_HACIA_DENTRO = 0.16
 
@@ -58,7 +61,7 @@ export function posturaRelajada(modelo: ModeloAvatar, articulaciones: Record<str
     pies[lado] = { pos: t3(tobillo), polo: t3(V(Math.sin(abrir) * s, 0, Math.cos(abrir))), dir: t3(dir), normal: t3(perpendicular(V(0, 1, 0), dir)) }
   }
 
-  // Brazos: desde los hombros (ya atrás), algo más abiertos que en reposo, apenas hacia delante y
+  // Brazos: desde los hombros (ya atrás), algo más cerrados que en reposo, apenas hacia delante y
   // con el codo flojo hacia atrás y afuera.
   const manos = {} as Record<Lado, Extremo>
   for (const [lado, s] of LADOS) {

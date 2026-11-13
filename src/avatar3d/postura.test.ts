@@ -70,7 +70,7 @@ describe('postura relajada del avatar', () => {
     }
   })
 
-  it('es simétrica (sin cargar el peso en una pierna) y con los brazos algo abiertos', () => {
+  it('es simétrica (sin cargar el peso en una pierna) y con los brazos cerca del cuerpo, sin pegarlos', () => {
     for (const d of CUERPOS) {
       const { pos } = montar(d)
       expect(Math.abs(pos('muslo.L').y - pos('muslo.R').y)).toBeLessThan(0.002)
@@ -78,11 +78,11 @@ describe('postura relajada del avatar', () => {
       expect(Math.abs(pos('mano.L').x + pos('mano.R').x)).toBeLessThan(0.004)
       expect(Math.abs(pos('cabeza').x)).toBeLessThan(0.005)
       for (const [lado, s] of [['L', 1], ['R', -1]] as const) {
-        // Brazo abierto: del hombro a la muñeca, más de 12° respecto a la vertical, hacia fuera.
+        // Del hombro a la muñeca, entre 8° y 24° respecto a la vertical, hacia fuera.
         const brazo = pos(`mano.${lado}`).sub(pos(`brazo.${lado}`))
         const apertura = (Math.atan2(brazo.x * s, -brazo.y) * 180) / Math.PI
-        expect(apertura, `${d.kg} kg, ${lado}`).toBeGreaterThan(12)
-        expect(apertura, `${d.kg} kg, ${lado}`).toBeLessThan(32)
+        expect(apertura, `${d.kg} kg, ${lado}`).toBeGreaterThan(8)
+        expect(apertura, `${d.kg} kg, ${lado}`).toBeLessThan(24)
       }
     }
   })
@@ -113,6 +113,30 @@ describe('postura relajada del avatar', () => {
         const pulgar = e.porNombre.get(`pulgar.${lado}`)!
         const punta = pulgar.localToWorld(new Vector3(...forma.articulaciones[`yema_pulgar.${lado}`]!).sub(new Vector3(...forma.articulaciones[`pulgar.${lado}`]!)))
         expect(punta.distanceTo(pos(`dedos3.${lado}`)), `${d.kg} kg, pulgar ${lado}`).toBeLessThan(0.05)
+      }
+    }
+  })
+
+  it('en el puño ningún dedo atraviesa la mano ni se tuerce hacia fuera', () => {
+    for (const d of CUERPOS) {
+      const { e, pos } = montar(d)
+      for (const lado of ['L', 'R'] as const) {
+        const n = new Vector3(0, 0, 1).applyQuaternion(e.porNombre.get(`mano.${lado}`)!.getWorldQuaternion(new Quaternion()))
+        const nudillos = pos(`dedos.${lado}`)
+        const corazon = pos(`dedos3.${lado}`).sub(pos(`dedos2.${lado}`)).normalize()
+        for (const [dedo, f2, f3, yema] of [
+          ['corazón', 'dedos2', 'dedos3', 'yema'],
+          ['índice', 'indice2', 'indice3', 'yema_indice'],
+          ['anular', 'anular2', 'anular3', 'yema_anular'],
+          ['meñique', 'menique2', 'menique3', 'yema_menique'],
+        ] as const) {
+          // La yema, por delante de los nudillos (del lado de la palma): no sale por el dorso.
+          const punta = e.puntas.get(`${yema}.${lado}`)!.getWorldPosition(new Vector3())
+          expect(punta.clone().sub(nudillos).dot(n), `${d.kg} kg, ${dedo} ${lado}`).toBeGreaterThan(0.004)
+          // Las segundas falanges van paralelas a la del corazón: ningún dedo se tuerce a un lado.
+          const media = pos(`${f3}.${lado}`).sub(pos(`${f2}.${lado}`)).normalize()
+          expect((media.angleTo(corazon) * 180) / Math.PI, `${d.kg} kg, ${dedo} ${lado}`).toBeLessThan(12)
+        }
       }
     }
   })

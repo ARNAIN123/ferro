@@ -110,5 +110,6 @@ describe('todos los ejercicios de la biblioteca', () => {
       const escena = generarEscena(asignarAnimacion(e).animacion, e.musculosPrincipales)
       expect(escena.formas.some((f) => f.clase === 'musculo'), e.id).toBe(true)
     }
-  })
+    // 60 escenas completas: con la máquina cargada (todos los tests a la vez) pasa de los 5 s por defecto.
+  }, 20_000)
 })
