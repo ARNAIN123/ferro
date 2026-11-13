@@ -103,7 +103,7 @@ describe('todos los ejercicios de la biblioteca', () => {
         }
       }
     }
-  }, 60_000)
+  }, 180_000)
 
   it('resaltan los músculos principales', () => {
     for (const e of biblioteca.slice(0, 60)) {

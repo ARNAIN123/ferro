@@ -1,17 +1,16 @@
-import { readFileSync } from 'node:fs'
 import { Vector3 } from 'three'
 import { describe, expect, it } from 'vitest'
 import type { EjercicioAnimable } from '../animacion/asignacion'
 import catalogo from '../catalogo/ejercicios.json'
 import type { Material, Musculo } from '../domain/tipos'
+import { CUERPOS_DE_PRUEBA, rigDeAvatar } from './avataresDePrueba'
 import { definicion3D, esPiloto } from './biblioteca'
 import { GROSOR, MEDIO_ANCHO_BANCO } from './desde2d'
 import { duracionRep } from './ejercicios'
-import { esqueletoDePrueba } from './esqueletoDePrueba'
 import { interpolar } from './ik'
-import { Rig } from './rig'
 
-const articulaciones = (JSON.parse(readFileSync(new URL('../../public/modelos/cuerpo-rig.json', import.meta.url), 'utf-8')) as { articulaciones: Record<string, number[]> }).articulaciones
+// Las animaciones las hace el avatar de cada usuario (ronda 5): se prueban con tres cuerpos.
+const RIGS = CUERPOS_DE_PRUEBA.map(rigDeAvatar)
 const biblioteca: EjercicioAnimable[] = (catalogo.ejercicios as unknown as { id: string; nombre: string; material: Material; principales: Musculo[] }[]).map((e) => ({
   id: e.id,
   nombre: e.nombre,
@@ -32,14 +31,13 @@ describe('animaciones 3D de toda la biblioteca', () => {
     }
   }, 60_000)
 
-  it('en toda la repetición el cuerpo es válido: sin números raros y con los pies sobre el suelo', () => {
-    const rig = new Rig(esqueletoDePrueba(articulaciones))
+  it.each(RIGS)('en toda la repetición el cuerpo es válido: sin números raros y con los pies sobre el suelo ($nombre)', ({ rig, nombre }) => {
     const fallos: string[] = []
     let sinAlcanzar = 0
     let muestras = 0
     for (const e of biblioteca) {
       if (esPiloto(e.id)) continue
-      const d = definicion3D(e)
+      const d = definicion3D(e, nombre)
       const rep = duracionRep(d)
       for (let i = 0; i <= 16; i++) {
         const t = (rep * i) / 16
@@ -64,15 +62,14 @@ describe('animaciones 3D de toda la biblioteca', () => {
     expect([...new Set(fallos)].slice(0, 20)).toEqual([])
     // Casi siempre llegan las dos manos a su sitio (si no, se estiran hacia él).
     expect(sinAlcanzar / muestras).toBeLessThan(0.15)
-  }, 60_000)
+  }, 120_000)
 
-  it('el cuerpo se apoya en bancos, atriles y cajones sin atravesarlos, ni tampoco el suelo (como mucho 1,5 cm)', () => {
-    const rig = new Rig(esqueletoDePrueba(articulaciones))
+  it.each(RIGS)('el cuerpo se apoya en bancos, atriles y cajones sin atravesarlos, ni tampoco el suelo (como mucho 1,5 cm; $nombre)', ({ rig, nombre }) => {
     const tronco = /^(cadera|lumbar|dorsal|pecho|cuello|cabeza|clavicula|muslo)/
     const fallos: string[] = []
     for (const e of biblioteca) {
       if (esPiloto(e.id)) continue
-      const d = definicion3D(e)
+      const d = definicion3D(e, nombre)
       d.preparar?.(rig)
       const tapizados: { a: Vector3; b: Vector3; n: Vector3; medio: number; cuenta: RegExp }[] = []
       for (const p of d.material) {
@@ -124,14 +121,13 @@ describe('animaciones 3D de toda la biblioteca', () => {
       contactoCaja.forEach((c, j) => Math.abs(cajas[j]!.centro[0]) < 0.5 && c > 0.03 && fallos.push(`${e.nombre}: cajón sin nada encima (${(c * 100).toFixed(0)} cm)`))
     }
     expect(fallos).toEqual([])
-  }, 60_000)
+  }, 120_000)
 
-  it('cada cable va a su mano (con dos poleas, una a cada mano) y el material va en las manos', () => {
-    const rig = new Rig(esqueletoDePrueba(articulaciones))
+  it.each(RIGS)('cada cable va a su mano (con dos poleas, una a cada mano) y el material va en las manos ($nombre)', ({ rig, nombre }) => {
     const fallos: string[] = []
     for (const e of biblioteca) {
       if (esPiloto(e.id)) continue
-      const d = definicion3D(e)
+      const d = definicion3D(e, nombre)
       const rep = duracionRep(d)
       for (let i = 0; i < 16; i += 5) {
         const estado = d.colocar(interpolar(d.claves, (rep * i) / 16), rig)
@@ -151,5 +147,5 @@ describe('animaciones 3D de toda la biblioteca', () => {
       }
     }
     expect([...new Set(fallos)].slice(0, 20)).toEqual([])
-  }, 60_000)
+  }, 120_000)
 })

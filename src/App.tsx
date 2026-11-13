@@ -10,6 +10,7 @@ import { EntrenoPage } from './features/entreno/EntrenoPage'
 import { HoyPage } from './features/hoy/HoyPage'
 import { useAjustes } from './hooks/useAjustes'
 import { useAvisoDescanso } from './hooks/useAvisoDescanso'
+import { ProveedorCuerpo } from './hooks/useDatosCuerpo'
 import { useTema } from './hooks/useTema'
 import { useVigilancia } from './hooks/useVigilancia'
 import { esNativa } from './lib/plataforma'
@@ -53,6 +54,7 @@ export function App() {
       <Avisos />
       <EnlacesNativos />
       <LimiteError alFallar={(error, reintentar) => <PantallaError error={error} reintentar={reintentar} />}>
+      <ProveedorCuerpo>
       <Suspense fallback={null}>
         <Routes>
           <Route element={<Marco />}>
@@ -83,6 +85,7 @@ export function App() {
           <Route path="entreno/resumen/:id" element={<ResumenPage />} />
         </Routes>
       </Suspense>
+      </ProveedorCuerpo>
       </LimiteError>
     </BrowserRouter>
   )

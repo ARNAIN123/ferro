@@ -84,13 +84,15 @@ export function ajustesDe(e: EjercicioAnimable, a: Animacion): Ajustes2D {
   const inclinacion = p === 'giros rusos' ? -42 : p === 'pájaros' ? (sentado ? 62 : 72) : p === 'retracción escapular' ? 66 : null
   // Solo con material de un agarre (polea con un cable a las dos manos, disco, landmine, rueda).
   const unAgarre = a.equipo.some((q) => q.tipo === 'disco' || q.tipo === 'landmine' || q.tipo === 'rodillo' || (q.tipo === 'polea' && !q.anclaje2 && (q.a ?? 'manos') === 'manos'))
+  // Un estribo para las dos manos (press Pallof): solo tiene un asa, así que van juntas siempre.
   const manosJuntas =
-    a.vista !== 'lateral' &&
     unAgarre &&
-    a.claves.every((c) => {
-      const [b0, b1] = resolver(a, c).brazos
-      return Math.hypot(b0.agarre[0] - b1.agarre[0], b0.agarre[1] - b1.agarre[1]) < 22
-    })
+    ((enganche === 'estribo' && a.equipo.some((q) => q.tipo === 'polea')) ||
+      (a.vista !== 'lateral' &&
+        a.claves.every((c) => {
+          const [b0, b1] = resolver(a, c).brazos
+          return Math.hypot(b0.agarre[0] - b1.agarre[0], b0.agarre[1] - b1.agarre[1]) < 22
+        })))
   return { ancho, anchoPies, agarre, dedos: m === 'polea' || a.equipo.some((q) => q.tipo !== 'banco' && q.tipo !== 'caja') ? 0.85 : 0.3, enganche, inclinacion, sentado, manosJuntas }
 }
 
@@ -680,7 +682,8 @@ function ajustarApoyos(
       // pasan por encima de ella.
       const apoyados = ap.piesInicio?.length ? ap.piesInicio : (ap.pies ?? [])
       const suben = (ap.pies ?? []).filter((l) => !apoyados.includes(l))
-      const deApoyados = new RegExp(`^(pie|punta)\\.(${apoyados.join('|') || 'L|R'})$`)
+      // Sin pies encima es un cajón para sentarse (sentadilla a banco): la tapa, bajo los glúteos.
+      const deApoyados = ap.pies?.length ? new RegExp(`^(pie|punta)\\.(${apoyados.join('|') || 'L|R'})$`) : /^(cadera|lumbar|muslo)/
       const x = uno ? (uno === 'L' ? 1 : -1) * caja.anchoPies : 0
       const medio = uno ? 0.15 : 0.25
       a.x = x
@@ -694,11 +697,28 @@ function ajustarApoyos(
       const arriba = Math.max(0.03, Math.min(z0.y, z1.y))
       pieza.centro = [x, arriba / 2, (z0.z + z1.z) / 2]
       pieza.tam = [medio * 2, arriba, Math.max(0.12, Math.abs(z1.z - z0.z))]
+      if (!ap.pies?.length) {
+        // Cajón para sentarse: los pies se quedan en el suelo, delante; que los talones no se metan en él.
+        let desde = pieza.centro[2] - pieza.tam[2] / 2
+        let hasta = pieza.centro[2] + pieza.tam[2] / 2
+        const medioZ = (desde + hasta) / 2
+        for (const nube of nubes)
+          for (const { p: q, hueso } of nube) {
+            if (!/^(pie|punta)/.test(hueso) || q.y > arriba || Math.abs(q.x - x) > medio || q.z <= desde || q.z >= hasta) continue
+            if (q.z > medioZ) hasta = Math.min(hasta, q.z - 0.02)
+            else desde = Math.max(desde, q.z + 0.02)
+          }
+        if (hasta - desde >= 0.12) {
+          pieza.centro = [x, arriba / 2, (desde + hasta) / 2]
+          pieza.tam = [medio * 2, arriba, hasta - desde]
+        }
+      }
       for (const lado of suben) {
         // El cajón empieza un poco por delante de esa pierna al empezar (el pie en el suelo y la rodilla,
         // que puede adelantarse).
         const inicio = caja.tobillos0[lado].z + 0.17
-        const pierna = new RegExp(`^(pierna|pie|punta)\.${lado}$`)
+        // (el muslo también: al subir, la rodilla es lo que más se adelanta)
+        const pierna = new RegExp(`^(muslo|pierna|pie|punta)\.${lado}$`)
         let borde = inicio + 0.06
         // (las dos primeras poses de muestra: la de partida y justo al empezar a subir)
         for (const nube of nubes.slice(0, 2)) for (const { p: q, hueso } of nube) if (pierna.test(hueso) && q.y < arriba) borde = Math.max(borde, q.z + 0.04)

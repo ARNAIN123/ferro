@@ -1,7 +1,8 @@
-// Escena de un ejercicio en three.js puro (sin React): la usan el visor 3D y las miniaturas.
-import { BufferAttribute, Color, Group, MeshStandardMaterial, Object3D, Quaternion, Vector3, Vector4, type BufferGeometry, type SkinnedMesh } from 'three'
-import { clone as clonarConEsqueleto } from 'three/examples/jsm/utils/SkeletonUtils.js'
-import { aspectoDeNivel, idDeCanal, NUM_REGIONES, porRegion, type RGB } from '../domain/cuerpo3d'
+// Escena de un ejercicio en three.js puro (sin React): la usan el visor 3D y las miniaturas. El
+// cuerpo es el avatar de cada usuario (avatar3d/cuerpoEjercicio.ts), con su forma y sus colores.
+import { Group, Object3D, Quaternion, Vector3 } from 'three'
+import type { CuerpoEscena } from '../avatar3d/cuerpoEjercicio'
+import { aspectoDeNivel, porRegion, type RGB } from '../domain/cuerpo3d'
 import type { Musculo } from '../domain/tipos'
 import { enConcentrica, momento, type AgarrePolea, type Definicion3D, type EstadoMaterial } from './ejercicios'
 import { interpolar } from './ik'
@@ -28,52 +29,6 @@ import {
 } from './material'
 import { Rig } from './rig'
 
-/** Región y oclusión de cada vértice (del canal de color del modelo), una vez por geometría. */
-function prepararGeometria(g: BufferGeometry): void {
-  if (g.getAttribute('region')) return
-  const datos = g.getAttribute('color')
-  const n = g.getAttribute('position').count
-  const region = new Float32Array(n)
-  const oclusion = new Float32Array(n)
-  for (let i = 0; i < n; i++) {
-    region[i] = idDeCanal(datos.getX(i))
-    oclusion[i] = datos.getY(i)
-  }
-  g.setAttribute('region', new BufferAttribute(region, 1))
-  g.setAttribute('oclusion', new BufferAttribute(oclusion, 1))
-}
-
-const REGIONES = NUM_REGIONES + 1
-
-/** Material de arcilla con un color y un brillo por región que se cambian en la GPU. */
-function materialPorRegiones() {
-  // Por región: color (rgb) y brillo (a).
-  const regiones = Array.from({ length: REGIONES }, () => new Vector4())
-  const acento = { value: new Color() }
-  const material = new MeshStandardMaterial({ roughness: 0.85, metalness: 0, envMapIntensity: 0.1 })
-  material.onBeforeCompile = (s) => {
-    s.uniforms.uRegiones = { value: regiones }
-    s.uniforms.uAcento = acento
-    s.vertexShader = s.vertexShader
-      .replace('#include <common>', `#include <common>\nattribute float region;\nattribute float oclusion;\nuniform vec4 uRegiones[${REGIONES}];\nvarying vec3 vBase;\nvarying float vBrillo;`)
-      .replace(
-        '#include <begin_vertex>',
-        '#include <begin_vertex>\nvec4 deRegion = uRegiones[int(region + 0.5)];\nvBase = deRegion.rgb * (0.55 + 0.45 * pow(clamp(oclusion, 0.0, 1.0), 1.5));\nvBrillo = deRegion.a;',
-      )
-    s.fragmentShader = s.fragmentShader
-      .replace('#include <common>', '#include <common>\nuniform vec3 uAcento;\nvarying vec3 vBase;\nvarying float vBrillo;')
-      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= vBase;')
-      .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += uAcento * vBrillo;')
-  }
-  return {
-    material,
-    pintar: (deRegion: readonly { color: RGB; brillo: number }[], acentoRGB: RGB) => {
-      deRegion.forEach((a, i) => regiones[i]!.set(a.color[0], a.color[1], a.color[2], a.brillo))
-      acento.value.setRGB(acentoRGB[0], acentoRGB[1], acentoRGB[2])
-    },
-  }
-}
-
 export interface MusculosEjercicio {
   principales: readonly Musculo[]
   secundarios: readonly Musculo[]
@@ -82,7 +37,7 @@ export interface MusculosEjercicio {
 export class EscenaEjercicio {
   readonly raiz = new Group()
   readonly rig: Rig
-  private readonly pintor: ReturnType<typeof materialPorRegiones>
+  private readonly cuerpo: CuerpoEscena
   private barra?: Object3D
   private mancuernas?: Partial<Record<'L' | 'R', Object3D>>
   private polea?: Polea
@@ -94,30 +49,31 @@ export class EscenaEjercicio {
   private landmine?: ReturnType<typeof crearLandmine>
   private rodillo?: Object3D
   /** Torres de polea (pieza `torre`), con su cable y su agarre, en el mismo orden que los cables. */
-  private torres: { polea: Polea; inicial: number; agarre?: { tipo: AgarrePolea; objeto?: Object3D; cuerda?: Cuerda } }[] = []
+  private torres: {
+    polea: Polea
+    inicial: number
+    agarre?: { tipo: AgarrePolea; objeto?: Object3D; cuerda?: Cuerda }
+  }[] = []
   private ultimoConcentrico: boolean | null = null
 
   readonly def: Definicion3D
   private readonly musculos: MusculosEjercicio
   private colores: { arcilla: RGB; acento: RGB }
 
-  constructor(modelo: Object3D, def: Definicion3D, musculos: MusculosEjercicio, colores: { arcilla: RGB; acento: RGB }) {
+  /**
+   * El cuerpo se pone en reposo y se ajusta a él lo que haga falta (bancos, cajones). Un mismo cuerpo
+   * puede servir para varias escenas, pero solo puede estar en una: `ponerCuerpo` lo mete en esta
+   * (lo saca de la anterior) y `retirarCuerpo`, lo saca.
+   */
+  constructor(cuerpo: CuerpoEscena, def: Definicion3D, musculos: MusculosEjercicio, colores: { arcilla: RGB; acento: RGB }) {
     this.def = def
     this.musculos = musculos
     this.colores = colores
-    const cuerpo = clonarConEsqueleto(modelo)
-    this.pintor = materialPorRegiones()
-    cuerpo.traverse((o) => {
-      const m = o as SkinnedMesh
-      if (m.isSkinnedMesh || (m as unknown as { isMesh?: boolean }).isMesh) {
-        prepararGeometria(m.geometry)
-        m.material = this.pintor.material
-        // Los huesos se mueven lejos de su postura de reposo: que three.js no lo recorte.
-        m.frustumCulled = false
-      }
-    })
-    this.raiz.add(cuerpo)
-    this.rig = new Rig(cuerpo)
+    this.cuerpo = cuerpo
+    cuerpo.reposo()
+    this.rig = new Rig(cuerpo.objeto)
+    this.rig.usarSuperficie(cuerpo.superficie)
+    // Bancos y cajones, ajustados a este cuerpo.
     this.def.preparar?.(this.rig)
     this.montarMaterial()
     // Largo del cable al empezar: la pila sube lo que se alargue desde ahí.
@@ -134,7 +90,11 @@ export class EscenaEjercicio {
     for (const pieza of this.def.material) {
       switch (pieza.tipo) {
         case 'barra':
-          this.barra = crearBarra({ radioDisco: pieza.radioDisco ?? 0.225, discos: pieza.discos ?? 1, almohadilla: pieza.almohadilla })
+          this.barra = crearBarra({
+            radioDisco: pieza.radioDisco ?? 0.225,
+            discos: pieza.discos ?? 1,
+            almohadilla: pieza.almohadilla,
+          })
           this.raiz.add(this.barra)
           break
         case 'mancuernas': {
@@ -144,14 +104,21 @@ export class EscenaEjercicio {
           break
         }
         case 'banco': {
-          const banco = crearBanco({ inclinacion: pieza.inclinacion ?? 0, alto: pieza.alto })
+          const banco = crearBanco({
+            inclinacion: pieza.inclinacion ?? 0,
+            alto: pieza.alto,
+          })
           banco.position.set(...pieza.pos)
           banco.rotation.y = pieza.giroY ?? 0
           this.raiz.add(banco)
           break
         }
         case 'polea': {
-          this.polea = crearPolea({ pos: new Vector3(...pieza.pos), alturaPolea: pieza.alturaPolea, giroY: pieza.giroY ?? 0 })
+          this.polea = crearPolea({
+            pos: new Vector3(...pieza.pos),
+            alturaPolea: pieza.alturaPolea,
+            giroY: pieza.giroY ?? 0,
+          })
           this.raiz.add(this.polea.grupo)
           if (pieza.agarre === 'cuerda') {
             this.cuerda = crearCuerda()
@@ -243,10 +210,20 @@ export class EscenaEjercicio {
     this.ultimoConcentrico = concentrico
     const { arcilla, acento } = this.colores
     const nivel = (m: Musculo | null) => (!m ? 0 : this.musculos.principales.includes(m) ? (concentrico ? 5 : 4) : this.musculos.secundarios.includes(m) ? 2 : 0)
-    this.pintor.pintar(
+    this.cuerpo.pintar(
       porRegion((m) => aspectoDeNivel(nivel(m), arcilla, acento)),
       acento,
     )
+  }
+
+  /** Mete el cuerpo en esta escena (si estaba en otra, lo saca de ella). */
+  ponerCuerpo(): void {
+    this.raiz.add(this.cuerpo.objeto)
+  }
+
+  /** Saca el cuerpo de la escena (sin liberarlo), para usarlo en otra. */
+  retirarCuerpo(): void {
+    this.raiz.remove(this.cuerpo.objeto)
   }
 
   cambiarColores(colores: { arcilla: RGB; acento: RGB }): void {

@@ -1,14 +1,13 @@
-import { readFileSync } from 'node:fs'
 import type { Box3, Mesh } from 'three'
 import { describe, expect, it } from 'vitest'
 import catalogo from '../catalogo/ejercicios.json'
+import { CUERPOS_DE_PRUEBA, rigDeAvatar } from './avataresDePrueba'
 import { duracionRep, EJERCICIOS_3D, enConcentrica, momento, REPETICIONES } from './ejercicios'
-import { esqueletoDePrueba } from './esqueletoDePrueba'
 import { anguloArticulacion, interpolar } from './ik'
 import { crearBanco, crearMaquinaJalon } from './material'
-import { Rig } from './rig'
 
-const articulaciones = (JSON.parse(readFileSync(new URL('../../public/modelos/cuerpo-rig.json', import.meta.url), 'utf-8')) as { articulaciones: Record<string, number[]> }).articulaciones
+// Los hace el avatar de cada usuario (ronda 5): se prueban con tres cuerpos muy distintos.
+const RIGS = CUERPOS_DE_PRUEBA.map(rigDeAvatar)
 const ids = new Set((catalogo as { ejercicios: { id: string }[] }).ejercicios.map((e) => e.id))
 
 describe('animaciones 3D: piloto', () => {
@@ -40,8 +39,7 @@ describe('animaciones 3D: piloto', () => {
     expect(enConcentrica(d, d.concentrica[0]![0] + 0.1)).toBe(true)
   })
 
-  it('en cada instante las manos y los pies llegan a su sitio, con articulaciones posibles y sobre el suelo', () => {
-    const rig = new Rig(esqueletoDePrueba(articulaciones))
+  it.each(RIGS)('en cada instante las manos y los pies llegan a su sitio, con articulaciones posibles y sobre el suelo ($nombre)', ({ rig }) => {
     const fallos: string[] = []
     for (const d of EJERCICIOS_3D) {
       const rep = duracionRep(d)
@@ -62,8 +60,7 @@ describe('animaciones 3D: piloto', () => {
     expect([...new Set(fallos)].slice(0, 15)).toEqual([])
   }, 60_000)
 
-  it('el cuerpo no se mete en los bancos ni en la máquina de jalón (como mucho 1,5 cm de contacto)', () => {
-    const rig = new Rig(esqueletoDePrueba(articulaciones))
+  it.each(RIGS)('el cuerpo no se mete en los bancos ni en la máquina de jalón (como mucho 1,5 cm de contacto; $nombre)', ({ rig }) => {
     const fallos: string[] = []
     for (const d of EJERCICIOS_3D) {
       const piezas: { malla: Mesh; caja: Box3 }[] = []

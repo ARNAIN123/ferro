@@ -1,4 +1,5 @@
-// El esqueleto del cuerpo 3D (public/modelos/cuerpo-rig.glb) y cómo ponerlo en una pose.
+// El esqueleto de un cuerpo 3D (el avatar de cada usuario; algunos tests, el de Z-Anatomy) y cómo
+// ponerlo en una pose.
 // Primero el tronco (pelvis, columna, cabeza, clavículas); después, con los hombros y caderas ya
 // colocados, brazos y piernas por cinemática inversa hacia manos y pies.
 import { Euler, Matrix4, Object3D, Quaternion, Vector3 } from 'three'
@@ -334,13 +335,23 @@ export class Rig {
   }
 
   private superficieLocal: { nombre: string; hueso: Object3D; puntos: Vector3[] }[] | null = null
+  private superficie: Record<string, number[]> = SUPERFICIE as Record<string, number[]>
+
+  /**
+   * Puntos de la superficie de otro cuerpo (en reposo, mundo, por hueso): los del avatar de cada
+   * usuario. Sin esto, los del cuerpo de Z-Anatomy (`superficie.json`).
+   */
+  usarSuperficie(puntos: Record<string, number[]>): void {
+    this.superficie = puntos
+    this.superficieLocal = null
+  }
 
   /**
    * Recorre los puntos de la superficie del cuerpo en la pose actual (cada uno se mueve con el hueso
    * que más lo mueve). Sirve para comprobar que el cuerpo no atraviesa bancos, cajones ni el suelo.
    */
   recorrerSuperficie(f: (p: Vector3, hueso: string) => void, filtro?: (hueso: string) => boolean): void {
-    this.superficieLocal ??= Object.entries(SUPERFICIE as Record<string, number[]>).flatMap(([nombre, xs]) => {
+    this.superficieLocal ??= Object.entries(this.superficie).flatMap(([nombre, xs]) => {
       const r = this.reposo.get(nombre)
       if (!r) return []
       const inversa = new Matrix4().compose(r.posMundo, r.quatMundo, new Vector3(1, 1, 1)).invert()

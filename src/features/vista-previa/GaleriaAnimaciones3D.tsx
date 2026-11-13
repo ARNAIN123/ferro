@@ -12,12 +12,31 @@ import { Tarjeta } from '../../components/ui'
 import { db } from '../../db/db'
 import type { Ejercicio } from '../../domain/tipos'
 import { useAjustes } from '../../hooks/useAjustes'
+import { ProveedorCuerpo, useDatosCuerpo } from '../../hooks/useDatosCuerpo'
+import type { DatosCuerpo } from '../../domain/cuerpo'
 import { nombresDeMusculos } from '../../domain/musculos'
 
-const musculosDe = (e: Ejercicio) => ({ principales: e.musculosPrincipales, secundarios: e.musculosSecundarios })
+const musculosDe = (e: Ejercicio) => ({
+  principales: e.musculosPrincipales,
+  secundarios: e.musculosSecundarios,
+})
 
-// Animaciones 3D de toda la biblioteca, agrupadas por patrón de movimiento, para revisarlas.
+/**
+ * Animaciones 3D de toda la biblioteca, agrupadas por patrón de movimiento, para revisarlas. Con
+ * `?cuerpo=mujer,162,56` (sexo, altura en cm y kg) se ven con el avatar de ese cuerpo en vez del mío.
+ */
 export function GaleriaAnimaciones3D() {
+  const [params] = useSearchParams()
+  const [sexo, cm, kg] = (params.get('cuerpo') ?? '').split(',')
+  const otro: DatosCuerpo | undefined = (sexo === 'hombre' || sexo === 'mujer') && Number(cm) > 0 && Number(kg) > 0 ? { sexo, edad: 30, alturaCm: Number(cm), kg: Number(kg) } : undefined
+  return (
+    <ProveedorCuerpo datos={otro}>
+      <Galeria />
+    </ProveedorCuerpo>
+  )
+}
+
+function Galeria() {
   const ejercicios = useLiveQuery(() => db.ejercicios.filter((e) => !e.archivado).toArray(), [])
   const [elegido, setElegido] = useState<string>('Barbell_Bench_Press_-_Medium_Grip')
   const [params] = useSearchParams()
@@ -110,16 +129,26 @@ function Revision({ grupos, solo, cuantos }: { grupos: [string, Ejercicio[]][]; 
 function Fotogramas({ e }: { e: Ejercicio }) {
   const [tira, setTira] = useState<string | null>(null)
   const { tema } = useAjustes()
+  const datos = useDatosCuerpo()
   useEffect(() => {
-    void import('../../animacion3d/miniaturas').then((m) => m.miniatura(e, musculosDe(e), tema)).then(setTira)
-  }, [e, tema])
+    if (!datos) return
+    void import('../../animacion3d/miniaturas').then((m) => m.miniatura(e, musculosDe(e), tema, datos)).then(setTira)
+  }, [e, tema, datos])
   return (
     <div className="grid grid-cols-3 gap-0.5">
       {[0, 5, 10].map((i) => (
         <div
           key={i}
           className="aspect-square rounded bg-surface-2"
-          style={tira ? { backgroundImage: `url(${tira})`, backgroundSize: `${CUADROS * 100}% 100%`, backgroundPosition: `${(i / (CUADROS - 1)) * 100}% 0` } : undefined}
+          style={
+            tira
+              ? {
+                  backgroundImage: `url(${tira})`,
+                  backgroundSize: `${CUADROS * 100}% 100%`,
+                  backgroundPosition: `${(i / (CUADROS - 1)) * 100}% 0`,
+                }
+              : undefined
+          }
         />
       ))}
     </div>
@@ -144,18 +173,27 @@ function Grandes({ ejercicios, giro, cerca, cuadros }: { ejercicios: Ejercicio[]
 
 function Grande({ e, giro, cerca, cuadros }: { e: Ejercicio; giro: number; cerca: number; cuadros: number[] }) {
   const [img, setImg] = useState<string | null>(null)
+  const datos = useDatosCuerpo()
   const clave = cuadros.join(',')
   useEffect(() => {
+    if (!datos) return
     let vivo = true
     // De una en una: cada una crea su propio contexto WebGL.
     turno = turno
       .then(() => import('../../animacion3d/miniaturas'))
-      .then((m) => m.fotogramasRevision(e, musculosDe(e), { lado: 420, cuadros: clave.split(',').map(Number), giro, cerca }))
+      .then((m) =>
+        m.fotogramasRevision(e, musculosDe(e), datos, {
+          lado: 420,
+          cuadros: clave.split(',').map(Number),
+          giro,
+          cerca,
+        }),
+      )
       .then((url) => vivo && setImg(url))
       .catch(() => undefined)
     return () => {
       vivo = false
     }
-  }, [e, giro, cerca, clave])
+  }, [e, giro, cerca, clave, datos])
   return img ? <img src={img} alt="" className="w-full rounded bg-surface-2" /> : <div className="aspect-[2/1] rounded bg-surface-2" />
 }

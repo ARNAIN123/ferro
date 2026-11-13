@@ -3,18 +3,22 @@ import type { EjercicioAnimable } from '../../animacion/asignacion'
 import { definicion3D } from '../../animacion3d/biblioteca'
 import { CUADROS_MINIATURA as CUADROS, duracionRep } from '../../animacion3d/ejercicios'
 import type { MusculosEjercicio } from '../../animacion3d/escena'
+import { huellaCuerpo } from '../../avatar3d/cuerpoEjercicio'
 import { useAjustes } from '../../hooks/useAjustes'
+import { useDatosCuerpo } from '../../hooks/useDatosCuerpo'
 import { useMovimientoReducido } from '../../hooks/useMovimientoReducido'
 
 /**
- * Miniatura animada de un ejercicio 3D para las listas (una tira de fotogramas animada con CSS).
- * Mientras se genera (o si el móvil no puede), se ve `respaldo`.
+ * Miniatura animada de un ejercicio 3D para las listas (una tira de fotogramas animada con CSS), con
+ * el avatar de cada usuario: si cambia el cuerpo, se rehace (mientras, se sigue viendo la anterior).
+ * Mientras se genera la primera (o si el móvil no puede), se ve `respaldo`.
  */
 export function MiniaturaAnimada({ ejercicio, musculos, className = 'size-14', respaldo }: { ejercicio: EjercicioAnimable; musculos: MusculosEjercicio; className?: string; respaldo?: ReactNode }) {
   const ref = useRef<HTMLSpanElement>(null)
   const [visible, setVisible] = useState(false)
   const [tira, setTira] = useState<string | null>(null)
   const { tema } = useAjustes()
+  const datos = useDatosCuerpo()
   const reducido = useMovimientoReducido()
 
   useEffect(() => {
@@ -25,13 +29,14 @@ export function MiniaturaAnimada({ ejercicio, musculos, className = 'size-14', r
     return () => o.disconnect()
   }, [])
 
-  const clave = `${ejercicio.id}|${musculos.principales.join(',')}|${musculos.secundarios.join(',')}`
+  const huella = datos ? huellaCuerpo(datos) : null
+  const clave = `${ejercicio.id}|${musculos.principales.join(',')}|${musculos.secundarios.join(',')}|${huella}`
   useEffect(() => {
-    if (!visible) return
+    if (!visible || !datos) return
     let vivo = true
     // El generador (three.js sin pantalla) solo se descarga cuando hace falta una miniatura.
     import('../../animacion3d/miniaturas')
-      .then((m) => m.miniatura(ejercicio, musculos, tema))
+      .then((m) => m.miniatura(ejercicio, musculos, tema, datos))
       .then((url) => vivo && setTira(url))
       .catch(() => undefined)
     return () => {

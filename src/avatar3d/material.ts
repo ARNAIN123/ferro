@@ -4,11 +4,17 @@
 // definición del cuerpo, y su canal azul lleva la oclusión ambiental. Funciona con piel (SkinnedMesh).
 import * as THREE from 'three'
 import type { RGB } from '../domain/cuerpo3d'
-import { crearMapaColor, crearMapaRelieve } from './mapaColor'
+import { crearMapaColor, crearMapaRelieve, type MapaColor } from './mapaColor'
 import type { TexturasAvatar } from './texturas'
 
 /** Parte del relieve muscular horneado que se usa (con la definición de cada cuerpo). */
 const FUERZA_RELIEVE = 0.7
+
+/**
+ * Mapas de color que se guardan (los últimos usados): volver a unos colores ya pintados no recalcula
+ * nada (en un ejercicio, los músculos cambian de brillo en cada fase de la repetición).
+ */
+const MAPAS_GUARDADOS = 3
 
 export interface MaterialesAvatar {
   material: THREE.MeshStandardMaterial
@@ -20,15 +26,21 @@ export interface MaterialesAvatar {
 }
 
 export function crearMaterialesAvatar(texturas: TexturasAvatar): MaterialesAvatar {
-  const mapa = crearMapaColor(texturas)
+  // Del más reciente al más antiguo; la clave son los colores con los que se pintó.
+  const mapas: { clave: string; mapa: MapaColor }[] = [{ clave: '', mapa: crearMapaColor(texturas) }]
   const relieveRegion = crearMapaRelieve(texturas)
   const uniformes = {
-    mapaColor: { value: mapa.textura },
+    mapaColor: { value: mapas[0]!.mapa.textura },
     mapaRelieve: { value: relieveRegion },
     colorBrillo: { value: new THREE.Color() },
   }
   const relieve = new THREE.Vector2(1, 1)
-  const material = new THREE.MeshStandardMaterial({ roughness: 0.78, metalness: 0, envMapIntensity: 0.14, normalMap: texturas.relieve })
+  const material = new THREE.MeshStandardMaterial({
+    roughness: 0.78,
+    metalness: 0,
+    envMapIntensity: 0.14,
+    normalMap: texturas.relieve,
+  })
   material.normalScale = relieve
   material.onBeforeCompile = (s) => {
     Object.assign(s.uniforms, uniformes)
@@ -54,7 +66,17 @@ diffuseColor.rgb = aspecto.rgb * ( 0.55 + 0.45 * pow( texture2D( normalMap, vNor
   return {
     material,
     pintar(porRegion, acento) {
-      mapa.pintar(porRegion)
+      const clave = porRegion.map((a) => `${a.color[0]},${a.color[1]},${a.color[2]},${a.brillo}`).join(';')
+      const i = mapas.findIndex((m) => m.clave === clave)
+      let usado = i >= 0 ? mapas.splice(i, 1)[0]! : undefined
+      if (!usado) {
+        // Uno nuevo o, si ya hay bastantes, el que hace más que no se usa.
+        usado = mapas.length < MAPAS_GUARDADOS ? { clave: '', mapa: crearMapaColor(texturas) } : mapas.pop()!
+        usado.mapa.pintar(porRegion)
+        usado.clave = clave
+      }
+      mapas.unshift(usado)
+      uniformes.mapaColor.value = usado.mapa.textura
       uniformes.colorBrillo.value.setRGB(acento[0], acento[1], acento[2])
     },
     definir(definicion) {
@@ -64,7 +86,7 @@ diffuseColor.rgb = aspecto.rgb * ( 0.55 + 0.45 * pow( texture2D( normalMap, vNor
     },
     liberar() {
       material.dispose()
-      mapa.liberar()
+      for (const m of mapas) m.mapa.liberar()
       relieveRegion.dispose()
     },
   }

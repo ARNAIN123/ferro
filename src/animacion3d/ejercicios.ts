@@ -96,6 +96,24 @@ function piePlano(x: number, z: number, s: number, abrir: number, polo: Vector3,
 
 const medio = (t: TroncoResuelto) => t.hombro.L.clone().add(t.hombro.R).multiplyScalar(0.5)
 
+// ── Medidas del cuerpo que hace el ejercicio ──────────────────────────────────────────────
+// Las claves del piloto se hicieron con el cuerpo de Z-Anatomy; cada avatar tiene sus brazos y su
+// tronco (ronda 5), así que lo que depende de ellos se calcula con los suyos.
+
+/** Del hombro a la muñeca (m). */
+const largoBrazo = (rig: Rig) => rig.longitud('brazo.L', 'antebrazo.L') + rig.longitud('antebrazo.L', 'mano.L')
+/** De la pelvis a la mitad de los hombros (m), en reposo. */
+const largoTronco = (rig: Rig) => rig.enReposo('cadera').distanceTo(rig.enReposo('brazo.L').add(rig.enReposo('brazo.R')).multiplyScalar(0.5))
+/** El brazo del cuerpo con el que se hicieron las claves (m). */
+const BRAZO_REFERENCIA = 0.5306
+
+/** Lo que sube el pecho por encima de los hombros, tumbado en el banco, bajo la barra (por cuerpo). */
+const pechoEnBanca = new WeakMap<Rig, number>()
+/** Lo que hay que bajar a cada cuerpo, tumbado, para que la espalda toque el banco del press. */
+const apoyoEnBanca = new WeakMap<Rig, number>()
+/** Altura del tapizado del banco del press de banca (el centro, a 0,393 m, y medio grosor). */
+const TOPE_BANCA = 0.393 + 0.035
+
 /** Claves de un solo parámetro: [segundo, valor]. */
 const claves = (nombre: string, puntos: readonly (readonly [number, number])[]): Clave<Parametros>[] =>
   puntos.map(([t, valor]) => ({ t, p: { [nombre]: valor } }))
@@ -135,8 +153,44 @@ const pressBanca: Definicion3D = {
   camara: { azimut: 55, altura: 1.55, distancia: 3.4, objetivo: [0, 0.62, 0.05] },
   colocar: (p, rig) => {
     // Tumbado boca arriba: la cabeza hacia −Z, con la espalda algo arqueada y las escápulas juntas.
-    rig.aplicarTronco({ pelvis: { pos: [0, 0.55, 0.15], rot: [-90, 0, 0] }, columna: [-6, 0, 0], cabeza: [6, 0, 0], claviculas: [0, -8] })
-    const barra = V(0, p.y!, p.z!)
+    const tumbado = (baja: number) => rig.aplicarTronco({ pelvis: { pos: [0, 0.55 - baja, 0.15], rot: [-90, 0, 0] }, columna: [-6, 0, 0], cabeza: [6, 0, 0], claviculas: [0, -8] })
+    // La espalda, apoyada en el banco: cada cuerpo tiene su grosor (lo que hay que bajarlo, por cuerpo).
+    let baja = apoyoEnBanca.get(rig)
+    if (baja === undefined) {
+      tumbado(0)
+      let espalda = Infinity
+      rig.recorrerSuperficie(
+        (q) => {
+          if (Math.abs(q.x) < 0.14 && q.z > -0.9 && q.z < 0.3) espalda = Math.min(espalda, q.y)
+        },
+        (hueso) => /^(cadera|lumbar|dorsal|pecho)/.test(hueso),
+      )
+      baja = Number.isFinite(espalda) ? espalda - TOPE_BANCA : 0
+      apoyoEnBanca.set(rig, baja)
+    }
+    const t = tumbado(baja)
+    // Las claves son de un cuerpo con los hombros en (0,516; −0,308): la barra va respecto a los
+    // hombros de este. Abajo toca su pecho (lo más alto del tronco bajo la barra) y arriba los brazos
+    // quedan estirados con su largura.
+    const h = medio(t)
+    const zAbajo = h.z - 0.18 + 0.308
+    let pecho = pechoEnBanca.get(rig)
+    if (pecho === undefined) {
+      pecho = 0.2
+      let alto = -Infinity
+      rig.recorrerSuperficie(
+        (q) => {
+          if (Math.abs(q.x) < 0.12 && Math.abs(q.z - zAbajo) < 0.03) alto = Math.max(alto, q.y)
+        },
+        (hueso) => /^(dorsal|pecho)/.test(hueso),
+      )
+      if (Number.isFinite(alto)) pecho = alto - h.y
+      pechoEnBanca.set(rig, pecho)
+    }
+    const sube = Math.min(1, Math.max(0, (p.y! - 0.745) / (1.045 - 0.745)))
+    const abajoY = h.y + pecho + 0.016
+    const arribaY = h.y + (1.045 - 0.5164) * (largoBrazo(rig) / BRAZO_REFERENCIA)
+    const barra = V(0, mezcla(abajoY, arribaY, sube), h.z + p.z! + 0.308)
     const dir = V(0, 0.75, -0.66)
     const palma = V(0, 0.66, 0.75)
     const manos = lados((s) => agarre(barra.clone().add(V(0.39 * s, 0, 0)), dir, palma, V(0.8 * s, -0.5, 0.35)))
@@ -215,9 +269,9 @@ const pesoMuerto: Definicion3D = {
     const barraY = mezcla(0.225, 0.8, h)
     const barraZ = 0.035
     const pelvisY = tabla(PELVIS_MUERTO, h)
-    // Inclinación del tronco para que los brazos cuelguen rectos hasta la barra.
-    const torso = 0.47
-    const hombroY = barraY + 0.075 + 0.53 * 0.99
+    // Inclinación del tronco para que los brazos (los de este cuerpo) cuelguen rectos hasta la barra.
+    const torso = largoTronco(rig)
+    const hombroY = barraY + 0.075 + largoBrazo(rig) * 0.99
     const alfa = Math.acos(Math.min(1, Math.max(0, (hombroY - pelvisY) / torso)))
     const pelvisZ = barraZ + 0.03 * (1 - h) - torso * Math.sin(alfa)
     rig.aplicarTronco({ pelvis: { pos: [0, pelvisY, pelvisZ], rot: [(alfa * 180) / Math.PI, 0, 0] }, columna: [2, 0, 0], cabeza: [-18 * (1 - h), 0, 0], claviculas: [-3 * h, 4 * (1 - h)] })
@@ -239,8 +293,10 @@ const remoConBarra: Definicion3D = {
   colocar: (p, rig) => {
     const r = p.r!
     const t = rig.aplicarTronco({ pelvis: { pos: [0, 0.86, -0.13], rot: [55, 0, 0] }, columna: [3, 0, 0], cabeza: [-22, 0, 0], claviculas: [0, mezcla(6, -10, r)] })
-    const colgada = medio(t).add(V(0, -(0.53 * 0.985 + 0.075), 0.02))
-    const arriba = t.pelvis.clone().add(t.pelvisArriba.clone().multiplyScalar(0.25)).add(t.pelvisFrente.clone().multiplyScalar(0.17))
+    // Colgando con los brazos casi estirados (las manos van algo más abiertas que los hombros).
+    const colgada = medio(t).add(V(0, -(largoBrazo(rig) * 0.97 + 0.075), 0.02))
+    // Arriba, la barra toca la tripa: a algo más de la mitad del tronco (el de este cuerpo).
+    const arriba = t.pelvis.clone().add(t.pelvisArriba.clone().multiplyScalar(largoTronco(rig) * 0.546)).add(t.pelvisFrente.clone().multiplyScalar(0.17))
     const barra = colgada.clone().lerp(arriba, r)
     const manos = lados((s) => agarre(barra.clone().add(V(0.25 * s, 0, 0)), V(0, -1, 0.15 * r), V(0, 0, -1), V(0.35 * s, 1, -0.6)))
     const pies = lados((s) => piePlano(0.15 * s, -0.04, s, 10, V(0.25 * s, 0, 1)))
@@ -261,7 +317,7 @@ const pressMilitar: Definicion3D = {
     // La cabeza se aparta mientras la barra pasa por delante de la cara y vuelve debajo al final.
     const t = rig.aplicarTronco({ pelvis: { pos: [0, 0.908, -0.03], rot: [-2, 0, 0] }, columna: [-4, 0, 0], cabeza: [-16 * entre(0.05, 0.3, k) * (1 - entre(0.5, 0.85, k)), 0, 0], claviculas: [mezcla(2, 10, k), 0] })
     const h = medio(t)
-    const barra = V(0, h.y + mezcla(0.02, 0.56, k), mezcla(h.z + 0.12, h.z - 0.01, entre(0.35, 0.85, k)))
+    const barra = V(0, h.y + mezcla(0.02, largoBrazo(rig) + 0.03, k), mezcla(h.z + 0.12, h.z - 0.01, entre(0.35, 0.85, k)))
     const polo = (s: number) => V(mezcla(0.35, 1, k) * s, mezcla(-0.4, 0, k), mezcla(1, 0, k))
     const manos = lados((s) => agarre(barra.clone().add(V(0.25 * s, 0, 0)), V(0, 1, mezcla(0.25, 0, k)), V(0, 0.2, 1), polo(s)))
     const pies = lados((s) => piePlano(0.15 * s, -0.04, s, 10, V(0.2 * s, 0, 1)))
@@ -342,7 +398,7 @@ const jalonPecho: Definicion3D = {
     const r = p.r!
     const t = rig.aplicarTronco({ pelvis: { pos: [0, 0.6, -0.02], rot: [-4 - 9 * r, 0, 0] }, columna: [-5 * r, 0, 0], cabeza: [-10, 0, 0], claviculas: [mezcla(14, -4, r), mezcla(0, -8, r)] })
     const h = medio(t)
-    const arriba = V(0, h.y + 0.53, h.z + 0.06)
+    const arriba = V(0, h.y + largoBrazo(rig), h.z + 0.06)
     const abajo = V(0, h.y + 0.03, h.z + 0.15)
     const barra = arriba.clone().lerp(abajo, r)
     barra.z += Math.sin(r * Math.PI) * 0.04
@@ -393,7 +449,7 @@ const hipThrust: Definicion3D = {
     const beta = mezcla(32, -2, h)
     const b = (beta * Math.PI) / 180
     const apoyo = V(0, 0.52, -0.3)
-    const torso = 0.46
+    const torso = largoTronco(rig)
     const pelvis = apoyo.clone().add(V(0, -Math.sin(b) * torso, Math.cos(b) * torso))
     const t = rig.aplicarTronco({ pelvis: { pos: t3(pelvis), rot: [-90 + beta, 0, 0] }, columna: [0, 0, 0], cabeza: [mezcla(10, 28, h), 0, 0], claviculas: [0, -4] })
     const barra = t.pelvis.clone().add(t.pelvisFrente.clone().multiplyScalar(0.135)).add(t.pelvisArriba.clone().multiplyScalar(-0.05))
